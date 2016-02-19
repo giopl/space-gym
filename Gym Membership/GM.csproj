@@ -215,6 +215,7 @@
     <Content Include="dbscripts\gdbprddata.7z" />
     <Content Include="dbscripts\spaceproddb.zip" />
     <Content Include="dbscripts\Book2.xlsx" />
+    <Content Include="dbscripts\firebug-2.0.14-fx.xpi" />
     <None Include="Helpers\ChartHelper.cs.OLD" />
     <Compile Include="Helpers\ConfigurationHelper.cs" />
     <Compile Include="Helpers\CreateExcelFile.cs" />
