@@ -986,3 +986,45 @@ a.white:active {
         padding-top:20px;
         border-bottom:1px dotted #4B5A6A
     }
+
+
+
+    /* datatab */
+    .datatab
+{
+	font-family: 
+        "Helvetica Neue",Helvetica,Arial,sans-serif;
+        
+	font-size: 12px;
+	margin: 0 0 0 5px;
+	text-align: left;
+	border-collapse: collapse;
+	background: url('/Images/bg/robot.jpg')  top no-repeat;
+}
+.datatab th
+{
+	padding: 12px;
+	font-weight: normal;
+	font-size: 14px;
+	color: #777;
+}
+.datatab td
+{
+	padding: 9px 12px;
+	color: #333;
+	border-top: 1px solid #fff;
+}
+.datatab tfoot td
+{
+	font-size: 11px;
+}
+.datatab tbody td
+{
+	background: url('/Images/bg//back.png');
+}
+	
+.datatab tbody tr:hover td
+{
+	color: #339;
+	background: none;
+}

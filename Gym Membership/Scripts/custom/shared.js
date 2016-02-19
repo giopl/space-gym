@@ -184,17 +184,9 @@ $(document).ready(function () {
     
     //used on members page for datatables
 
-    $('#memberstable').dataTable(
-        {
-            "columnDefs": [
-           {
-               "targets": [10],
-               "visible": false
-           }
-            ]
-
-        }
-        );
+    //$('#memberstable').dataTable(
+    $('.datatab').dataTable();
+       
 
     $('#standingordertable').dataTable();
 

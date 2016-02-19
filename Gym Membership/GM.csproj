@@ -269,6 +269,16 @@
     <Content Include="Content\daterange\daterangepicker.css" />
     <Content Include="dbscripts\gmdb_schma.sql" />
     <Content Include="dbscripts\todo2.txt" />
+    <Content Include="Images\bg\grass.jpg" />
+    <Content Include="Images\bg\back.png" />
+    <Content Include="Images\bg\eyes.jpg" />
+    <Content Include="Images\bg\blurry.jpg" />
+    <Content Include="Images\bg\ink.jpg" />
+    <Content Include="Images\bg\megan.jpg" />
+    <Content Include="Images\bg\drap.jpg" />
+    <Content Include="Images\bg\robot.jpg" />
+    <Content Include="Images\bg\running.png" />
+    <Content Include="Images\bg\droplet.jpg" />
     <Content Include="Images\MemberImages\memberimg.txt" />
     <Content Include="Scripts\custom\highcharts.js" />
     <Content Include="Scripts\custom\transaction-yearly.js" />

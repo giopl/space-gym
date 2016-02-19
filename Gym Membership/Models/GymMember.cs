@@ -233,6 +233,17 @@ namespace Gym_Membership.Models
         [DisplayName("Last Visit")]
         public DateTime LastVisit { get; set; }
 
+        public String LastVisitFmt {
+            
+            get
+            {
+                if (LastVisit < new DateTime(1980,1,1))
+                {
+                    return "no visit";
+                }
+                return LastVisit.ToString("dd MMM yyyy");
+            }
+            }
         public int LastVisitId { get; set; }
 
         [DisplayName("Is Active")]
