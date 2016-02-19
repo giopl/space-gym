@@ -1,0 +1,24 @@
+﻿@model IEnumerable<Gym_Membership.Models.GymMember>
+
+@{
+    ViewBag.Title = "Index";
+    ViewBag.Page = "Home";
+}
+
+<div class="row">
+    <div class="col-md-11">
+        <div class="page-title">Daily Visits </div>
+        <span id="visit-date"></span>
+    </div>
+    <div class="col-md-1">
+
+        <div style="margin-top:40%;cursor:pointer"><span class="datepicker"><span class="fa fa-calendar fa-2x"></span></span></div>
+    </div>
+</div>
+
+
+<div id="visits">
+
+    @Html.Partial("_Visits", Model)
+
+</div>

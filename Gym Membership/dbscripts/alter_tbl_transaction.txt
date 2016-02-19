@@ -1,0 +1,9 @@
+alter table dbo.tbl_transaction add amount_first_installment float null
+
+alter table dbo.tbl_transaction add amount_second_installment float null
+
+
+
+add to web.config
+
+    <add key="HistorySize" value="10" />

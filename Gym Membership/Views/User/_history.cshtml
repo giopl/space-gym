@@ -1,0 +1,30 @@
+﻿@model Gym_Membership.Models.HistoryViewModel
+
+
+<table class="table table-condensed table-striped table-responsive">
+    <tr>
+        <th></th>
+        <th>
+            Member Name
+        </th>
+        <th>
+            Access Date
+        </th>
+    </tr>
+    @{var x = 0;}
+    @foreach (var item in Model.Items)
+    {
+        
+        <tr>
+            <td align="center">@(++x)</td>
+            <td>
+                <a href="@Url.Action("Member", "User", new { id = item.id})">@item.name</a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.date)
+            </td>
+
+        </tr>
+    }
+
+</table>

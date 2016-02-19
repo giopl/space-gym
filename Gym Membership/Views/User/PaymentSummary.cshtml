@@ -1,0 +1,214 @@
+﻿@model Gym_Membership.Models.Transaction
+
+@{
+    ViewBag.Title = "PaymentSummary";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var tot = Model.PaidAmount + Model.DiscountAmount + Model.UnpaidAmount + Model.WrittenOffAmount + Model.FirstInstallmentAmount + Model.SecondInstallmentAmount;
+
+    var feeplusrego = tot + Model.RegistrationAmount;
+    var dsc = Model.DiscountAmount + Model.WrittenOffAmount;
+
+    var subtot = feeplusrego - dsc;
+
+}
+
+<h2>Payment Summary</h2>
+<div class="row">
+    <div class="col-md-4">
+        <h4><span class="badge-success">1</span>&nbsp;Member Details</h4>
+        <table class="table" style="width:300px;">
+            <tr>
+                <th>Name</th>
+                <td><a href="@Url.Action("Member", new { id = Model.Member.MemberId })">@Model.Member.TitleFullname </a></td>
+            </tr>
+            <tr>
+                <th>Membership</th>
+                <td>@Model.Member.Membership.Name</td>
+            </tr>
+            <tr>
+                <th>Member#</th>
+                <td>@Model.Member.MemberId</td>
+            </tr>
+            <tr >
+                <th colspan="2" style="padding-bottom:1px;">Address</th>
+              
+            </tr>
+            <tr style="">
+                <td colspan="2" style="border-top:none;padding-left:10px;padding-top:4px">
+                    <address style="padding-left:20px;">
+                        @Model.Member.StreetAddress
+                        <br />@Model.Member.Town
+                        <br />(M) @Model.Member.MobilePhone / (H) @Model.Member.HomePhone
+                    </address>
+                </td>
+
+            </tr>
+            <tr>
+                <th colspan="2" style="padding-bottom:1px;">Period</th>
+                
+            </tr>
+            <tr>
+                <td colspan="2" style="border-top:none;padding-left:10px;padding-top:2px">
+                    <p style="padding-left:20px;">
+                        from @Model.StartDate.ToString("dd MMM yyyy") to
+                        @Model.EndDate.ToString("dd MMM yyyy")
+
+
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <th>Received By</th>
+                <td>@Model.LastReceipt.ReceivedBy.Username</td>
+            </tr>
+
+            <tr>
+                <th>Received On</th>
+                <td>@Model.LastReceipt.ReceivedOn.ToString("dd MMM yyyy HH:mm")</td>
+            </tr>
+         <tr><th>Payment By</th>
+            <td>@Model.LastReceipt.PaymentMethod</td>
+         </tr>
+
+        </table>
+
+    </div>
+
+    <div class="col-md-3">
+
+
+        <h4><span class="badge-success">2</span>&nbsp;Payment Summary</h4>
+        <table id="paymentSummary" style="margin-right:50px;  border:none;">
+            <tr class="">
+                <th class="text-right" style="width:50%">Amount Due</th>
+                <td class="text-right">
+                    @tot.ToString("N2")
+                </td>
+
+            </tr>
+
+            <tr class="text-right">
+                <th class="text-right">Registration</th>
+                <td class="text-right borderbottom">@Model.RegistrationAmount.ToString("N2")</td>
+            </tr>
+            
+            @if(Model.RegistrationAmount > 0)
+            {
+
+            <tr class="text-right ">
+                <th class="text-right">Due incl. Reg.</th>
+                <td class="text-right">
+                    @feeplusrego.ToString("N2")
+                </td>
+            </tr>
+
+            }
+            <tr class="">
+                <th class="text-right"><i>less</i> Discount</th>
+                <td class="text-right borderbottom">(@dsc.ToString("N2"))</td>
+            </tr>
+
+            <tr class="">
+                <th class="text-right">Sub-Total</th>
+                <td class="text-right ">@subtot.ToString("N2")</td>
+            </tr>
+
+            <tr>
+                <th class="text-right">Total Paid</th>
+
+                <td class="text-right borderbottom mr">
+                    @{ var amtPaid = Model.PaidAmount + Model.RegistrationAmount + Model.FirstInstallmentAmount + Model.SecondInstallmentAmount ;}
+                    <b>@amtPaid.ToString("N2")</b>
+                </td>
+            </tr>
+            @if (Model.IsPartPayment )
+            { 
+            <tr>
+                <th class="text-right">Outstanding</th>
+
+                <td class="text-right borderbottom mr"> 
+                    <span class="red">@Model.UnpaidAmount.ToString("N2")</span>
+                </td>
+            </tr>
+            
+            }
+
+
+        </table>
+
+
+    </div>
+    <div class="col-md-5 FixedHeightContainer">
+        <h4><span class="badge-success">3</span>&nbsp;Monthly Breakdown</h4>
+  
+
+        <div class="tableContent">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            Month
+                        </th>
+                        <th>
+                            Amt
+                        </th>
+                        <th>
+                            disc.
+                        </th>
+                        <th>
+                            total
+
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var m in Model.PaymentDueForm)
+                    {
+                        <tr>
+                            <td>
+                                @m.YearMonthDesc
+                            </td>
+                            <td class="text-right">
+                                @m.FeeAmount.ToString("N2")
+                            </td>
+                            <td class="text-right">
+                                @*@{ var totdisc = m.WriteOffAmount + m.DiscountedAmount;}*@
+                                @m.CalculatedDiscountAndWriteOff.ToString("N2")
+                            </td>
+                            <td class="text-right">
+                                @m.PaidAmount.ToString("N2")
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>SubTotal</th>
+                        <td class="text-right">@Model.PaymentDueForm.Sum(x => x.FeeAmount).ToString("N2")</td>
+                        <td class="text-right">@Model.PaymentDueForm.Sum(x => x.CalculatedDiscountAndWriteOff).ToString("N2")</td>
+                        <td class="text-right">@Model.PaymentDueForm.Sum(x => x.PaidAmount).ToString("N2")</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="text-right">Registration</td>
+                        <td class="text-right">@Model.RegistrationAmount.ToString("N2")</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="text-right">Total</td>
+                        <th class="text-right">@amtPaid.ToString("N2")</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<p>
+    <a href="@Url.Action("GenerateReceipt","User", new { id = Model.Member.MemberId  })" target="_blank">Generate Receipt</a> | 
+    @Html.ActionLink("Back to List", "Index")
+    |&nbsp;<a href="@Url.Action("CancelTransaction", new { id = Model.TransactionId})" title="Cancel transaction">Cancel Transaction</a>
+</p>
+<div class="text-center">
+    <a href="@Url.Action("Member",new { id = Model.Member.MemberId })" class="btn btn-primary">Continue to Client's Page</a>
+
+</div>

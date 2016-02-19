@@ -1,0 +1,154 @@
+﻿@model Gym_Membership.Models.Pass
+
+@{
+    ViewBag.Title = "PassVisitor";
+}
+
+<h2>Pass Visitor</h2>
+
+<div>
+    <h4>Pass</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Fullname)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Fullname)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Gender)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Gender)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Dob)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Dob)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LastVisit)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LastVisit)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Address)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Address)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Age)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Age)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EmailAddress)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EmailAddress)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Phone)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Phone)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Club)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Club)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.VisitsAllowed)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.VisitsAllowed)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.VisitsLeft)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.VisitsLeft)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreatedOn)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreatedOn)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreatedBy)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreatedBy)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PaymentMethod)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PaymentMethod)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Comments)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Comments)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsOneDayPass)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsOneDayPass)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.PassId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

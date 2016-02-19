@@ -1,0 +1,121 @@
+﻿@model Gym_Membership.Models.Transaction
+@{ 
+
+    var amtOrig = Model.PaidAmount + Model.FirstInstallmentAmount + Model.SecondInstallmentAmount + Model.UnpaidAmount;
+    var amtPaid = Model.PaidAmount + Model.FirstInstallmentAmount + Model.SecondInstallmentAmount ;
+    var amtDue = amtOrig - amtPaid;
+
+
+    }
+
+<p>Installments</p>
+<input type="hidden" name="DiscountAmount" value="@Model.DiscountAmount" />
+<input type="hidden" name="UnpaidAmount" value="@Model.UnpaidAmount" />
+
+<input type="hidden" name="StartDate" value="@Model.StartDate" />
+<input type="hidden" name="EndDate" value="@Model.EndDate" />
+<input type="hidden" name="PartPaymentForm" value="true" />
+<input type="hidden" name="FirstInstallmentAmount" value="@Model.FirstInstallmentAmount" />
+<input type="hidden" name="SecondInstallmentAmount" value="@Model.SecondInstallmentAmount" />
+<input type="hidden" name="NumInstallments" value="@Model.NumInstallments" />
+
+<table class="due">
+    <thead>
+        <tr>
+            <th>start</th>
+            <th>end</th>
+            <th class="text-center">Fees</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Period</td>
+            <td>@Model.StartDate.ToString("dd MMM yyyy") </td>
+            <td> @Model.EndDate.ToString("dd MMM yyyy") </td>
+
+        </tr>
+
+        <tr>
+            <td colspan="2" class="text-right">Total Fees</td>
+            <td class="text-right pr">@amtOrig.ToString("N2")</td>
+        </tr>
+
+        <tr>
+            <td colspan="2" class="text-right">Amount Paid</td>
+            <td class="text-right pr borderbottom">@amtPaid.ToString("N2")</td>
+        </tr>
+
+        @*<tr>
+            <td colspan="2" class="text-right"><i>less</i> Discount</td>
+            <td class="text-right pr borderbottom">@Model.DiscountAmount.ToString("N2")</td>
+        </tr>*@
+
+        <tr>
+            <td colspan="2" class="text-right">Amount Due</td>
+            <td class="text-right pr">@amtDue.ToString("N2")</td>
+
+        </tr>
+
+
+        <tr>
+            <td colspan="3" class="text-center">&nbsp;</td>
+        </tr>
+
+        <tr>
+            <th>Installments</th>
+            <th>
+                Due Date
+
+            </th>
+            <th>
+                Amount
+            </th>
+        </tr>
+
+        @{
+            var num = 1;
+        }
+        @foreach (var i in Model.Facilities)
+        {
+            <tr>
+                <td>
+                    Installments #@num
+                </td>
+                <td>
+                    @i.DueDate.ToString("dd MMM yyyy")
+                </td>
+                <td>
+                    @if (Model.Facilities.Count == 1)
+                    {
+                        <input type="text" readonly class="form-control number text-right facility_@num" value="@i.DueAmount.ToString("N2")" />
+                        <input type="hidden" name="InitialDownpayment" value="@i.DueAmount" />
+                        <input type="hidden" name="NumInstallmentsLeft" value="@Model.NumInstallmentsLeft" />
+
+
+                    }
+                    else
+                    {
+                        if (num == 1)
+                        {
+                            <input type="hidden" name="InitialDownpayment" id="facilityDownpayment" value="@i.DueAmount" />
+
+                        }
+
+                        <input type="text" @(num == 1 ? "" : "readonly") class="form-control number text-right facility_@num" value="@i.DueAmount.ToString("N2")" />
+
+                    }
+
+
+                </td>
+            </tr>
+                    num++;
+        }
+
+
+
+    </tbody>
+
+</table>
+
+
+

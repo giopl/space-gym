@@ -1,0 +1,184 @@
+﻿@model IEnumerable<Gym_Membership.Models.GymMember>
+<section id="visit">
+@{ var tot = Model.Count();}
+    @if (Model.Count() == 0)
+    {
+        <h2 class="text-muted">No Visits</h2>
+    }
+    else
+    {
+        <div class="scrolltable" style="overflow-y: auto;width:90%">
+            <table class="table" style="">
+                <tr>
+                    <th>#</th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.MemberId)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Fullname)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.NumberVisits)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.LastVisit)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Membership)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DaysOverDue)
+                    </th>
+                    <th></th>
+                </tr>
+                @{var i = -1;}
+                @foreach (var item in Model)
+        {
+            {i++;}
+                    <tr class="@(item.IsPresent?"useronsite":"")">
+                        <td><span class="@(item.IsPresent?"badge-success":"badge")">@(tot - i)</span></td>
+                        <td>
+                       
+
+
+                            <a href="@Url.Action("Member", "User", new { id=item.MemberId })">@item.MemberId</a>
+
+                            
+                        </td>
+
+                        <td>
+
+
+                            <a href="@Url.Action("Member", "User", new { id = item.MemberId })">@item.Fullname</a>
+
+                            @if (item.IsBirthday)
+                            {
+
+                                <span title="birthday" style=" color:red" class="fa fa-fw fa-birthday-cake"></span>
+                            }
+                            <span class="fa fa-fw fa-@(string.IsNullOrWhiteSpace(item.ComingBirthday)?"":"birthday-cake")"></span>@item.ComingBirthday
+
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.NumberVisits)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.LastVisit)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Membership.Name)
+                        </td>
+                        <td>
+                            
+                            @if (item.IsTemporary)
+                            {
+                                <span class="label label-warning">Temporary</span>
+                            }
+                            else if (item.Membership.IsPass)
+                            {
+                                <span class="label label-success">Is Pass</span>
+
+
+                            }
+                            else
+                            {
+                                if (item.HasArrears)
+                                {
+                                    if (item.IsPartPayment)
+                                    {
+                                        <span class="label label-warning">installment</span>
+                                    }
+                                    else {
+
+                                    <span class="label label-danger">@item.DaysOverDue days</span>
+                                    }
+                                }
+                               
+                                else
+                                {
+                                    <span class="label label-success">in order</span>
+                                }
+
+                            }
+                            
+
+                        </td>
+                        <td>@if (item.IsPresent)
+                        {
+
+                            <a href="@Url.Action("CancelVisit","User", new { id=item.LastVisitId, memberId = item.MemberId} )" onclick="return confirm('Are you sure?')" title="Cancel Checkin">
+
+
+                                <span class="fa-stack message">
+                                    @*<span class="fa  fa-stack-1x"></span>*@
+                                    <span class="fa fa-ban fa-stack-2x text-danger"></span>
+                                </span>
+
+
+
+                            </a>
+                        }
+                      </td>
+                        <td >
+                            @if (item.IsTemporary)
+                            {
+                                <span class="@(item.IsLongOverdue?"blink":"")">
+                                    <a href="@Url.Action("Member", new  { id = @item.MemberId })">
+                                        <span class="fa-stack message" title="@(item.HasArrears ?"Has Arrears":" Installment")">
+                                            <span class="fa fa-circle fa-stack-2x" style="color:@(item.HasArrears ? (item.IsLongOverdue ? "#BD0808" : "#E82320") : "#ffd800")"></span>
+                                            <span class="fa fa-hourglass-end fa-stack-1x fa-inverse"></span>
+                                        </span>
+                                    </a>
+                                </span>
+
+                            }
+                            else if (item.Membership.IsPass)
+                            {
+                                <a href="@Url.Action("PassVisitor", new  { id = @item.MemberId })">
+                                    <span class="fa-stack message" title="@(item.Membership.MembershipCode=="ONED" ?"One Day Pass":" 10 Visits Pass")">
+                                        <span class="fa fa-circle fa-stack-2x" style="color:#34BF15"></span>
+                                        <span class="fa fa-street-view fa-stack-1x fa-inverse"></span>
+                                    </span>
+                                </a>
+
+
+                            }
+                            else
+                            {
+
+                                if (item.HasArrears || item.IsPartPayment)
+                                {
+                                        <a href="@Url.Action("Transaction", new  { id = @item.MemberId })">
+                                            <span class="fa-stack message" title="@(item.HasArrears ?"Has Arrears":" Installment")">
+                                                <span class="fa fa-circle fa-stack-2x" style="color:@(item.IsPartPayment ? (item.IsLongOverdue ? "#BD0808" : "#ffd800") : "#E82320")"></span>
+                                                <span class="fa fa-dollar fa-stack-1x fa-inverse"></span>
+                                            </span>
+                                        </a>
+
+                                    } 
+                                    else
+                                    {
+
+                                        if (item.HasTransaction)
+                                        {
+
+                                            <a href="@Url.Action("PaymentSummary", new  { id = @item.MemberId })">
+                                                <span class="fa-stack message" title="Last Transaction Details">
+                                                    <span class="fa fa-circle fa-stack-2x" style="color:#64BC64"></span>
+                                                    <span class="fa fa-shopping-cart fa-stack-1x fa-inverse"></span>
+                                                </span>
+                                            </a>
+                                        }
+
+                                    }
+                            }
+                        </td>
+                    </tr>
+
+        }
+
+            </table>
+            </div>  
+            }
+</section>

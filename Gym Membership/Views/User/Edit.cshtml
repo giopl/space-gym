@@ -1,0 +1,290 @@
+﻿@model Gym_Membership.Models.GymMember
+@using session = Gym_Membership.Helpers.UserSession;
+
+<style>
+    .lbls {
+        font-size:.9em;
+        font-weight:bold;
+        margin-top:10px;
+        margin-left:1px;
+        color:#666;
+    }
+
+    fieldset {
+        border:2px solid #ddd;
+        padding: 20px 10px;
+    }
+</style>
+
+@if (Model.ValidationErrors.Count > 0)
+{
+    <div class="alert-danger" style="padding:10px">
+        <h3>Found Validation Errors:</h3>
+        <ul>
+            @foreach (var err in Model.ValidationErrors)
+            {
+                <li>@Html.Raw(err)</li>
+            }
+        </ul>
+    </div>
+
+}
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+    if(!session.Current.IsAdmin)
+    {
+    @Html.HiddenFor(model => model.RegistrationDate)
+    @Html.HiddenFor(model => model.PaymentUntilDate)
+    @Html.HiddenFor(model => model.Membership.MembershipCode)
+        
+        
+    }
+        <div class="page-title">Edit Member Details for <b>@Model.MemberId</b> - <span style="color:red"><b>@Model.TitleFullname</b></span></div>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <fieldset>
+        <div class="row">
+            <div class="col-md-1">
+                <input type="text" class="form-control" name="MemberId" readonly value="@Model.MemberId" />
+                 @*@Html.EditorFor(model => model.MemberId, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })*@
+            </div>
+            <div class="col-md-5">
+                Is User Active (uncheck to disable user from system)&nbsp;
+
+                @Html.CheckBoxFor(model => model.IsActive, new { @class = "clickactive" })
+                @Html.ValidationMessageFor(model => model.IsActive, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-md-6 showreason" style="display:@(Model.IsActive?"none":"block")">
+                Reason for setting user inactive:
+                @Html.EditorFor(model => model.ReasonForLeaving, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+
+
+
+        </div>
+    </fieldset>
+            <div class="row lbls">
+                <div class="col-md-1">Title</div>
+                <div class="col-md-3">Firstname</div>
+                <div class="col-md-3">Lastname</div>
+                <div class="col-md-2">Gender</div>
+                <div class="col-md-2">D.O.B</div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-1">
+                    <select class="form-control" name="Title" tabindex="1">
+                        <option @(Model.Title == "" ? "selected" : "") value="">select</option>
+                        <option @(Model.Title.ToLower().Trim() == "ms" ? "selected" : "") value="Ms">Ms</option>
+                        <option @(Model.Title.ToLower().Trim() == "mrs" ? "selected" : "") value="Mrs">Mrs</option>
+                        <option @(Model.Title.ToLower().Trim() == "mr" ? "selected" : "") value="Mr">Mr</option>
+                        <option @(Model.Title.ToLower().Trim() == "dr" ? "selected" : "") value="Dr">Dr</option>
+                    </select>
+                </div>
+                <div class="col-md-3"><input type="text" name="Firstname" class="form-control" value="@Model.Firstname" /></div>
+                <div class="col-md-3">@Html.EditorFor(model => model.Lastname, new { htmlAttributes = new { @class = "form-control" } })</div>
+                <div class="col-md-2">
+                    <select name="Gender" class="form-control">
+                        <option @(Model.Gender == "M" ? "selected" : "") value="M"> Male </option>
+                        <option @(Model.Gender == "F" ? "selected" : "") value="F"> Female </option>
+
+
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" name="DateOfBirth" class="form-control dateFormat" value="@Model.DateOfBirth.ToString("yyyy-MM-dd")" />
+                </div>
+            </div>
+
+
+
+
+            <div class="row lbls">
+                <div class="col-md-4">Street</div>
+                <div class="col-md-4">Town</div>
+                <div class="col-md-4">Email</div>
+            </div>
+
+
+
+
+            <div class="row">
+                <div class="col-md-4">
+                    @Html.EditorFor(model => model.StreetAddress, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.Town, new { htmlAttributes = new { @class = "form-control typeahead-town" } })
+        </div>
+        <div class="col-md-4">
+            @Html.EditorFor(model => model.EmailAddress, new { htmlAttributes = new { @class = "form-control" } })
+    </div>
+    </div>
+
+
+    <div class="row lbls">
+        <div class="col-md-4">Home Tel</div>
+        <div class="col-md-4">Office Tel</div>
+        <div class="col-md-4">Mobile</div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            @Html.EditorFor(model => model.HomePhone, new { htmlAttributes = new { @class = "form-control phoneFormat" } })
+    </div>
+    <div class="col-md-4">
+        @Html.EditorFor(model => model.OfficePhone, new { htmlAttributes = new { @class = "form-control phoneFormat" } })
+    </div>
+    <div class="col-md-4">
+        @Html.EditorFor(model => model.MobilePhone, new { htmlAttributes = new { @class = "form-control mobileFormat" } })
+    </div>
+    </div>
+
+    <div class="row lbls">
+        <div class="col-md-6">Club</div>
+        <div class="col-md-6">how you heard about us</div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-6">
+            <select name="Club" class="form-control">
+                <option value="">Select</option>
+                <option @(Model.Club == "BB" ? "selected" : "") value="BB">Space Gym Beau Bassin</option>
+                <option @(Model.Club == "CP" ? "selected" : "") value="CP">Space Gym Curepipe</option>
+                <option @(Model.Club == "RH" ? "selected" : "") value="RH">Executive Rose Hill</option>
+
+            </select>
+        </div>
+        <div class="col-md-6">
+            <select name="HowYouHeardAboutUs" class="form-control">
+                <option value="">Select</option>
+                <option @(Model.HowYouHeardAboutUs == "Newspaper" ? "selected" : "") value="Newspaper">Newspaper</option>
+                <option @(Model.HowYouHeardAboutUs == "Facebook" ? "selected" : "") value="Facebook">Facebook</option>
+                <option @(Model.HowYouHeardAboutUs == "Web" ? "selected" : "") value="Web">Web</option>
+                <option @(Model.HowYouHeardAboutUs == "WordOfMouth" ? "selected" : "") value="WordOfMouth">Friend</option>
+                <option @(Model.HowYouHeardAboutUs == "Advertising" ? "selected" : "") value="Advertising">Advertising</option>
+
+                <option @(Model.HowYouHeardAboutUs == "Neighbourhood" ? "selected" : "") value="Neighbourhood">Neighbourhood</option>
+                <option @(Model.HowYouHeardAboutUs == "Reputation" ? "selected" : "") value="Reputation">Reputation</option>
+
+            </select>
+        </div>
+    </div>
+
+
+
+
+    if (Model.Membership.MembershipCode == "CUST")
+        {
+        <div class="row lbls">
+            <div class="col-md-12">Custom Membership Fee</div>
+        </div>
+        <div class="row lbls">
+            <div class="col-md-12">
+                @Html.EditorFor(model => model.CustomMonthlyFee, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+
+        }
+
+    <div class="row lbls">
+        <div class="col-md-6">Employer</div>
+        <div class="col-md-6">Occupation</div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-6">
+            @Html.EditorFor(model => model.Company, new { htmlAttributes = new { @class = "form-control" } })
+    </div>
+    <div class="col-md-6">
+        @Html.EditorFor(model => model.Occupation, new { htmlAttributes = new { @class = "form-control" } })
+    </div>
+    </div>
+
+
+    if (session.Current.IsAdmin)
+{
+        <div class="row lbls">
+            <div class="col-md-4">Joined Date (Admin only)</div>
+            <div class="col-md-4">Payment until Date (Admin only)</div>
+            <div class="col-md-4">Change Membership</div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <input class="form-control dateFormat" placeholder="yyyy-mm-dd" type="text" value="@Model.RegistrationDate.ToString("yyyy-MM-dd")" name="RegistrationDate">
+            </div>
+            <div class="col-md-4">
+                <input class="form-control dateFormat" type="text" value="@Model.PaymentUntilDate.ToString("yyyy-MM-dd")" name="PaymentUntilDate">
+            </div>
+            <div class="col-md-2">
+                @Html.EditorFor(model => model.Membership.MembershipCode, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+            </div>
+        <div class="col-md-2">
+            <a href="@Url.Action("ChangeMembership","Admin", new  { id = Model.MemberId})" class="btn btn-primary">Change Membership</a>
+        </div>
+        </div>
+
+        <div class="row lbls">
+            <div class="col-md-2">
+                Is part payment
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-2">
+                <select name="IsPartPayment" class="form-control">
+                    <option value="true" @(Model.IsPartPayment?"selected":"")>Y</option>
+                    <option value="false" @(!Model.IsPartPayment?"selected":"")> N</option>
+                </select> 
+            </div>
+        </div>
+    }
+
+    <div class="row" style="margin-top:20px;">
+        <div class="col-md-offset-4 col-md-4">
+            <input type="submit" value="Save" class="btn btn-danger" style="width:100%" />
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back", "Member", new  { id = Model.MemberId })
+</div>
+@section scripts{
+   
+    <script>
+        $(document).ready(function () {
+
+            $('body').on('click', '.clickactive', function () {
+
+                if (!$(this).is(":checked"))
+                {
+                    $('.showreason').show();
+                } else {
+                    $('.showreason').hide();
+
+                }
+
+            });
+
+            $('.pickadate2').pickadate({
+                today: '',
+                clear: 'Clear selection',
+                close: 'Cancel',
+                formatSubmit: 'yyyy-mm-dd',
+                hiddenName: true
+            })
+
+
+     
+        });
+
+    </script>
+
+
+}

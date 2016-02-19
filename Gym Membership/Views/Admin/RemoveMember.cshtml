@@ -1,0 +1,213 @@
+﻿@model Gym_Membership.Models.GymMember
+
+@{
+    ViewBag.Title = "RemoveMember";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="admin">Remove Member</h2>
+
+<h3>Are you sure you want to <span class="label label-danger">delete</span> this?</h3>
+All associated @Html.Raw(Model.HasTransaction? "<span class='label label-danger'>Transactions</span> ":"" ) @Html.Raw(Model.HasTransaction ? "<span class='label label-danger'>Payments</span> " : "") @Html.Raw(Model.HasReceipts ? " <span class='label label-danger'>Receipts</span> " : "") @Html.Raw(Model.HasComments ? " <span class='label label-danger'>Comments</span> " : "")
+ will also be deleted.
+
+<div>
+    <h4>Gym Member</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.MemberId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MemberId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+
+        
+        <dt>
+            @Html.DisplayNameFor(model => model.Fullname)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Fullname)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HasReceipts)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HasReceipts)
+        </dd>
+
+        
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Gender)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Gender)
+        </dd>
+
+        
+        <dt>
+            @Html.DisplayNameFor(model => model.FormattedDOB)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FormattedDOB)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsPartPayment)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsPartPayment)
+        </dd>
+        
+
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HasTransaction)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HasTransaction)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.StreetAddress)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.StreetAddress)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Town)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Town)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EmailAddress)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EmailAddress)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HomePhone)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HomePhone)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.OfficePhone)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OfficePhone)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MobilePhone)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MobilePhone)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Club)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Club)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RegistrationDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RegistrationDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NumberVisits)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NumberVisits)
+        </dd>
+
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsActive)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsActive)
+        </dd>
+
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PaymentUntilDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PaymentUntilDate)
+        </dd>
+
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HasComments)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HasComments)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HasArrears)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HasArrears)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DaysOverDue)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DaysOverDue)
+        </dd>
+
+
+    </dl>
+
+    @using (Html.BeginForm("RemoveMemberConfirm", "Admin",FormMethod.Post )) {
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="id" value="@Model.MemberId" />
+        <div class="form-actions no-color">
+            <a href="@Url.Action("Member", "User", new  { id = @Model.MemberId })"> This is a mistake, Do not Delete and go Back</a> | <input type="submit" value="Confirm Delete" class="btn btn-default" /> 
+        </div>
+    }
+</div>

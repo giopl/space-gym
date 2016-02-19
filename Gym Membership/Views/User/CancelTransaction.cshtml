@@ -1,0 +1,91 @@
+﻿@model Gym_Membership.Models.Transaction
+
+@{
+    ViewBag.Title = "CancelTransaction";
+    var totdue = Model.DiscountAmount + Model.PaidAmount;
+}
+
+<h2>Cancel Transaction</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Transaction</h4>
+    
+
+    <table class="table">
+        <tr>
+            <th>Transaction Id</th>
+            <td>@Model.TransactionId</td>
+        </tr>
+        <tr>
+            <th>Member</th>
+            <td>@Model.Member.Fullname <a href="@Url.Action("Member", new  { id = Model.Member.MemberId })">(@Model.Member.MemberId)</a></td>
+        </tr>
+        <tr>
+            <th>Amount Due</th>
+            
+            <td>@totdue</td>
+        </tr>
+
+
+        <tr>
+            <th>Discount</th>
+            <td>@Model.DiscountAmount</td>
+        </tr>
+
+
+        <tr>
+            <th>Total Paid</th>
+            <td>@Model.PaidAmount</td>
+        </tr>
+
+
+        <tr>
+            <th>Transaction Date</th>
+            <td>@Model.TransactionDate</td>
+        </tr>
+
+
+        <tr>
+            <th>From</th>
+            <td>@Model.StartDate.ToString("dd MMM yyyy")</td>
+        </tr>
+
+        <tr>
+            <th>To</th>
+            <td>@Model.EndDate.ToString("dd MMM yyyy")</td>
+        </tr>
+
+        <tr>
+            <th>Comment</th>
+            <td>@Model.Comment</td>
+        </tr>
+
+
+        <tr>
+            <th>Received By</th>
+            <td>@Model.LastReceipt.ReceivedBy.Username</td>
+        </tr>
+
+
+        <tr>
+            <th>PaymentMethod</th>
+            <td>@Model.LastReceipt.PaymentMethod</td>
+        </tr>
+
+
+    </table>
+  <br />
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="hidden" name="id" value="@Model.TransactionId" />
+            <input type="hidden" name="memberId" value="@Model.Member.MemberId" />
+
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back", "PaymentSummary", new { id = Model.Member.MemberId })
+        </div>
+    }
+</div>

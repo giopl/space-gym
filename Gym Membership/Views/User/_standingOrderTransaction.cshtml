@@ -1,0 +1,146 @@
+﻿@model Gym_Membership.Models.Transaction
+@using session = Gym_Membership.Helpers.UserSession;
+
+<table class="due">
+    <thead>
+        <tr>
+            <td colspan="4" class="borderbottom"><h4>Due</h4></td>
+        </tr>
+        @if (Model.CalculatedPaymentsDue.Count > 0)
+        {
+            <tr>
+                <th>Month</th>
+                <th>Fees</th>
+                <th>Paid</th>
+
+                <th>W/O</th>
+
+            </tr>
+        }
+    </thead>
+    <tbody>
+        @if (Model.CalculatedPaymentsDue.Count > 0)
+        {
+            for (int i = 0; i < Model.CalculatedPaymentsDue.Count(); ++i)
+            {
+                <tr>
+                    <td>
+                        @Model.CalculatedPaymentsDue[i].YearMonthDesc
+                        <input type="hidden" readonly name="PaymentDueForm[@i].YearMonth" value="@Model.CalculatedPaymentsDue[i].YearMonth" />
+
+                    </td>
+                    <td class="text-right">
+                        @Model.CalculatedPaymentsDue[i].FeeAmount.ToString("N2")
+                        <input type="hidden" readonly name="PaymentDueForm[@i].FeeAmount" value="@Model.CalculatedPaymentsDue[i].FeeAmount" />
+                    </td>
+                    <td class="text-right">
+                        @{var dueid = string.Concat("pd" + Model.CalculatedPaymentsDue[i].YearMonth); }
+                        <input type="text" class="number nodeco amtDue" readonly id="@dueid" value="@Model.CalculatedPaymentsDue[i].FeeAmount.ToString("N2")" />
+
+                    </td>
+                    @if (session.Current.IsAdmin)
+                    {
+
+                        <td class="text-center">
+                            @*@Html.EditorFor(m => m.PaymentsDue[i].IsOverwritten, new  { @class="writeoff", data_dueid= "#"+dueid})*@
+                            <input id="@string.Format("PaymentsDue_{0}__IsOverwritten",i)" class="check-box writeoff" data-origfee="@Model.CalculatedPaymentsDue[i].FeeAmount" data-dueid="@("#" + dueid)" type="checkbox" value="true" name="PaymentDueForm[@i].IsWrittenOff" data-val-required="The IsOverwritten field is required." data-val="true">
+                            <input type="hidden" value="false" name="PaymentDueForm[@i].IsWrittenOff">
+                        </td>
+
+                    }
+                    else
+                    {
+
+                        <td class="text-center">-</td>
+                    }
+                </tr>
+            }
+        }
+        <tr>
+            <th colspan="2" class="text-right">Amount Due</th>
+            <td class="bordertop">
+                <input type="text" class="number nodeco" readonly id="amountDue" value="@Model.CalculatedAmountDue.ToString("N2")" />
+            </td>
+
+            <td></td>
+        </tr>
+        <tr>
+            <td colspan="4" class="borderbottom"><h4>Paying</h4></td>
+        </tr>
+        <tr>
+            <td>Months</td>
+            <td>
+
+                @*@Html.EditorFor(model => model.MonthsInAdvance, new { htmlAttributes = new { @class = "form-control" } })*@
+                <input type="hidden" id="monthlyFee" value="@Model.Membership.MonthlyDueAmountPerPerson" />
+                <select class="form-control months" name="MonthsInAdvance">
+                    @for (var j = 0; j <= 1; j++)
+                    {
+                        <option value="@j">@j </option>
+                    }
+                </select>
+
+            </td>
+            <td>
+                <input type="text" class="number nodeco " readonly id="advances" value="0" />
+
+            </td>
+            <td></td>
+        </tr>
+
+        @if (!Model.Member.IsRegistrationPaid && Model.Membership.RegistrationFee > 0)
+        {
+            <tr>
+                <td colspan="2">
+                    Registration Fee
+                </td>
+                <td class="text-right">
+                    <input type="text" autocomplete="off" onkeydown="preventBackspace();" class=" number nodeco registrationfee" id="registrationFee" style="background:#ccc!important;" value="@Model.Membership.RegistrationFee.ToString("N2")" />
+                    <input type="hidden" class="registrationFee" name="RegistrationFeeForm" value="@Model.Membership.RegistrationFee" />
+
+                </td>
+                <td></td>
+            </tr>
+        }
+
+
+        <tr>
+            <td colspan="2" class="text-right">
+                Subtotal
+            </td>
+            <td class="text-right bordertop">
+                <input type="text" class="number nodeco" readonly id="subtotal" value="@Model.CalculatedAmountDuePlusRegistration.ToString("N2")" />
+
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="text-right">
+                @if (session.Current.IsAdmin)
+                {
+                    @: Discount
+}
+            </td>
+            <td class="">
+                @if (session.Current.IsAdmin)
+                {
+                    <input type="text" class="nodeco number discount" onkeydown="preventBackspace();" autocomplete="off" style="background: #ccc!important" />
+
+                }
+                <input type="hidden" class="discount" name="DiscountAmount" value="0" />
+            </td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <th colspan="2" class="text-right">
+                Total
+            </th>
+            <td class="text-right bordertop">
+                <input type="text" class="number nodeco" readonly id="total" value="@Model.CalculatedAmountDuePlusRegistration.ToString("N2")" />
+
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+    </tfoot>
+</table>

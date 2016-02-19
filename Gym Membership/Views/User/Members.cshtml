@@ -1,0 +1,957 @@
+﻿@model IEnumerable<Gym_Membership.Models.GymMember>
+@{
+    ViewBag.Title = "Users";
+    ViewBag.Page = "Members";
+
+    var overdues = Model.Where(x => x.HasArrears && x.IsActive && !x.IsLongOverdue && !x.IsTemporary).ToList();
+    var inactives = Model.Where(x => x.IsActive == false  && x.IsPass == false).ToList();
+    var birthdays = Model.Where(x => x.HasComingBirthday && x.IsActive).ToList();
+    var actives = Model.Where(x =>x.IsActive).ToList();
+    var longoverdues = Model.Where(x => x.IsLongOverdue && x.IsActive && !x.IsTemporary ).ToList();
+    var onedaypass = Model.Where(x => x.IsDayPass).ToList();
+    var tenvisitpass = Model.Where(x => x.IsPass && x.IsDayPass == false).ToList();
+
+
+
+
+}
+
+<div>
+
+  <br /><br />  <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#all" aria-controls="all" role="tab" data-toggle="tab">Active <span class="badge">@actives.Count()</span></a></li>
+        <li role="presentation"><a href="#overdue" aria-controls="overdue" role="tab" data-toggle="tab">Overdue <span class="badge">@overdues.Count()</span></a></li>
+        <li role="presentation"><a href="#longoverdue" aria-controls="longoverdue" role="tab" data-toggle="tab">Long Overdue <span class="badge">@longoverdues.Count()</span></a></li>
+        <li role="presentation"><a href="#inactive" aria-controls="inactive" role="tab" data-toggle="tab">Inactive <span class="badge">@inactives.Count()</span></a></li>
+        <li role="presentation"><a href="#birthday" aria-controls="birthday" role="tab" data-toggle="tab">Coming Birthdays <span class="badge">@birthdays.Count()</span></a></li>
+        <li role="presentation"><a href="#onedaypass" aria-controls="onedaypass" role="tab" data-toggle="tab">One Day Pass <span class="badge">@onedaypass.Count()</span></a></li>
+        <li role="presentation"><a href="#tenvisitpass" aria-controls="tenvisitpass" role="tab" data-toggle="tab">Ten Visit Pass <span class="badge">@tenvisitpass.Count()</span></a></li>
+        
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="all">
+            <div class="page-title">All Members (@Model.Count())</div>
+            <table class="table" id="memberstable">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.MemberId)
+                        </th>
+                        <th>
+                            Name
+                        </th>
+
+                        <th>
+                            Age
+                        </th>
+
+                        <th>
+                            @Html.DisplayNameFor(model => model.Town)
+                        </th>
+
+                        <th>
+                            Member Since
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.NumberVisits)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.LastVisit)
+                        </th>
+
+                        <th>
+                            @Html.DisplayNameFor(model => model.Membership)
+                        </th>
+
+                        <th>
+                            @Html.DisplayNameFor(model => model.HasArrears)
+                        </th>
+                        <th></th>
+                        <th class="no-sort"></th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in actives)
+                    {
+                        <tr>
+                            <td>
+                                <a href="@Url.Action("Member", "User", new { id=item.MemberId })">@item.MemberId</a>
+                            </td>
+                            <td>
+                                <a href="@Url.Action("Member", "User", new { id=item.MemberId })">@item.Fullname (@item.Title)</a>                                
+                                @if (item.IsBirthday)
+                                {
+                                    <span title="birthday" style=" color:red" class="fa fa-fw fa-birthday-cake"></span>
+                                }
+                                <span class="fa fa-fw fa-@(string.IsNullOrWhiteSpace(item.ComingBirthday)?"":"birthday-cake")"></span>@item.ComingBirthday
+
+                            </td>
+
+                            <td>
+                                @item.Age
+                            </td>
+
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Town)
+                            </td>
+                            <td>
+                                @item.MemberSinceInMonths.ToString("F1") mth(s)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.NumberVisits)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.LastVisit)
+                            </td>
+
+                            <td>
+                                <p title="@item.Membership.Name">@item.Membership.MembershipCode</p>
+                            </td>
+
+
+                            <td>
+                                @if (item.HasArrears)
+                                {
+                                    <span class="label label-@(item.IsPartPayment?"warning":"danger")">@item.DaysOverDue days</span>
+                                }
+                                else
+                                {
+
+                                    <span class="label label-success">in order</span>
+                                }
+                            </td>
+
+                            <td>@*<a href="@Url.Action("Transaction", new  { id = item.MemberId })"><span class="label label-default"><span class="fa fa-dollar"></span></span></a>*@
+
+                                @if (item.HasArrears)
+                                {
+                                    <a href="@Url.Action("Transaction", new  { id = @item.MemberId })">
+                                        <span class="fa-stack message" title="Has Arrears">
+                                           @if(item.IsPartPayment)
+                                           {
+                                            <span class="fa fa-circle fa-stack-2x" style="color:@(item.IsPartPayment?"#ffd800":"#E82320")"></span>
+
+                                           }
+                                            <span class="fa fa-dollar fa-stack-1x fa-inverse"></span>
+                                        </span>
+                                    </a>
+
+                                }
+                                else
+                                {
+
+                                    if (item.HasTransaction)
+                                    {
+
+                                        <a href="@Url.Action("PaymentSummary", new  { id = @item.MemberId })">
+                                            <span class="fa-stack message" title="Last Transaction Details">
+                                                <span class="fa fa-circle fa-stack-2x" style="color:#64BC64"></span>
+                                                <span class="fa fa-shopping-cart fa-stack-1x fa-inverse"></span>
+                                            </span>
+                                        </a>
+                                    }
+
+                                }
+                            
+                            
+                            </td>
+                            <td>
+                                @if (item.IsBirthday || !string.IsNullOrWhiteSpace(item.ComingBirthday))
+                                {
+                                    <span>birthday bd bday anniversaire </span>
+                                    @*<span title="birthday" style="font-size:.1em; width:1px; color:white">birthday</span>*@
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+ 
+        </div> <!-- all -->
+        <div role="tabpanel" class="tab-pane" id="overdue">
+            <div class="page-title">Overdue</div>
+            <table class="table" id="overduetable">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.MemberId)
+                        </th>
+                        <th>
+                            Name
+                        </th>
+
+                        <th>
+                            Age
+                        </th>
+
+                        <th>
+                            @Html.DisplayNameFor(model => model.Town)
+                        </th>
+
+                        <th>
+                            Last Vist(days)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.NumberVisits)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.LastVisit)
+                        </th>
+
+                        <th>
+                            @Html.DisplayNameFor(model => model.Membership.Name)
+                        </th>
+
+                        <th>
+                            @Html.DisplayNameFor(model => model.HasArrears)
+                        </th>
+                        <th></th>
+                        <th class="no-sort"></th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in overdues)
+                    {
+                        <tr>
+                            <td>
+                                <a href="@Url.Action("Member", "User", new { id=item.MemberId })">@item.MemberId</a>
+                            </td>
+                            <td>
+                                <a href="@Url.Action("Member", "User", new { id=item.MemberId })">@item.Fullname (@item.Title)</a>                                
+                                @if (item.IsBirthday)
+                                {
+                                    <span title="birthday" style="color:red" class="fa fa-fw fa-birthday-cake"></span>
+                                }
+                                <span class="fa fa-fw fa-@(string.IsNullOrWhiteSpace(item.ComingBirthday)?"":"birthday-cake")"></span>@item.ComingBirthday
+
+                            </td>
+
+                            <td>
+                                @item.Age
+                            </td>
+
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Town)
+                            </td>
+                            <td>
+                                <span class="label label-@(item.VisitedWhileOverdue?"danger":"default")">@Html.DisplayFor(modelItem => item.DaysSinceLastVisit)</span>
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.NumberVisits)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.LastVisit)
+                            </td>
+
+                            <td>
+                                <p title="@item.Membership.Name">@item.Membership.MembershipCode</p>                                
+                            </td>
+
+
+                            <td>
+                                @if (item.HasArrears)
+                                {
+                                    <span class="label label-@(item.IsPartPayment?"warning":"danger")">@item.DaysOverDue days</span>
+                                }
+                                else
+                                {
+
+                                    <span class="label label-success">in order</span>
+                                }
+                            </td>
+
+                            <td>
+                                @if (item.HasArrears)
+                                {
+                                    <a href="@Url.Action("Transaction", new  { id = @item.MemberId })">
+                                        <span class="fa-stack message" title="Has Arrears">
+                                            <span class="fa fa-circle fa-stack-2x" style="color:@(item.IsPartPayment?"#ffd800":"#E82320")"></span>
+                                            <span class="fa fa-dollar fa-stack-1x fa-inverse"></span>
+                                        </span>
+                                    </a>
+
+                                }
+                                else
+                                {
+
+                                    if (item.HasTransaction)
+                                    {
+
+                                        <a href="@Url.Action("PaymentSummary", new  { id = @item.MemberId })">
+                                            <span class="fa-stack message" title="Last Transaction Details">
+                                                <span class="fa fa-circle fa-stack-2x" style="color:#64BC64"></span>
+                                                <span class="fa fa-shopping-cart fa-stack-1x fa-inverse"></span>
+                                            </span>
+                                        </a>
+                                    }
+
+                                }
+                            
+                            </td>
+                            <td>
+                                @if (item.IsBirthday || !string.IsNullOrWhiteSpace(item.ComingBirthday))
+                                {
+                                    <span>birthday bd bday anniversaire </span>
+                                    @*<span title="birthday" style="font-size:.1em; width:1px; color:white">birthday</span>*@
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+
+        </div>
+
+        <div role="tabpanel" class="tab-pane" id="longoverdue">
+            <div class="page-title">Long Overdue</div>
+            <table class="table" id="overduetable">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.MemberId)
+                        </th>
+                        <th>
+                            Name
+                        </th>
+
+                        <th>
+                            Age
+                        </th>
+
+                        <th>
+                            @Html.DisplayNameFor(model => model.Town)
+                        </th>
+
+                        <th>
+                            Last Vist(days)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.NumberVisits)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.LastVisit)
+                        </th>
+
+                        <th>
+                            @Html.DisplayNameFor(model => model.Membership.Name)
+                        </th>
+
+                        <th>
+                            @Html.DisplayNameFor(model => model.HasArrears)
+                        </th>
+                        <th></th>
+                      
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in longoverdues)
+                    {
+                        <tr>
+                            <td>
+                                <a href="@Url.Action("Member", "User", new { id=item.MemberId })">@item.MemberId</a>
+                            </td>
+                            <td>
+                                <a href="@Url.Action("Member", "User", new { id=item.MemberId })">@item.Fullname (@item.Title)</a>
+                                @if (item.IsBirthday)
+                                {
+                                    <span title="birthday" style=" color:red" class="fa fa-fw fa-birthday-cake"></span>
+                                }
+                                <span class="fa fa-fw fa-@(string.IsNullOrWhiteSpace(item.ComingBirthday)?"":"birthday-cake")"></span>@item.ComingBirthday
+
+                            </td>
+
+                            <td>
+                                @item.Age
+                            </td>
+
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Town)
+                            </td>
+                            <td>
+                                <span class="label label-@(item.VisitedWhileOverdue?"danger":"default")">@Html.DisplayFor(modelItem => item.DaysSinceLastVisit)</span>
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.NumberVisits)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.LastVisit)
+                            </td>
+
+                            <td>
+                                <p title="@item.Membership.Name">@item.Membership.MembershipCode</p>
+                            </td>
+
+
+                            <td>
+                                @if (item.HasArrears)
+                                {
+                                    <span class="label label-@(item.IsPartPayment?"warning":"danger")">@item.DaysOverDue days</span>
+                                }
+                                else
+                                {
+
+                                    <span class="label label-success">in order</span>
+                                }
+                            </td>
+
+                            <td>
+                                <span class="blink">
+                                    <a href="@Url.Action("Transaction", new  { id = @item.MemberId })">
+                                        <span class="fa-stack message" title="Has Arrears">
+                                            <span class="fa fa-circle fa-stack-2x" style="color:@(item.IsPartPayment?"#ffd800":"#BD0808")"></span>
+                                            <span class="fa fa-dollar fa-stack-1x fa-inverse"></span>
+                                        </span>
+                                    </a>
+                                </span>
+                            </td>
+              
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+
+        </div>
+        <div role="tabpanel" class="tab-pane" id="inactive">
+            <div class="page-title">Inactive members</div>
+            <table class="table" id="inactivetable">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.MemberId)
+                        </th>
+                        <th>
+                            Name
+                        </th>
+
+                        <th>
+                            Age
+                        </th>
+
+                        <th>
+                            @Html.DisplayNameFor(model => model.Town)
+                        </th>
+
+                        <th>
+                            Days since
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.LastVisit)
+                        </th>
+
+                        <th>
+                            Membership
+                        </th>
+
+                        @*<th>
+                            @Html.DisplayNameFor(model => model.HasArrears)
+                        </th>*@
+                        <th></th>
+                        
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in inactives)
+                    {
+                        <tr>
+                            <td>
+                                <a href="@Url.Action("Member", "User", new { id=item.MemberId })">@item.MemberId</a>
+                            </td>
+                            <td>
+                                <a href="@Url.Action("Member", "User", new { id=item.MemberId })">@item.Fullname (@item.Title)</a>
+                                @if (item.IsBirthday)
+                                {
+
+                                    <span title="birthday" style=" color:red" class="fa fa-fw fa-birthday-cake"></span>
+                                }
+                                <span class="fa fa-fw fa-@(string.IsNullOrWhiteSpace(item.ComingBirthday)?"":"birthday-cake")"></span>@item.ComingBirthday
+
+                            </td>
+
+                            <td>
+                                @item.Age
+                            </td>
+
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Town)
+                            </td>
+                            
+                            <td>
+                                <span class="label label-default">@Html.DisplayFor(modelItem => item.DaysSinceLastVisit)</span>
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.LastVisit)
+                            </td>
+
+                            <td>
+                                <p title="@item.Membership.Name">@item.Membership.MembershipCode</p>    
+                            </td>
+
+
+                            @*<td>
+                                @if (item.HasArrears)
+                                {
+                                    <span class="label label-danger">@item.DaysOverDue days</span>
+                                }
+                                else
+                                {
+
+                                    <span class="label label-success">in order</span>
+                                }
+                            </td>*@
+
+                            <td>
+                                
+
+                                    <a href="@Url.Action("PaymentSummary", new  { id = @item.MemberId })">
+                                        <span class="fa-stack message" title="Last Transaction Details">
+                                            <span class="fa fa-circle fa-stack-2x" style="color:#9E9E9E"></span>
+                                            <span class="fa fa-stop fa-stack-1x fa-inverse"></span>
+                                        </span>
+                                    </a>                                
+                            
+                            </td>
+                        
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+
+        </div> <!-- inactive -->
+        <div role="tabpanel" class="tab-pane" id="birthday">
+            <div class="page-title"><span class="fa fa-birthday-cake"></span> Coming Birthdays</div>
+            <table class="table" id="birthdaytable">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.MemberId)
+                        </th>
+                        <th>
+                            Name
+                        </th>
+
+                        <th>
+                            Age
+                        </th>
+
+                        <th>
+                            @Html.DisplayNameFor(model => model.Town)
+                        </th>
+
+                        <th>
+                            Member Since
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.NumberVisits)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.LastVisit)
+                        </th>
+
+                        <th>
+                            Membership
+                        </th>
+
+                        <th>
+                            @Html.DisplayNameFor(model => model.HasArrears)
+                        </th>
+                        <th></th>
+             
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in birthdays)
+                    {
+                        <tr>
+                            <td>
+                                <a href="@Url.Action("Member", "User", new { id=item.MemberId })">@item.MemberId</a>
+                            </td>
+                            <td>
+                                <a href="@Url.Action("Member", "User", new { id=item.MemberId })">@item.Fullname (@item.Title)</a>
+                                @if (item.IsBirthday)
+                                {
+
+                                    <span title="birthday" style=" color:red" class="fa fa-fw fa-birthday-cake"></span>
+                                }
+                                <span class="fa fa-fw fa-@(string.IsNullOrWhiteSpace(item.ComingBirthday)?"":"birthday-cake")"></span>@item.ComingBirthday
+
+                            </td>
+
+                            <td>
+                                @item.Age
+                            </td>
+
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Town)
+                            </td>
+                            <td>
+                                @item.MemberSinceInMonths.ToString("F1") mth(s)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.NumberVisits)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.LastVisit)
+                            </td>
+
+                            <td>
+                                <p title="@item.Membership.Name">@item.Membership.MembershipCode</p>    
+                            </td>
+
+
+                            <td>
+                                @if (item.HasArrears)
+                                {
+                                    <span class="label label-@(item.IsPartPayment?"warning":"danger")">@item.DaysOverDue days</span>
+                                }
+                                else
+                                {
+
+                                    <span class="label label-success">in order</span>
+                                }
+                            </td>
+
+                            <td>
+                                @if (item.HasArrears)
+                                {
+                                    <a href="@Url.Action("Transaction", new  { id = @item.MemberId })">
+                                        <span class="fa-stack message" title="Has Arrears">
+                                            <span class="fa fa-circle fa-stack-2x" style="color:@(item.IsPartPayment?"#ffd800":"#E82320")"></span>
+                                            <span class="fa fa-dollar fa-stack-1x fa-inverse"></span>
+                                        </span>
+                                    </a>
+
+                                }
+                                else
+                                {
+
+                                    if (item.HasTransaction)
+                                    {
+
+                                        <a href="@Url.Action("PaymentSummary", new  { id = @item.MemberId })">
+                                            <span class="fa-stack message" title="Last Transaction Details">
+                                                <span class="fa fa-circle fa-stack-2x" style="color:#64BC64"></span>
+                                                <span class="fa fa-shopping-cart fa-stack-1x fa-inverse"></span>
+                                            </span>
+                                        </a>
+                                    }
+
+                                }
+                            
+                            </td>
+                       
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+
+        </div>
+
+        
+        <div role="tabpanel" class="tab-pane" id="onedaypass">
+            <div class="page-title">One Day Pass</div>
+            <table class="table" id="onedaypasstable">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.MemberId)
+                        </th>
+                        <th>
+                            Name
+                        </th>
+
+                        <th>
+                            Age
+                        </th>
+
+                        <th>
+                            @Html.DisplayNameFor(model => model.Town)
+                        </th>
+
+                        <th>
+                            Last Vist(days)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.NumberVisits)
+                        </th>
+                       
+
+                        <th>
+                            @Html.DisplayNameFor(model => model.Membership.Name)
+                        </th>
+
+                        <th>
+                            @Html.DisplayNameFor(model => model.HasArrears)
+                        </th>
+                        <th></th>
+                        <th class="no-sort"></th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in onedaypass)
+                    {
+                        <tr>
+                            <td>
+                                <a href="@Url.Action("Member", "User", new { id=item.MemberId })">@item.MemberId</a>
+                            </td>
+                            <td>
+                                <a href="@Url.Action("Member", "User", new { id=item.MemberId })">@item.Fullname (@item.Title)</a>
+                                @if (item.IsBirthday)
+                                {
+                                    <span title="birthday" style=" color:red" class="fa fa-fw fa-birthday-cake"></span>
+                                }
+                                <span class="fa fa-fw fa-@(string.IsNullOrWhiteSpace(item.ComingBirthday)?"":"birthday-cake")"></span>@item.ComingBirthday
+
+                            </td>
+
+                            <td>
+                                @item.Age
+                            </td>
+
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Town)
+                            </td>
+                         
+                            <td>
+                                @Html.DisplayFor(modelItem => item.NumberVisits)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.LastVisit)
+                            </td>
+
+                            <td>
+                                <p title="@item.Membership.Name">@item.Membership.MembershipCode</p>
+                            </td>
+
+
+                            <td>
+                                @if (!item.HasVisitsLeft)
+                                {
+                                    <span class="label label-danger">Used</span>
+                                }
+                                else
+                                {
+
+                                    <span class="label label-success">Valid</span>
+                                }
+                            </td>
+
+                            <td>
+                                @if (item.HasVisitsLeft)
+                                {
+                                    <a href="@Url.Action("Transaction", new  { id = @item.MemberId })">
+                                        <span class="fa-stack message" title="Has Arrears">
+                                            <span class="fa fa-circle fa-stack-2x" style="color:#E82320"></span>
+                                            <span class="fa fa-dollar fa-stack-1x fa-inverse"></span>
+                                        </span>
+                                    </a>
+
+                                }
+                                else
+                                {
+
+                                    if (item.HasTransaction)
+                                    {
+
+                                        <a href="@Url.Action("PaymentSummary", new  { id = @item.MemberId })">
+                                            <span class="fa-stack message" title="Last Transaction Details">
+                                                <span class="fa fa-circle fa-stack-2x" style="color:#64BC64"></span>
+                                                <span class="fa fa-shopping-cart fa-stack-1x fa-inverse"></span>
+                                            </span>
+                                        </a>
+                                    }
+
+                                }
+
+                            </td>
+                            <td>
+                                @if (item.IsBirthday || !string.IsNullOrWhiteSpace(item.ComingBirthday))
+                                {
+                                    <span>birthday bd bday anniversaire </span>
+                                    @*<span title="birthday" style="font-size:.1em; width:1px; color:white">birthday</span>*@
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+
+        </div>
+
+
+
+        <div role="tabpanel" class="tab-pane" id="tenvisitpass">
+            <div class="page-title">One Day Pass</div>
+            <table class="table" id="tenvisitpasstable">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.MemberId)
+                        </th>
+                        <th>
+                            Name
+                        </th>
+
+                        <th>
+                            Age
+                        </th>
+
+                        <th>
+                            @Html.DisplayNameFor(model => model.Town)
+                        </th>
+
+                        <th>
+                            Last Vist(days)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.NumberVisits)
+                        </th>
+
+
+                        <th>
+                            @Html.DisplayNameFor(model => model.Membership.Name)
+                        </th>
+
+                        <th>
+                            @Html.DisplayNameFor(model => model.HasArrears)
+                        </th>
+                        <th></th>
+                        <th class="no-sort"></th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in tenvisitpass)
+                    {
+                        <tr>
+                            <td>
+                                <a href="@Url.Action("Member", "User", new { id=item.MemberId })">@item.MemberId</a>
+                            </td>
+                            <td>
+                                <a href="@Url.Action("Member", "User", new { id=item.MemberId })">@item.Fullname (@item.Title)</a>
+                                @if (item.IsBirthday)
+                                {
+                                    <span title="birthday" style=" color:red" class="fa fa-fw fa-birthday-cake"></span>
+                                }
+                                <span class="fa fa-fw fa-@(string.IsNullOrWhiteSpace(item.ComingBirthday)?"":"birthday-cake")"></span>@item.ComingBirthday
+
+                            </td>
+
+                            <td>
+                                @item.Age
+                            </td>
+
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Town)
+                            </td>
+
+                            <td>
+                                @Html.DisplayFor(modelItem => item.NumberVisits)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.LastVisit)
+                            </td>
+
+                            <td>
+                                <p title="@item.Membership.Name">@item.Membership.MembershipCode</p>
+                            </td>
+
+
+                            <td>
+                                @if (!item.HasVisitsLeft)
+                                {
+                                    <span class="label label-danger">Used</span>
+                                }
+                                else
+                                {
+
+                                    <span class="label label-success">Valid</span>
+                                }
+                            </td>
+
+                            <td>
+                                @if (item.HasVisitsLeft)
+                                {
+                                    <a href="@Url.Action("Transaction", new  { id = @item.MemberId })">
+                                        <span class="fa-stack message" title="Has Arrears">
+                                            <span class="fa fa-circle fa-stack-2x" style="color:#E82320"></span>
+                                            <span class="fa fa-dollar fa-stack-1x fa-inverse"></span>
+                                        </span>
+                                    </a>
+
+                                }
+                                else
+                                {
+
+                                    if (item.HasTransaction)
+                                    {
+
+                                        <a href="@Url.Action("PaymentSummary", new  { id = @item.MemberId })">
+                                            <span class="fa-stack message" title="Last Transaction Details">
+                                                <span class="fa fa-circle fa-stack-2x" style="color:#64BC64"></span>
+                                                <span class="fa fa-shopping-cart fa-stack-1x fa-inverse"></span>
+                                            </span>
+                                        </a>
+                                    }
+
+                                }
+
+                            </td>
+                            <td>
+                                @if (item.IsBirthday || !string.IsNullOrWhiteSpace(item.ComingBirthday))
+                                {
+                                    <span>birthday bd bday anniversaire </span>
+                                    @*<span title="birthday" style="font-size:.1em; width:1px; color:white">birthday</span>*@
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+@section scripts{
+    <script>
+
+    $(document).ready(function(){
+    
+        //$('#memberstable').dataTable(
+        //    {
+        //        "columnDefs": [               
+        //       {
+        //           "targets": [10],
+        //           "visible": false
+        //       }
+        //        ]
+
+        //    }
+        //    );
+
+
+
+    })
+
+    </script>
+    }

@@ -1,0 +1,235 @@
+﻿@using session = Gym_Membership.Helpers.UserSession;
+    
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+@if (Gym_Membership.Helpers.ConfigurationHelper.GetEnvironment() == "BIZ")
+{
+    <title>@ViewBag.Title</title>
+
+}
+else
+{
+
+    <title>@ViewBag.Title - Space Gym Membership</title>
+}
+
+    <link rel="shortcut icon" href="@Url.Content("~/favicon.ico?v=2")" />
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    
+
+
+    @{
+        
+        var src = ViewBag.Page == null ? "notset" : ViewBag.Page;
+    }
+</head>
+<body>
+    <input type="hidden" id="svrpath" value="@Url.Content("~")" />
+    <input type="hidden" id="sourcepage" value="@src" />
+    <style>
+        .animate {
+                    transition: all 0.3s ease-in-out 0s;
+                }
+       
+    </style>
+    @*<div class="navbar navbar-bootsnipp navbar-fixed-top animate">*@
+    <div class="navbar navbar-bootsnipp navbar-fixed-top ">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                
+               @if (Gym_Membership.Helpers.ConfigurationHelper.GetEnvironment() == "BIZ")
+               {
+                <a href="@Url.Action("Index","User")" class="navbar-brand"><span class="fa  fa-3x fa-home"></span></a>                
+                }
+               else
+               {
+                   <a href="@Url.Action("Index","User")" class="navbar-brand"><img src="@Url.Content("~/Images/logo/LogoFitness.png")" class="img-responsive" width="50"/>Member Management</a>
+               }
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                        <li class="@(src=="Home"?"active":"")"><a href="@Url.Action("Index","User")" class="animate"><span class="fa fa-2x fa-fw fa-home"></span></a></li>
+                        <li class="showsection"><a href="#" class="animate" title="Check in User"><span class="fa fa-2x fa-fw fa-search"></span></a></li>                       
+                    <li class="@(src=="Members"?"active":"")"><a href="@Url.Action("Members","User")" class="animate" title="List Users"><span class="fa  fa-2x fa-fw fa-list"></span></a></li>    
+                    <li class="@(src=="AddMember"?"active":"")"><a href="@Url.Action("NewMember","User")" class="animate" title="Add Member"><span class="fa fa-fw fa-2x fa-user-plus"></span></a></li>
+                    
+                    <li class="@(src=="Pass"?"active":"")"><a href="@Url.Action("Pass", "User")" class="animate" title="Pass"><span class="fa fa-fw fa-2x fa-street-view"></span></a></li>
+                   
+                    
+                    @if (Gym_Membership.Helpers.ConfigurationHelper.GetEnvironment() == "DEVELOPMENT")
+                    {
+                        <li class="@(src=="Test"?"active":"")"><a href="@Url.Action("RevenueAnalysis", "Report")" class="animate" title="Receive Payment"><span class="fa fa-fw fa-2x fa-bomb"></span></a></li>
+                    }
+                 
+                    @if(session.Current.IsAdmin)
+                    {
+                        
+                     <li class="@(src=="Admin"?"active":"")"><a href="@Url.Action("ExportToExcel", "Admin", new { id = 0 })" target="_blank" class="animate" title="Receive Payment"><span class="fa fa-fw fa-2x fa-file-excel-o"></span></a></li>
+                    <li class="@(src=="Admin"?"active":"")"><a href="@Url.Action("Index","Admin")" class="animate" title="Admin"><span class="fa fa-fw fa-2x fa-cog"></span></a></li>
+                        
+                    }
+                    
+                    <li>
+                        <a href="#" data-toggle="modal" data-target="#historyModal" id="retrieveHistory" title="Navigation History" class="animate">
+                            <span class="fa fa-2x fa-history"></span>
+                        </a>
+                    </li>
+
+                        <li>
+                            <a href="@Url.Action("Logout","Home")" class="animate">
+                                <span class="fa fa-2x fa-power-off"></span>
+                            </a>
+                        </li>
+                    
+                    </ul>
+                @*@Html.Partial("_LoginPartial")*@
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .checkin {
+            background: #ebebeb;
+            height: 70px;
+            top: 0;
+        }
+    </style>
+    <section style="display:none" class="searchmember animate">
+        
+        <div class="animate"  style="width:100%; margin-top:10px; background:#ededed;line-height:150%;font-size:2em; color:#464646">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-10">
+                        <input type="text" id="q" placeholder="enter member number or name"  autocomplete="off" style="border:#ededed; background:#ededed; width:100%;" />
+
+                    </div>
+                    <div class="col-md-2">
+                        
+                        @*<button type="button" id="gotomember" style="background:#ededed;border:none">
+                            <span style="color:#CCC" class="fa fa-fw fa-user"></span>
+                        </button>*@
+                        
+                           <button type="button" id="searchmemberforcheckin" style="background:#ededed;border:none">
+                            <span style="color:#CCC" class="fa fa-fw fa-check-circle-o"></span>
+                        </button>
+                        <button type="button" id="closesearch" style="background:#ededed;border:none">
+                            <span style="color:#CCC" class="fa fa-fw fa-times-circle-o"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="found">
+
+    </section>
+    <div class="container body-content body-bg" >
+        @RenderBody()
+        <hr />
+
+        <footer class="footer">
+            <div class="container">
+                <div class="gym-footer text-center"><small>&copy;2015 - Membership Management - Space Gym - Developed by <a href="mailto:giovanni_pl@hotmail.com">GL</a></small></div>
+            </div>
+        </footer>
+        
+    </div>
+
+
+    <div class="modal fade" id="checkinOrViewModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content text-center" id="checkinOrViewModalBody" style="font-size:4em; padding:20px;cursor:pointer;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        <a href="Javascript:void(0)" data-ops="UserDetails" class="chooseOpt" title="User Details" ><span class="fa fa-fw fa-2x fa-user"></span></a>
+                        <div style="font-size:20px">View User</div>
+                    </div>
+                    <div class="col-lg-4">
+                        <a href="Javascript:void(0)" data-ops="CheckIn" class="chooseOpt" title="Check Member In"><span class="fa fa-fw fa-2x fa-check-square-o"></span></a>
+                        <div style="font-size:20px">Check in</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="selectMemberModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content" id="modal-body-select">
+
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="modal fade" id="historyModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id=""><span class="label label-success">Navigation History</span></h4>
+                </div>
+                <div class="modal-body" id="modal-body-history">
+                    <p>
+                    Fetching history...
+
+                    </p>
+
+                    <!-- end of content-->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="customerCheckedInModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabelCheckInHeader"><span class="label label-success">Member Checked In</span></h4>
+                </div>
+                <div class="modal-body" id="modal-body-checked-in">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" id="founduser" value="" />
+    <input type="hidden" id="isPass" value="N" />
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/pickadate")
+    @Scripts.Render("~/bundles/custom")
+    @Scripts.Render("~/bundles/admin")
+    @Scripts.Render("~/bundles/highcharts")
+    @Scripts.Render("~/bundles/daterange")
+    @RenderSection("scripts", required: false)
+    @RenderSection("modals", required: false)
+        
+</body>
+
+</html>

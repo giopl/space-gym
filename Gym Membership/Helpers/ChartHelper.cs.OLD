@@ -1,0 +1,172 @@
+﻿using Gym_Membership.Models;
+using log4net;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Web;
+
+namespace Gym_Membership.Helpers
+{
+    public class ChartHelper
+    {
+        ILog log = log4net.LogManager.GetLogger(typeof(ChartHelper));
+        public int Width { get; set; }
+        public int Height { get; set; }
+
+        public string DivId { get; set; }
+
+        public string Type { get; set; }
+        public String Labels(string type)
+        {
+            var list = Stats.Where(x => x.StatType == type).Select(s => s.Description).ToList();
+            String str = string.Join(",", list);
+
+            //string s = "A,B,C";
+            string replaced = "'" + str.Replace(",", "','") + "'";
+            return replaced;
+        }
+
+        public String Data(string type)
+        {
+            var list = Stats.Where(x => x.StatType == type).Select(s => s.Total).ToList();
+            return string.Join(",", list);
+        }
+
+        /// <summary>
+        /// value of r in rbg color e.g 229
+        /// </summary>
+        public int? r { get; set; }
+
+
+        /// <summary>
+        /// value of b in rbg color e.g 229
+        /// </summary>
+        public int? b { get; set; }
+
+
+        /// <summary>
+        /// value of g in rbg color e.g 229
+        /// </summary>
+        public int? g { get; set; }
+        public IList<Stat> Stats { get; set; }
+
+        public String SeriesName { get; set; }
+
+        /// <summary>
+        /// rr,bb,gg ex. 151,187,203
+        /// </summary>
+        public string rgbaColor { get; set; }
+
+
+        public String GetBarChart()
+        {
+            try
+            {
+
+                StringBuilder chart = new StringBuilder();
+                //build canvas
+                chart.AppendFormat(@"<canvas id='{0}' height='{1}' width='{2}'></canvas>", DivId, Height, Width);
+
+                //script
+                chart.AppendFormat(@"<script>
+                  var {0} = {{
+                labels: [{1}],
+                datasets: [
+                    {{
+                        label: '{2}',
+                        fillColor: 'rgba({3},{4},{5},0.5)',
+                        strokeColor: 'rgba({3},{4},{5},0.8)',
+                        highlightFill: 'rgba({3},{4},{5},0.75)',
+                        highlightStroke: 'rgba({3},{4},{5},1)',
+                        data: [{6}]
+                    }},
+                                    ]
+            }};
+                        </script>"
+                    , string.Concat(DivId, "Data") //0
+                    , Labels(Type)
+                    , SeriesName
+                    , (r.HasValue ? (int)r : 220)
+                    , (g.HasValue ? (int)g : 220)
+                    , (b.HasValue ? (int)b : 220)
+                    , Data(Type)
+                    //, DivId //7
+                    //, string.Concat(DivId, "Bar")
+                    //, string.Concat(DivId, "Ctx")
+                    );
+
+
+                return chart.ToString();
+            }
+            catch (Exception e)
+            {
+                log.ErrorFormat("Error in ChartHelper {0}", e.ToString());
+                
+                throw;
+            }
+
+        }
+
+
+        public string GenerateOnLoad(List<string> divids)
+        {
+            try
+            {
+                StringBuilder fx = new StringBuilder();
+                fx.Append(@"
+<script>
+            window.onload = function () {{ ");
+
+                foreach (var DivId in divids)
+                {
+                    fx.AppendFormat(@"
+                var {0} = document.getElementById('{1}').getContext('2d');
+                window.{2} = new Chart({0}).Bar({3}, {{
+                    responsive: true
+                }});
+                ", string.Concat(DivId, "Ctx")
+                      , DivId //7
+                        , string.Concat(DivId, "Bar")
+                        , string.Concat(DivId, "Data") //0
+                    );
+
+                }
+                fx.Append(@"}} </script>");
+                return fx.ToString();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Statistics"></param>
+        /// <param name="ChartHeight"></param>
+        /// <param name="ChartWidth"></param>
+        /// <param name="CanvasId"></param>
+        /// <param name="ChartSeriesName"></param>
+        /// <param name="DataType"></param>
+        public ChartHelper(IList<Stat> Statistics, int ChartHeight, int ChartWidth, string CanvasId, string ChartSeriesName, string DataType)
+        {
+            Stats = Statistics;
+            Height = ChartHeight;
+            Width = ChartWidth;
+            DivId = CanvasId;
+            SeriesName = ChartSeriesName;
+            Type = DataType;
+        }
+
+
+
+        public ChartHelper()
+        {
+            Stats = new List<Stat>();
+        }
+    }
+}

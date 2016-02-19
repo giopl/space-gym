@@ -1,0 +1,86 @@
+﻿@model IEnumerable<Gym_Membership.Models.Transaction>
+
+@{
+    ViewBag.Title = "StandingOrders";
+    var firstofMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+}
+
+<h2 class="admin">Standing Orders</h2>
+<ol class="breadcrumb">
+    <li><a href="@Url.Action("Index")">Home</a></li>
+    <li class="active">Standing Orders</li>
+</ol>
+
+<table class="table" id="standingordertable">
+    <thead>
+
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.StartDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EndDate)
+            </th>
+            <th>Paid Until</th>
+            <th>
+                @Html.DisplayNameFor(model => model.PaidAmount)
+            </th>
+            <th>status</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Member.MemberId</td>
+                <td><a href="@Url.Action("Member","User", new {id = item.Member.MemberId })">@item.Member.FullnameFromFirstAndLastName</a></td>
+                <td>
+
+
+                    @{var dtsd = item.StartDate < firstofMonth ? firstofMonth : item.StartDate;}
+                    @dtsd.ToString("dd MMM yyyy")
+                </td>
+                <td>
+                    @*@Html.DisplayFor(modelItem => item.EndDate)*@
+                    @item.EndDate.ToString("dd MMM yyyy")
+                </td>
+                <td>@item.Member.PaymentUntilDate.ToString("dd MMM yyyy")</td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PaidAmount)
+                </td>
+                <td>
+                    @if (item.Member.HasArrears)
+                    {
+
+
+                        using (Html.BeginForm("Transaction", "User", FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                            <input type="hidden" name="Membership.MembershipCode" value="@item.Member.Membership.MembershipCode" />
+                            <input type="hidden" name="Member.MemberId" value="@item.Member.MemberId" />
+                            <input type="hidden" name="Membership.MonthTerms" value="1" />
+                            <input type="hidden" name="Member.IsRegistrationPaid" value="true" />
+                            <input type="hidden" name="LastTransactionId" value="@item.LastTransactionId" />
+                            <input type="hidden" name="Member.PaymentUntilDate" value="@item.Member.PaymentUntilDate" />
+                            <input type="hidden" name="PaymentDueForm[0].FeeAmount" value="@item.PaidAmount" />
+                            <input type="submit" class="btn btn-sm btn-primary" value="Confirm Payment" />
+
+                        }
+                    } else
+                    {
+                        <span class="label label-success text-center">Payment Done</span>
+                    }
+                </td>
+            </tr>
+
+                        }
+    </tbody>
+
+</table>

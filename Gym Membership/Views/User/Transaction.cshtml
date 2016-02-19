@@ -1,0 +1,265 @@
+﻿@model Gym_Membership.Models.Transaction
+@using utils = Gym_Membership.Helpers.Utils;
+@using session = Gym_Membership.Helpers.UserSession;
+
+
+
+@{
+    ViewBag.Title = "Transaction";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var todate1 = DateTime.Now;
+    var fromdate2 = Model.CalculatedStartingPeriodDate;
+    var numMths = (((todate1.Year - fromdate2.Year) * 12) + todate1.Month - fromdate2.Month) +2 ;
+
+    var secondInstallmentDt = utils.GetLastDayOfMonth(DateTime.Now.AddMonths(1)).ToString("dd MMM yyyy");
+    var thirdInstallmentDt = utils.GetLastDayOfMonth(DateTime.Now.AddMonths(2)).ToString("dd MMM yyyy");
+}
+
+<h2>Payment Transaction</h2>
+
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <input type="hidden" class="registrationFee" value="0" />
+        <input type="hidden" class="amtDue" value="0" />
+        @Html.HiddenFor(m => m.Member.Membership.MembershipCode)
+        @Html.HiddenFor(m => m.Member.MemberId)
+        <input type="hidden" class="Membership.MonthTerms" value="1" />
+        <input type="hidden" class="Member.IsRegistrationPaid" value="true" />
+
+
+        @Html.HiddenFor(m => m.Member.Membership.MonthTerms)
+        @Html.HiddenFor(m => m.Member.IsRegistrationPaid)
+        @Html.HiddenFor(m => m.Member.PaymentUntilDate)
+        @Html.HiddenFor(m => m.Member.Membership.Fee)
+        @Html.HiddenFor(m => m.Member.Membership.RegistrationFee)
+        @Html.HiddenFor(m => m.Member.Membership.NumberMembers)
+
+
+        @Html.HiddenFor(m => m.TransactionId)
+        @Html.HiddenFor(m => m.PaidAmount)
+        @Html.HiddenFor(m => m.NumInstallmentsLeft)
+        @Html.HiddenFor(m => m.TransactionDate)
+        
+
+
+        
+
+        @*@Html.HiddenFor(m => m.Membership.MonthlyDueAmount)*@
+        <input type="hidden" name="MonthlyDueAmountForm" value="@Model.Member.Membership.MonthlyDueAmount" />
+        
+        <!-- used to revert back when cancelling transaction -->
+        <input type="hidden" name="LastTransactionId" value="@Model.Member.LastTransactionId" />
+        <input type="hidden" id="yearOrigFee" value="@Model.Member.Membership.Fee" />
+
+        <!-- part payment-->
+        <input type="hidden" id="unpaidAmt" value="@Model.UnpaidAmount" />
+     
+
+            <div class="col-md-6">
+                @if (Model.Member.IsPartPayment)
+                {
+                     @Html.Partial("_installmentTransaction", Model)
+                }
+                else
+                {
+
+                    if (Model.IsYearly)
+                    {
+                        @Html.Partial("_yearlyTransaction", Model)
+                    }
+
+                    else
+                    {
+                        @Html.Partial("_monthlyTransaction", Model)
+                    }
+
+
+                }
+                    
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="col-md-offset-3 col-md-9">
+                        <div class="memberdetails ">
+                            <dl class="dl-horizontal">
+                                <dt>Member</dt>
+                                <dd><a href="@Url.Action("Member", new { id = Model.Member.MemberId })"> @Model.Member.Fullname</a></dd>
+                                <dt>Member no.</dt>
+                                <dd>@Model.Member.MemberId</dd>
+                                <dt>Membership</dt>
+                                <dd>@Model.Member.Membership.Name</dd>
+                                <dt>Payment term</dt>
+                                <dd>@Model.Member.Membership.PaymentTerms</dd>
+                                <dt>@(Model.Member.IsPartPayment?"Installment Due":"Overdue")
+                                
+                                </dt>
+                                <dd>
+                                    @if (Model.Member.IsPartPayment)
+                                    {
+                                        @Model.UnpaidAmount.ToString("N2")
+                                    }
+                                        
+                                    else
+                                    {
+                                        
+                                    @Model.CalculatedAmountDue.ToString("N2")
+                                        
+                                    }
+                                
+                                </dd>
+                                <dt>Monthly</dt>
+                                <dd>@Model.MonthlyFee.ToString("N2")</dd>
+                                <dt>@(Model.Member.IsPartPayment ? "Next Installment" : "Next Payment Date")</dt>
+                                <dd>
+                                    
+                                    @if (Model.Member.IsPartPayment)
+                                    {
+
+                                        <span class="label label-warning">
+                                            @Model.Member.InstallmentDate.ToString("dd MMM yyyy")
+                                            </span>
+
+                                            }
+                                            else
+                                            {
+
+                                            <span class="label label-@(Model.Member.DaysOverDue > 0 ? "danger" : "success")">
+                                                @Model.Member.PaymentUntilDate.AddDays(1).ToString("dd MMM yyyy")
+
+                                            </span>
+
+                                                }
+
+</dd>
+
+
+
+                            </dl>
+
+                        </div>
+
+                    </div>
+                </div>
+    
+                <div class="form-horizontal " style="margin-top:50px;">
+                    <div class="form-group toggleMonths showPaymentMethods">
+                        @Html.LabelFor(model => model.PaymentMethodForm, htmlAttributes: new { @class = "control-label col-md-4" })
+                        <div class="col-md-8">
+
+                            <select name="PaymentMethodForm" required class="form-control ">
+                                <option value="">Select</option>
+                                <option value="Cash">Cash</option>
+                                <option value="Debit Card">Debit Card</option>
+                                <option value="Credit Card">Credit Card</option>
+
+                                <option value="Cheque">Cheque</option>
+                            </select>
+                            @Html.ValidationMessageFor(model => model.PaymentMethodForm, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Comment, htmlAttributes: new { @class = "control-label col-md-4" })
+                        <div class="col-md-8">
+                            @Html.TextAreaFor(model => model.Comment, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.Comment, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        @*</div>*@
+
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit"  value="Pay" class="btn btn-default paybutton" />
+            </div>
+        </div>
+    </div>
+}
+
+@if (Model.Member.HasRelatedMembers)
+{
+    <h3>Related Members</h3>
+    <hr />
+    <div class="row">
+        @foreach (var mem in Model.Member.RelatedMembers.Members)
+        {
+            <div class="col-md-3" style="border-right:1px solid #ddd">
+                <table>
+                    <tr>
+                        <th style="width:30%">Name</th>
+                        <td><a href="@Url.Action("Member", "User", new { id = mem.MemberId })">  @mem.TitleFullname </a></td>
+                    </tr>
+                    <tr>
+                        <th>
+                            Member Id
+                        </th>
+                        <td>
+                            <a href="@Url.Action("Transaction", "User", new { id = mem.MemberId })">
+                                <span class="fa-stack message" title="@(mem.HasArrears ?"Has Arrears":" In Order")">
+                                    <span class="fa fa-circle fa-stack-2x" style="color:@(mem.HasArrears ? "#E82320" : "#64BC64")"></span>
+                                    <span class="fa fa-dollar fa-stack-1x fa-inverse"></span>
+                                </span>
+                                #@mem.MemberId
+                            </a>
+                        </td>
+                    </tr>
+                    @if (mem.HasArrears)
+                    { 
+                        <tr>
+                            <th>Status</th>
+                            <td><span class='label label-danger'>@mem.DaysOverDue days</span></td>
+                        </tr>
+                        <tr><th>
+                    Last Payment
+                            </th>
+<td>
+    <span class="label label-danger">@Model.Member.PaymentUntilDate.AddDays(0).ToString("dd MMM yyyy")</span>
+</td>
+                    </tr>
+                    }
+                    else
+                    {
+                        
+                        <tr>
+                            <th>Next Payment</th>
+                            <td>
+                                @mem.PaymentUntilDate.AddDays(1).ToString("dd MMM yyyy")
+                            </td>
+                        </tr>
+                    }
+                    <tr>
+                        <th>Last Visit</th>
+                        <td>@mem.LastVisit.ToString("dd MMM yyyy")</td>
+                    </tr>
+                </table>
+            
+            </div>
+
+        }
+
+    </div>
+
+}
+
+
+
+@section Scripts {
+@Scripts.Render("~/bundles/jqueryval")
+@Scripts.Render("~/bundles/transaction-year")
+@Scripts.Render("~/bundles/transaction-month")
+
+
+
+}

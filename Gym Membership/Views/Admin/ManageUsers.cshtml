@@ -1,0 +1,107 @@
+﻿@model IEnumerable<Gym_Membership.Models.AdminUser>
+@using session = Gym_Membership.Helpers.UserSession;
+
+@{
+    ViewBag.Title = "ManageUsers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="admin">ManageUsers</h2>
+<ol class="breadcrumb">
+    <li><a href="@Url.Action("Index")">Home</a></li>
+    <li class="active">Manage Users</li>
+</ol>
+
+<p>
+    @Html.ActionLink("Create New", "CreateUser")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.UserId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Username)
+        </th>
+        
+        <th>
+            @Html.DisplayNameFor(model => model.Fullname)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LastLogin)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AccessLevelCode)
+        </th>
+        
+        <th>
+            @Html.DisplayNameFor(model => model.IsActive)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.NumLogins)
+        </th>
+        
+        <th>
+            @Html.DisplayNameFor(model => model.IsTempPassword)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.UserId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Username)
+        </td>
+        
+        <td>
+            @Html.DisplayFor(modelItem => item.Fullname)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LastLogin)
+        </td>
+        <td>
+    @{ var isme = item.Username == session.Current.Username; }
+            <select class="access form-control" data-user="@item.Username" @(isme?"readonly":"")>
+                <option value="0" @(item.AccessLevelCode==0?"selected":"")>User</option>
+                <option value="1" @(item.AccessLevelCode == 1 ? "selected" : "")>Supervisor</option>
+                <option value="2" @(item.AccessLevelCode == 2 ? "selected" : "")>Admin</option>
+            </select>
+        </td>
+       
+        <td>
+                <input type="checkbox" class="accesscheck" @(isme ? "disabled" : "") @(item.IsActive ? "checked" : "") data-user="@item.Username" />
+            
+            @*@Html.DisplayFor(modelItem => item.IsActive)*@
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.NumLogins)
+        </td>
+        
+        <td>
+            <button type="button" class="resetpassword btn btn-danger" @(isme ? "disabled" : "") data-user="@item.Username">reset password</button>
+        </td>
+        <td>
+            <div>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ })
+            </div>
+            <div>|
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ })
+            </div>
+            @if (!isme)
+            {
+                <div>|
+                    @Html.ActionLink("Delete", "DeleteAdminUser", new { id = item.Username },
+    new { onclick = String.Format("return confirm('Are you sure you wish to delete user {0} ?');", item.Username.Replace("'","")) })
+                </div>
+            }
+        </td>
+    </tr>
+}
+
+</table>
+@section scripts{
+
+}

@@ -1,0 +1,309 @@
+﻿@model Gym_Membership.Models.MemberProfilesViewModel
+
+@{
+    ViewBag.Title = "MemberProfiles";
+}
+
+<h2 class="admin">Member Profiles</h2>
+<ol class="breadcrumb">
+    <li><a href="@Url.Action("Index")">Home</a></li>
+    <li class="active">Member Profiles</li>
+</ol>
+
+<div class="row">
+    <div class="col-md-4"><div id="container-gender"></div></div>
+    <div class="col-md-2"></div>
+    <div class="col-md-5">
+        <div id="container-ag"></div>
+    </div>
+
+</div>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <div id="container-membership"></div>
+    </div>
+    <div class="col-md-6">
+
+        <div id="container-ageGender"></div>
+    </div>
+    </div>
+
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $(function () {
+                $('#container-gender').highcharts({
+                    chart: {
+                        plotBackgroundColor: null,
+                        plotBorderWidth: 0,
+                        plotShadow: false
+                    },
+                    title: {
+                        text: 'Gender Distribution',
+                        align: 'center',
+                        verticalAlign: 'middle',
+                        y: -150
+                    },
+                    tooltip: {
+                        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                    },
+                    plotOptions: {
+                        pie: {
+                            dataLabels: {
+                                enabled: true,
+                                distance: -50,
+                                style: {
+                                    fontWeight: 'bold',
+                                    color: 'white',
+                                    textShadow: '0px 1px 2px black'
+                                }
+                            },
+                            startAngle: -90,
+                            endAngle: 90,
+                            center: ['50%', '75%']
+                        }
+                    },
+                    series: [{
+                        type: 'pie',
+                        name: 'Gender share',
+                        innerSize: '50%',
+                        data: [
+                            {
+                                name: 'Male',
+                                //y: @ViewBag.MaleCount,
+                                y: @Model.MaleCount,
+                                color: '#0E3D59'
+                            }, {
+                                name: 'Female',
+                                //y: @ViewBag.FemaleCount,
+                                y: @Model.FemaleCount,
+                                color: '#87A61C'
+                            }
+
+                        ]
+                    }]
+                });
+            });
+
+
+        });
+
+
+        //ch age group
+        $(function () {
+            $('#container-ag').highcharts({
+                chart: {
+                    type: 'pie',
+                    options3d: {
+                        enabled: true,
+                        alpha: 45
+                    }
+                },
+                title: {
+                    text: 'Age Group Member Distribution'
+                },
+                tooltip: {
+                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                },
+                plotOptions: {
+                    pie: {
+                        innerSize:100,
+                        depth:45,
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: true,
+                            format: '{point.name}: {point.percentage:.1f} %',
+                            style: {
+                                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                            }
+                        }
+                    }
+                },
+                series: [{
+                    name: 'Age Groups',
+                    colorByPoint: true,
+
+                    data:[
+                        @foreach(var ag in Model.AgeGroup)
+                        {
+                            @:{
+                           @:name: '@ag.name',
+
+                            @:y:@ag.y,
+                           @:color:'@ag.color'
+                           @:}
+                           if(ag != Model.AgeGroup.Last())
+                            {
+                                @:,
+                            }
+                            
+                        }
+
+                    ]
+
+                    @*data: [{
+                        name: 'below 12',
+                        y: @ViewBag.M,
+                        color:'#675332'
+
+                        }, {
+                            name: '12-17',
+                            y: @ViewBag.A,
+                            color:'#0E3D59',
+                            sliced: true,
+                            selected: true
+                        }, {
+                            name: '18-25',
+                            y: @ViewBag.B,
+                            color:'#87A61C'
+
+
+                            }, {
+                                name: '26-35',
+                                y: @ViewBag.C,
+                                color:'#F29F05'
+
+                                }, {
+                                    name: '36-45',
+                                    y: @ViewBag.D,
+                                    color:'#F25C05'
+
+                                    },
+
+                     {
+                         name: '46-55',
+                         y: @ViewBag.E,
+                         color:'#D92526',
+                         },
+                          {
+                              name: '56-65',
+                              y: @ViewBag.F,
+                              color:'#868BEA'
+                              },
+                     {
+                         name: 'above 65',
+                         y: @ViewBag.G,
+                         color:'#4C4C51'
+                         }
+
+
+                    ]*@
+                }]
+            });
+        });
+
+        // bar
+        $(function () {
+            $('#container-membership').highcharts({
+                chart: {
+                    type: 'bar'
+                },
+                title: {
+                    text: 'Number of Members by Membership Type'
+                },
+                xAxis: {
+                    //categories: @Html.Raw(ViewBag.categoriesMemberships)
+                    categories: [@Html.Raw(Model.MembershipCategories)]
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Total Members'
+                    }
+                },
+                legend: {
+                    reversed: true
+                },
+                plotOptions: {
+                    series: {
+                        stacking: 'normal'
+                    }
+                },
+                series: [
+
+                    {
+                        name: 'Female',
+                        color:'#87A61C ',
+                        //data: @ViewBag.CountMembershipFemales
+                        data: [@Model.CountMembershipFemale]
+                    }, {
+                        name: 'Male',
+                        //data:[3,5,2,5,4,5,6,1]
+                        color:'#0E3D59',
+
+                        //data: @ViewBag.CountMembershipMales
+                        data: [@Model.CountMembershipMale]
+
+                    }]
+            });
+        });
+
+
+        $(function () {
+
+            $('#container-ageGender').highcharts({
+
+                chart: {
+                    polar: true,
+                    type: 'line'
+                },
+
+                title: {
+                    text: 'Age Group vs Gender',
+                    align: 'center',
+
+                    x: -80
+                },
+
+                pane: {
+                    size: '80%'
+                },
+
+                xAxis: {
+                    categories: ['under 12','12-17','18-25','26-35','36-45','46-55','56-65','above 65'],
+                    tickmarkPlacement: 'on',
+                    lineWidth: 0
+                },
+
+                yAxis: {
+                    gridLineInterpolation: 'polygon',
+                    lineWidth: 0,
+                    min: 0
+                },
+
+                tooltip: {
+                    shared: true,
+                    pointFormat: '<span style="color:{series.color}">{series.name}: <b>{point.y:,.0f} Members</b><br/>'
+                },
+
+                legend: {
+                    align: 'center',
+                    verticalAlign: 'bottom',
+                    y: 70,
+                    layout: 'vertical'
+                },
+
+                series: [{
+                    name: 'Male',
+                    //data: [@ViewBag.AgeGroupMale],
+                    data: [@Model.CountAgeGroupMale],
+                    pointPlacement: 'on',
+                    color:'#0E3D59'
+                }, {
+                    name: 'Female',
+                    //data: [@ViewBag.AgeGroupFemale],
+                    data: [@Model.CountAgeGroupFemale],
+                    pointPlacement: 'on',
+                    color:'#87A61C'
+                }]
+
+            });
+        });
+
+
+    </script>
+    }

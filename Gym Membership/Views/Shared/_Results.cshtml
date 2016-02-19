@@ -1,0 +1,49 @@
+﻿@model IEnumerable<Gym_Membership.Models.GymMember>
+<section id="result">
+    
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Found @Model.Count() members, please choose one below</h4>
+    </div>
+    <div class="modal-body" >
+
+        @*<style>
+            .list-group-item:hover {
+                background: #cdcdcd;
+            }
+        </style>*@
+
+
+        <ul class="list-group">
+            @foreach (var item in Model)
+            {
+                <li class="list-group-item" style="font-size:1.3em; cursor:pointer" >
+                    <div class="row">
+
+                        <div class="col-lg-8">
+                    #@item.MemberId - @item.Fullname
+
+                        </div>
+            <div class="col-lg-2">
+                    <button class="btn btn-primary chooseView" data-memberid="@item.MemberId"><span class="fa fa-user fa-2x"></span></button>
+            </div>
+                        <div class="col-lg-2">
+                            @if (!item.IsPresent)
+                            {
+                                <button class="btn btn-success chooseCheckin" data-ispass="@item.IsPass" data-memberid="@item.MemberId"><span class="fa fa-2x  fa-check-square" title="check in"></span></button>
+                            }
+                        </div>
+            </div>
+            </li>
+            }
+        </ul>
+
+    
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> 
+        <div class="text-right" style="font-size:.8em">
+            <button type="button" class="btn btn-primary"><span class="fa fa-user"></span></button> &nbsp;view
+            <button type="button" class="btn btn-success"><span class="fa fa-check-square"></span></button>&nbsp;check in
+
+        </div>
+    </div>
+</section>

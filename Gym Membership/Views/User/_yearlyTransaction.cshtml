@@ -1,0 +1,256 @@
+﻿@model Gym_Membership.Models.Transaction
+@using utils = Gym_Membership.Helpers.Utils;
+@using session = Gym_Membership.Helpers.UserSession;
+@{
+    var todate1 = DateTime.Now;
+    var fromdate2 = Model.CalculatedStartingPeriodDate;
+    var numMths = (((todate1.Year - fromdate2.Year) * 12) + todate1.Month - fromdate2.Month) + 2;
+
+    var secondInstallmentDt = utils.GetLastDayOfMonth(DateTime.Now.AddMonths(1)).ToString("dd MMM yyyy");
+    var thirdInstallmentDt = utils.GetLastDayOfMonth(DateTime.Now.AddMonths(2)).ToString("dd MMM yyyy");
+
+    var sd = utils.GetFirstDayOfMonth(DateTime.Now);
+    var ed = utils.GetFirstDayOfMonth(DateTime.Now).AddYears(1).AddDays(-1);
+    var totdueandreg = Model.HasLongDues ? Model.RegistrationDue + Model.CalculatedFeeIncludingOverdue : Model.RegistrationDue + Model.Fee;
+}
+<div>days: @Model.tempDays</div>
+<div>has short dues @Model.HasShortDues</div>
+<div>has long dues @Model.HasLongDues</div>
+<input type="hidden" class="registrationFeeForm" name="RegistrationFeeForm" value="@Model.RegistrationDue" />
+<input type="hidden" id="longOverdueFee" value="@Model.CalculatedAmountDueForYearlyLongOverdue" />
+<input type="hidden" id="UnpaidAmount" name="UnpaidAmount" value="" />
+<input type="hidden" id="NumInstallmentsLeft" name="NumInstallmentsLeft" value="" />
+<table class="due">
+    <thead>
+        <tr>
+            <th>start</th>
+            <th class="text-right">end</th>
+            <th class="text-center">Fees</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if(Model.HasShortDues)
+        {
+            
+        <tr>
+            <td>@Model.CalculatedStartingPeriodDate.ToString("dd MMM yyyy") </td>
+            <td class="text-right"> @DateTime.Now.ToString("dd MMM yyyy")</td>
+
+            <td class="text-right pr">@Model.CalculatedAmountDue.ToString("N2")</td>
+        </tr>
+            
+        
+
+        <tr>
+            <td>@DateTime.Now.AddDays(1).ToString("dd MMM yyyy")</td>
+            <td class="text-right">@Model.CalculatedStartingPeriodDate.AddYears(1).AddDays(-1).ToString("dd MMM yyyy")</td>
+
+            <td class="text-right pr">
+                @{ var net = Model.Fee - Model.CalculatedAmountDue;}
+                @net.ToString("N2")
+            </td>
+        </tr>
+        <tr>
+            <th colspan="2" class="text-right">Total Due</th>
+            <th class="bordertop text-right pr">@Model.Fee.ToString("N2")
+                <input type="hidden"  name="OrigMembershipFee" value="@Model.Fee" />
+
+            <td>
+        </tr>
+        }
+        else if (Model.HasLongDues)
+        {
+            <tr>
+                <td>@Model.CalculatedStartingPeriodDate.ToString("dd MMM yyyy") </td>
+
+                @{
+                    var endDt = utils.GetLastDayOfMonth(DateTime.Now.AddMonths(-1));
+                }
+                <td class="text-right"> @endDt.ToString("dd MMM yyyy")</td>
+
+                <td class="text-right pr">@Model.CalculatedAmountDueForYearlyLongOverdue.ToString("N2")</td>
+            </tr>
+    <tr>
+
+        @{
+            
+            }
+        <td>@sd.ToString("dd MMM yyyy")</td>
+        <td class="text-right">@ed.ToString("dd MMM yyyy")</td>
+
+        <td class="text-right pr">
+            @Model.Fee.ToString("N2")
+        </td>
+    </tr>
+        }
+        else
+        {
+            <tr>
+                <td>@Model.Member.PaymentUntilDate.AddYears(-1).ToString("dd MMM yyyy") </td>
+                <td> @Model.Member.PaymentUntilDate.ToString("dd MMM yyyy") </td>
+
+                <td class="text-right pr">@Model.CalculatedAmountDue.ToString("N2")</td>
+            </tr>
+
+
+        }
+
+        
+        @if (!Model.Member.IsRegistrationPaid && Model.RegistrationDue > 0)
+        {
+            <tr>
+                <td colspan="2" class="text-right">
+                    (+) Registration Fee
+                </td>
+                <td class="text-right pr">@Model.RegistrationDue.ToString("N2")
+                <input type="hidden" id="origRegistrationFee" name="OrigRegistrationFee" value="@Model.RegistrationDue" />
+                
+                </td>
+
+
+                @*<td class="text-right">
+                    <input type="text" class="number nodeco registrationFee" onkeydown="preventBackspace();" autocomplete="off" style="background:#ccc!important;" value="@Model.RegistrationAmountDue.ToString("N2")" />
+                    <input type="hidden" id="origRegistrationFee" value="@Model.RegistrationAmountDue" />
+                </td>`*@
+                <td></td>
+            </tr>
+        }
+        
+
+        @if (session.Current.IsAdmin)
+        {
+            <tr class="">
+                <td></td>
+                <td class="text-right">
+                    (-) Discount
+                </td>
+                <td class="text-right">
+                    <input type="text" class="number nodeco yearlyDiscount" onkeydown="preventBackspace();" autocomplete="off" style="background:#ccc!important;" value="" />
+                    <input type="hidden" class="setyeardiscount" name="DiscountAmount" value="0" />
+
+                </td>
+                <td></td>
+            </tr>
+
+
+        }
+
+        
+        <tr class="bordertop">
+            <td></td>
+            <td class="text-right">
+                Net Amount Due
+            </td>
+            <td class="text-right">
+                @{ }
+                <input type="text" class="number nodeco totfee" readonly id="totfee" style="background:#ccc!important;" value="@totdueandreg.ToString("N2")" />
+                <input type="hidden" id="totdueandreg" value="@totdueandreg" />
+            </td> 
+            <td></td>
+        </tr>
+
+        <tr>
+            <td colspan="3" class="text-center">&nbsp;</td>
+        </tr>
+        @if (Model.hasDues)
+        {
+            
+
+        <tr>
+            <td>Period</td>
+            <th>start</th>
+            <th>end</th>
+        </tr>
+
+        <tr>
+            <td></td>
+            @if (Model.HasShortDues)
+            {
+
+                <td>
+                    <input type="hidden" name="StartDate" value="@Model.CalculatedStartingPeriodDate" />
+            <input type="hidden" name="EndDate" value="@Model.CalculatedStartingPeriodDate.AddYears(1).AddDays(-1)" />
+            @Model.CalculatedStartingPeriodDate.ToString("dd MMM yyyy") </td>
+
+                <td>@Model.CalculatedStartingPeriodDate.AddYears(1).AddDays(-1).ToString("dd MMM yyyy")</td>
+            }
+            else if (Model.HasLongDues)
+            {
+                <td>
+                    <input type="hidden" name="StartDate" value="@Model.NextPaymentDate" />
+                    <input type="hidden" name="EndDate" value="@ed" />
+                        @Model.NextPaymentDate.ToString("dd MMM yyyy")
+                </td>
+                <td>@ed.ToString("dd MMM yyyy")</td>
+            }
+            
+            <td>
+                @*<input type="text" name="EndDate" readonly class="nodeco" id="endDtYear" value="@utils.GetLastDayOfMonth(Model.CalculatedStartingPeriodDate.AddMonths(11)).ToString("dd MMM yyyy")" />*@
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Installments
+            </td>
+            <td>
+                <select name="NumInstallments" id="numInstallments">
+                    <option value="0">None</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                </select>
+            </td>
+            <td>
+
+                <input type="text" class="number form-control text-right" autocomplete="off" id="initialDownpayment" readonly value="@totdueandreg.ToString("N2")" />
+                <input type="hidden" class="number form-control text-right" name="InitialDownpayment" id="_initialDownpayment" readonly value="@totdueandreg" />
+
+            </td>
+        </tr>
+        <tr id="labelRowInst" style="display:none">
+            <td></td>
+            <td>Due on</td>
+            <td>Amount</td>
+
+        </tr>
+        <tr id="secondInst" style="display:none">
+            <td>2nd Installment</td>
+            <td><input type="text" name="secondInstallmentDate" readonly class="nodeco" id="endDtYear" value="@secondInstallmentDt" /></td>
+            <td><input type="text" class="number form-control text-right reset" readonly name="secondDownpayment" id="secondDownpayment" value="" /></td>
+        </tr>
+        <tr id="thirdInst" style="display:none">
+            <td>3rd Installment</td>
+            <td><input type="text" name="secondInstallmentDate" readonly class="nodeco" id="endDtYear" value="@thirdInstallmentDt" /></td>
+            <td><input type="text" class="number form-control text-right reset" readonly name="thirdDownpayment" id="thirdDownpayment" value="" /></td>
+        </tr>
+
+        }
+        else
+        {
+            <tr>
+                <td>Next Period</td>
+                <td><input type="text" name="StartDate" readonly class="nodeco"  value="@Model.Member.PaymentUntilDate.AddDays(1).ToString("dd MMM yyyy")" /></td>
+                <td><input type="text" name="EndDate" class="nodeco" readonly value="@Model.Member.PaymentUntilDate.AddDays(0).AddYears(1).ToString("dd MMM yyyy")" /></td>
+@*                <td><input type="text" class="nodeco" readonly value="asdfsdf" /></td>*@
+            </tr>
+            <tr>
+                <td colspan="2">Fees (for next period)</td>
+<td>
+
+    <input type="text" class="number form-control text-right"  autocomplete="off" id="initialDownpayment" readonly value="@totdueandreg.ToString("N2")" />
+    <input type="hidden" name="InitialDownpayment" id="_initialDownpayment" value="@totdueandreg" />
+</td>
+
+
+            </tr>
+
+        }
+
+
+    </tbody>
+
+</table>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/transaction-year")
+}

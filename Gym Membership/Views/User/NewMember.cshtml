@@ -1,0 +1,272 @@
+﻿@model Gym_Membership.Models.AddMemberViewModel
+
+@{
+    ViewBag.Title = "New Member";
+    var memberships = ViewBag.Memberships as IList<Gym_Membership.Models.Membership>;
+}
+
+
+
+<h3><span class="fa fa-user-plus"></span>&nbsp;New Member</h3>
+<hr />
+
+@if (Model.ValidationErrors.Count > 0)
+{
+    <div class="alert-danger" style="padding:10px">
+        <h3>Found Validation Errors:</h3>
+        <ul>
+            @foreach (var err in Model.ValidationErrors)
+            {
+                <li>@Html.Raw(err)</li>
+            }
+        </ul>
+    </div>
+
+}
+
+@using (Html.BeginForm("NewMember", "User", FormMethod.Post, new { @class = "" }))
+{
+    @Html.AntiForgeryToken()
+
+    <input name="NumMembers" id="NumMembers" type="hidden" value="@Model.NumMembers">
+
+    <div class="col-md-12">
+        <label>
+            Membership Code
+            <select tabindex="1" class="fld" name="MembershipCode" id="MembershipNumMember"  style="border-bottom:1px solid #eee; margin-top:5px;background:#eee;height:20px;" required>
+                <option value="" selected data-num="0">Choose</option>
+                @foreach (var mb in memberships)
+                {
+                    <option value="@mb.MembershipCode" @(Model.MembershipCode == mb.MembershipCode ? "selected" : "") data-num="@mb.NumberMembers">@mb.Name</option>
+                }
+            @*    <option value="CUST" @(Model.MembershipCode == "CUST" ? "selected" : "") data-num="1">Custom</option>*@
+
+            </select>
+        </label>
+
+    </div>
+    <style>
+
+    </style>
+
+    <div class="container">
+
+
+        @for (var i = 0; i < 5; i++)
+        {
+            var j = i + 1;
+
+            @*<section id="memberNum_@i" style="display:@(i>0 && i>(Model.NumMembers-1)?"none":"block")" class="resp @(i>0?"hideme":"")">*@
+            <div id="memberNum_@i" style="display:@(i>0 && i>(Model.NumMembers-1)?"none":"block")" class="resp @(i>0?"hideme":"")">
+
+                <div class="row">
+                    <!-- if member id input allowed else title col = 2-->
+                    @if (Gym_Membership.Helpers.ConfigurationHelper.InsertMemberId())
+                    {
+                        <div class="col-md-1 lbl">Id @(i > 0 ? "#" + j : "") </div>
+                    }
+
+                    <div class="col-md-@(Gym_Membership.Helpers.ConfigurationHelper.InsertMemberId()?"1":"2") lbl">Title @(i > 0 ? "#" + j : "")</div>
+                    <div class="col-md-4 lbl">Name @(i > 0 ? "#" + j : "")</div>
+                    <div class="col-md-2 lbl">Gender @(i > 0 ? "#" + j : "")</div>
+                    <!-- if only one member then = 2 -->
+                    <div class="col-md-@(i>0?"3":"4") lbl">DOB @(i > 0 ? "#" + j : "")</div>
+                    @if (i > 0)
+                    {
+                        <div class="col-md-1 lbl">Same Addr</div>
+                    }
+                </div> <!-- row -->
+                <div class="row">
+                    @if (Gym_Membership.Helpers.ConfigurationHelper.InsertMemberId())
+                    {
+                        <div class="col-md-1 inp">
+                            <input type="text" maxlength="5" name="GymMembers[@i].MemberId" value="" id="MemberId_@i" placeholder="#id" class="fld" />
+                        </div>
+                    }
+                    else
+                    {
+                        <input type="hidden" name="GymMembers[@i].MemberId" value="0" />
+                    }
+
+                    <div class="col-md-@(Gym_Membership.Helpers.ConfigurationHelper.InsertMemberId()?"1":"2") inp">
+
+                        <select class="changeGender fld" data-num="@i" name="GymMembers[@i].Title" tabindex="1">
+                            <option @(Model.GymMembers[i].Title == "" ? "selected" : "") value="">select</option>
+                            <option @(Model.GymMembers[i].Title == "Ms" ? "selected" : "") value="Ms">Ms</option>
+                            <option @(Model.GymMembers[i].Title == "Mrs" ? "selected" : "") value="Mrs">Mrs</option>
+                            <option @(Model.GymMembers[i].Title == "Mr" ? "selected" : "") value="Mr">Mr</option>
+                            <option @(Model.GymMembers[i].Title == "Dr" ? "selected" : "") value="Dr">Dr</option>
+                        </select>
+
+
+                    </div>
+
+
+
+                    <div class="col-md-4 inp">
+
+                        <input type="text" class="fld" maxlength="101" name="GymMembers[@i].FirstnameLastnameForm" value="@Model.GymMembers[i].FirstnameLastnameForm" id="Firstname_@i" placeholder="Enter Firstname(s),Lastname" tabindex="2">
+
+                    </div>
+                    <div class="col-md-2 inp">
+
+                        <select class="changeGender_@i fld" name="GymMembers[@i].Gender">
+                            <option value="">Gender</option>
+                            <option @(Model.GymMembers[i].Gender == "M" ? "selected" : "") value="M">Male</option>
+                            <option @(Model.GymMembers[i].Gender == "F" ? "selected" : "") value="F">Female</option>
+                        </select>
+
+                    </div>
+                    <div class="col-md-@(i>0?"3":"4") inp">
+                        @{
+            var dt = (Model.GymMembers[i].DateOfBirth == DateTime.MinValue || Model.GymMembers[i].DateOfBirth < new DateTime(1900, 1, 1)) ? "" : Model.GymMembers[i].DateOfBirth.ToString("yyyy-MM-dd");
+                        }
+                        <input type="text" class="pickadate fld" name="GymMembers[@i].DateOfBirth" value="@dt" id="DateOfBirth_@i" placeholder="D.O.B">
+
+                    </div>
+                    @if (i > 0)
+                    {
+                        <div class="col-md-1 inp">
+                            <input type="checkbox" data-num="@i" class="useSameAddress fld" value="true" @(Model.GymMembers[i].UseSameAddressForm ? "Checked" : "") name="GymMembers[@i].UseSameAddressForm">
+                            <input type="hidden" value="false" name="GymMembers[@i].UseSameAddressForm" />
+
+                        </div>
+
+
+                    }
+                </div> <!-- row -->
+
+
+                <div class="row useSameAddress_@i">
+
+                    <div class="col-md-4 lbl">Street @(i > 0 ? "#" + j : "") </div>
+                    <div class="col-md-4 lbl">Town @(i > 0 ? "#" + j : "")</div>
+                    <div class="col-md-4 lbl">Home Phone @(i > 0 ? "#" + j : "")</div>
+
+                </div> <!-- row -->
+                <div class="row useSameAddress_@i">
+                    <div class="col-md-4 inp">
+
+                        <input type="text" class="fld" name="GymMembers[@i].StreetAddress" value="@(Model.GymMembers[i].StreetAddress)" id="StreetAddress_@i" placeholder="Street no., name">
+
+                    </div>
+                    <div class="col-md-4 inp">
+                        <input type="text" class="typeahead-town fld" name="GymMembers[@i].Town" autocomplete="off" value="@(Model.GymMembers[i].Town)" id="Town_@i" data-provide="typeahead" placeholder="Town">
+
+                    </div>
+                    <div class="col-md-4 inp">
+                        <input type="text" name="GymMembers[@i].HomePhone" class="phoneFormat fld" id="HomePhone_@i" value="@(Model.GymMembers[i].HomePhone)" placeholder="Phone">
+
+                    </div>
+
+                </div> <!-- row -->
+                <div class="row">
+
+                    <div class="col-md-6 lbl">Email @(i > 0 ? "#" + j : "")</div>
+                    <div class="col-md-3 lbl">Mobile @(i > 0 ? "#" + j : "")</div>
+                    <div class="col-md-3 lbl">Office @(i > 0 ? "#" + j : "")</div>
+                </div> <!-- row -->
+                <div class="row">
+                    <div class="col-md-6 inp">
+                        <input type="text" class="fld" name="GymMembers[@i].EmailAddress" value="@(Model.GymMembers[i].EmailAddress)" id="EmailAddress_@i" placeholder="Email">
+                    </div>
+                    <div class="col-md-3 inp">
+                        <input type="text" name="GymMembers[@i].MobilePhone" class="mobileFormat fld" value="@(Model.GymMembers[i].MobilePhone)" id="MobilePhone_@i" placeholder="Mobile">
+
+                    </div>
+                    <div class="col-md-3 inp">
+                        <input type="text" name="GymMembers[@i].OfficePhone" id="OfficePhone_@i" class="phoneFormat fld" value="@(Model.GymMembers[i].OfficePhone)" placeholder="Office">
+                    </div>
+
+                </div> <!-- row -->
+
+                <div class="row">
+                    <div class="col-md-6 lbl">Occupation @(i > 0 ? "#" + j : "")</div>
+                    <div class="col-md-6 lbl">Employer @(i > 0 ? "#" + j : "")</div>
+                </div> <!-- row -->
+                <div class="row">
+                    <div class="col-md-6 inp">
+                        <input type="text" class="fld" name="GymMembers[@i].Occupation" id="Occupation_@i" value="@(Model.GymMembers[i].Occupation)" placeholder="Occupation">
+                    </div>
+                    <div class="col-md-6 inp">
+                        <input type="text" class="fld" name="GymMembers[@i].Company" id="Company_@i" value="@(Model.GymMembers[i].Company)" placeholder="Company">
+                    </div>
+
+                </div> <!-- row -->
+
+            </div>  @*repetitive members *@
+        } @*foreach*@
+        <!-- if is custom-->
+
+
+
+        <div class="resp" id="showifcustom" style="display:@(Model.IsCustom?"block":"none")">
+            <div class="row">
+                <div class="col-md-6 lbl">Custom Registration</div>
+                <div class="col-md-6 lbl">Custom Fee</div>
+            </div> <!-- row -->
+            <div class="row">
+                <div class="col-md-6 inp">
+                    <input type="text" class="number fld" name="GymMembers[0].CustomRegistrationFee" id="CustomRegistrationFee" value="@(Model.GymMembers[0].CustomRegistrationFee)" placeholder="Registration Fee">
+                </div>
+                <div class="col-md-6 inp">
+                    <input type="text" class="fld number" name="GymMembers[0].CustomMonthlyFee" id="CustomMonthlyFee" value="@(Model.GymMembers[0].CustomMonthlyFee)" placeholder="Monthly Fee">
+
+                </div>
+
+            </div> <!-- row -->
+        </div> <!-- custom only-->
+
+
+        <div class="row">
+            <div class="col-md-6 lbl">How you heard about us</div>
+            <div class="col-md-6 lbl">Club</div>
+        </div> <!-- row -->
+        <div class="row">
+            <div class="col-md-6 inp">
+
+                <select name="HowYouHeardForm" class="fld">
+                    <option value="">Select</option>
+                    <option @(Model.HowYouHeardForm == "Newspaper" ? "selected" : "") value="Newspaper">Newspaper/Magazine</option>
+                    <option @(Model.HowYouHeardForm == "Facebook" ? "selected" : "") value="Facebook">Facebook</option>
+                    <option @(Model.HowYouHeardForm == "Web" ? "selected" : "") value="Web">Website/Internet</option>
+                    <option @(Model.HowYouHeardForm == "WordOfMouth" ? "selected" : "") value="WordOfMouth">Family/Friend</option>
+                    <option @(Model.HowYouHeardForm == "Advertising" ? "selected" : "") value="Advertising">Advertising</option>
+                    <option @(Model.HowYouHeardForm == "Neighbourhood" ? "selected" : "") value="Neighbourhood">Neighbourhood</option>
+                    <option @(Model.HowYouHeardForm == "Reputation" ? "selected" : "") value="Reputation">Reputation</option>
+                    
+
+
+                </select>
+
+            </div>
+            <div class="col-md-6 inp">
+                <select name="Club" class="fld">
+                    <option value="">Select</option>
+                    <option @(Model.Club == "BB" ? "selected" : "") value="BB">Space Gym Beau Bassin</option>
+                    <option @(Model.Club == "CP" ? "selected" : "") value="CP">Space Gym Curepipe</option>
+                    <option @(Model.Club == "RH" ? "selected" : "") value="RH">Executive Rose Hill</option>
+                </select>
+            </div>
+
+        </div> <!-- row -->
+
+
+
+    </div>
+
+    <div class="col-submit">
+        <div class="text-center">
+            @*<input type="submit" value="Create" onclick="javascript: return CheckFormAtLeastOne()" class="btn btn-default" />*@
+            <input type="submit" value="Create" class="btn btn-default" />
+
+        </div>
+
+    </div>
+}
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+}

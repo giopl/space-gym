@@ -1,0 +1,150 @@
+﻿@model Gym_Membership.Models.DailyTransactionsViewModel
+
+@{ 
+
+    var totFee = Model.Transactions.Sum(x => x.PaidAmount);
+    var totReg = Model.Transactions.Sum(x => x.RegistrationAmount);
+    var disc = Model.Transactions.Sum(x => x.DiscountedAmount);
+    var Wo = Model.Transactions.Sum(x => x.WrittenOffAmount);
+    var totDisc = disc + Wo;
+    var totReceived = Model.Transactions.Sum(x => x.ReceiptAmount);
+
+}
+<h2 class="admin">Daily Transactions</h2>
+<ol class="breadcrumb">
+    <li><a href="@Url.Action("Index")">Home</a></li>
+    <li class="active">Transaction Report</li>
+</ol>
+
+<div class="row">
+    <section>
+        <form>
+            <div class="col-md-2">
+                Date Range (from - to) <br /><small>
+
+                    Format: mm/dd/yyyy
+                </small>
+            </div>
+            <div class="col-md-3">
+                <input type="text" name="range" id="daterangepicker-tran" value="@Model.DateRange" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <input type="submit" value="Go" class="btn btn-sm btn-primary" />
+
+            </div>
+        </form>
+    </section>
+</div>
+
+<table class="table table">
+    <tr>
+        <th>
+            Receipt#
+        </th>
+        <th>
+            Member Id
+        </th>
+        <th>
+            Received on
+        </th>
+        <th>
+            status
+        </th>
+        
+        <th class="text-right">
+            Total
+        </th>
+        <th class="text-center">
+            From
+        </th>
+        <th class="text-center">
+            To
+        </th>
+        <th></th>
+    </tr>
+    <tbody>
+        @foreach (var item in Model.Transactions)
+        {
+            <tr>
+                <td>
+                    @if (item.TransactionId > 0)
+                    {
+                        <a href="@Url.Action("PaymentSummary", "User", new { id = item.TransactionId, fromReceipt = true})">@item.ReceiptId</a>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.ReceiptId)
+
+                    }
+                </td>
+                <td>
+                    <a href="@Url.Action("Member", "User", new { id = item.MemberId })">@item.MemberId</a>
+                    <br /><small class="text-muted">@item.MemberName</small>
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.ReceiptDate)
+                    <br /><small class="text-muted">
+                        @Html.DisplayFor(modelItem => item.ReceivedByUser) via <b>@Html.DisplayFor(modelItem => item.PaymentMethod)</b>
+                    </small>
+                </td>
+                <td class="text-center">
+                    <span title="@(item.IsCancelled?"Transaction Cancelled":"Transaction OK")" style="color:@(item.IsCancelled?"red":"green")"><span class="fa fa-@(item.IsCancelled?"close":"check")"></span></span>
+                </td>
+                
+                <td class="text-right">
+                    <span class="@(item.IsCancelled?"text-muted":"")">@item.ReceiptAmount.ToString("N2")</span>
+                </td>
+                <td class="text-center">
+                    @{ var sd = item.PeriodStart < new DateTime(1980, 1, 1) ? " - " : item.PeriodStart.ToString("dd-MMM-yyyy");}
+                    @sd
+                </td>
+                <td class="text-center">
+                    @{ var ed = item.PeriodEnd < new DateTime(1980, 1, 1) ? " - " : item.PeriodEnd.ToString("dd-MMM-yyyy");}
+                    @ed
+                </td>
+                <td></td>
+            </tr>
+                        }
+    </tbody>
+    <tfoot>
+        <tr style="font-size:1.2em; border-top:1px solid #DDD">
+            <td colspan="4"></td>
+  
+            <td class="text-right">@totReceived.ToString("N2")</td>
+        </tr>
+    </tfoot>
+</table>
+@section scripts{
+
+    <script>
+    $(document).ready(function () {
+
+        $('#daterangepicker-tran').daterangepicker({
+            "linkedCalendars": false,
+            ranges: {
+                 'Today': [moment(), moment()],
+                 'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                'Last 3 Months': [moment().subtract(3, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                //'Last 6 Months': [moment().subtract(6, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                //'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+                'All': ['01/01/2000', '12/31/2020']
+
+
+
+            }
+
+
+        }, function (start, end, label) {
+            console.log("New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')");
+        });
+
+
+    });
+    </script>
+
+}

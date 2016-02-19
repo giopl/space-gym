@@ -1,0 +1,134 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+
+
+
+<h2 class="admin">Admin Section</h2>
+<div class="container bg-grey">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="text-center">
+            <a class="white" href="@Url.Action("ManageUsers","Admin")">
+            <div class="fa fa-5x fa-user color-grey"></div>&nbsp;
+                <div class="clearfix"></div>
+           
+                <span class="large">Manage Users</span>
+            </a>
+            </div>
+            <div class="subtext">Manage website users</div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="text-center">
+                <a class="white" href="@Url.Action("Memberships","Admin")">
+                    <div class="fa fa-5x fa-random color-grey"></div>&nbsp;
+                    <div class="clearfix"></div>
+
+                    <span class="large">Manage Memberships</span>
+                </a>
+            </div>
+            <div class="subtext">Manage Membership prices, members allowed and registration</div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="text-center">
+                <a class="white" href="@Url.Action("PassManagement","Admin")">
+                    <div class="fa fa-5x fa-ticket color-grey"></div>&nbsp;
+                    <div class="clearfix"></div>
+
+                    <span class="large">Manage Pass</span>
+                </a>
+            </div>
+            <div class="subtext">Manage one day and Ten visit passes</div>
+        </div>
+        </div>
+
+    <div class="row">
+
+        <div class="col-md-4">
+            <div class="text-center">
+                <a class="white" href="@Url.Action("StandingOrders","Admin")">
+                    <div class="fa fa-5x fa-bank color-grey"></div>&nbsp;
+                    <div class="clearfix"></div>
+
+                    <span class="large">Standing Orders</span>
+                </a>
+            </div>
+            <div class="subtext">List existing standing orders and confirm payments</div>
+        </div>
+
+
+        <div class="col-md-4">
+            <div class="text-center">
+                <a class="white" href="@Url.Action("FlushCache","Admin")">
+                    <div class="fa fa-5x fa-trash color-grey"></div>&nbsp;
+                    <div class="clearfix"></div>
+
+                    <span class="large">Flush Cache</span>
+                </a>
+            </div>
+            <div class="subtext">Remove cached items following important changes.</div>
+        </div>
+
+
+        <div class="col-md-4">
+            <div class="text-center">
+                <a class="white" href="@Url.Action("DailyTransactionReport","Report")">
+                    <div class="fa fa-5x fa-money color-grey"></div>&nbsp;
+                    <div class="clearfix"></div>
+
+                    <span class="large">Daily Transactions</span>
+                </a>
+            </div>
+            <div class="subtext">Returns a list of daily transactions.</div>
+        </div>
+
+
+    </div>
+    <div  class="row">
+        <div class="col-md-4">
+            <div class="text-center">
+                <a class="white" href="@Url.Action("MemberProfiles","Report")">
+                    <div class="fa fa-5x fa-folder-open-o color-grey"></div>&nbsp;
+                    <div class="clearfix"></div>
+
+                    <span class="large">Member Profiles</span>
+                </a>
+            </div>
+            <div class="subtext">Member Profile details per gender, age group and membership type.</div>
+        </div>
+
+
+        <div class="col-md-4">
+            <div class="text-center">
+                <a class="white" href="@Url.Action("VisitDetails","Report")">
+                    <div class="fa fa-5x fa-dashboard color-grey"></div>&nbsp;
+                    <div class="clearfix"></div>
+
+                    <span class="large">Visit Details</span>
+                </a>
+            </div>
+            <div class="subtext">Visit per month, by day of week, time of day, membership type</div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="text-center">
+                <a class="white" href="@Url.Action("RevenueAnalysis","Report")">
+                    <div class="fa fa-5x fa-line-chart color-grey"></div>&nbsp;
+                    <div class="clearfix"></div>
+
+                    <span class="large">Revenue Analysis</span>
+                </a>
+            </div>
+            <div class="subtext">Actual Income against budgeted and Income by category</div>
+        </div>
+
+
+    </div>
+
+</div>
+
+

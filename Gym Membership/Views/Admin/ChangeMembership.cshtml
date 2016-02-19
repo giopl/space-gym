@@ -1,0 +1,217 @@
+﻿@model Gym_Membership.Models.ChangeMembershipViewModel
+
+@{
+    ViewBag.Title = "Change Membership";
+    //var memberships = ViewBag.Memberships as List<Gym_Membership.Models.Membership>;
+
+    //var singleMembers = ViewBag.SingleMembers as List<Gym_Membership.Models.GymMember>;
+    
+    //var singleMemberships = memberships.Where(x => x.IsSingleMembership).ToList();
+    //var hasRels = Model.RelatedMembers.Members.Count > 0;
+
+    //var membershipCodes = hasRels ? singleMemberships : memberships;
+
+    if (Model.MemberIds == null)
+    {
+        Model.MemberIds = new Int32[] { 0, 0, 0, 0 };
+    }
+}
+
+<h2  class="admin">Change Membership</h2>
+
+@if (Model.ValidationErrors.Count > 0)
+{
+    <div class="alert-danger" style="padding:10px">
+        <h3>Found Validation Errors. Please fix to complete operation: </h3>
+        <ul>
+            @foreach (var err in Model.ValidationErrors)
+            {
+                <li>@Html.Raw(err)</li>
+            }
+        </ul>
+    </div>
+
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" name="MainMemberId" value="@Model.Member.MemberId" />
+    <input type="hidden" name="CurrentMembershipCode" value="@Model.Member.Membership.MembershipCode" />
+    
+    
+    <div class="form-horizontal">
+        <h4>GymMember</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            <div class="col-md-2">Member Id</div>
+            <div class="col-md-4">
+                @Model.Member.MemberId
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-2">Full name</div>
+
+            <div class="col-md-4">
+                @Model.Member.TitleFullname
+           </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-2">Current Membership</div>
+
+            <div class="col-md-4">
+                @Model.Member.Membership.Name
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class=" col-md-2">New Membership</div> 
+            <div class="col-md-4">
+                <select class="form-control newMembership" name="NewMembershipCode">
+
+                    <option value="">Select New Membership</option>
+                    @foreach (var m in Model.MembershipsToDisplay)
+                    {
+                        if (m.MembershipCode != Model.Member.Membership.MembershipCode)
+                        {
+                            <option @(m.MembershipCode==Model.NewMembershipCode?"selected":"") value="@m.MembershipCode">@m.Name</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+
+        @if(Model.HasRelations)
+        {
+            
+        <div class="form-group">
+            <div class=" col-md-2">Related Members</div>
+            <div class="col-md-7">
+                <b>Note that all Related members will also be changed to Standard Membership</b>
+                <ul>
+                    @foreach (var r in Model.RelatedMembers)
+                {
+                        <li>@r.MemberId - @r.Fullname</li>
+                }
+                </ul>
+                </div>
+            </div>
+        }
+        
+        <div class="form-group mem mem2 mem3 mem4 mem5" style="display:@(Model.NewMembershipCode == "COUP" || Model.NewMembershipCode == "FAM3" || Model.NewMembershipCode == "FAM4" || Model.NewMembershipCode == "FAM5"?"block":"none" )">
+            <div class=" col-md-2">Select Second member</div>
+            <div class="col-md-4">
+                <select class="form-control" name="MemberIds[0]">
+                        <option value="" selected>Select Member</option>
+
+                    @foreach (var mem in Model.SingleMembers)
+                    {
+
+                        <option @(mem.MemberId == Model.MemberIds[0] ? "selected" : "") value="@mem.MemberId">@mem.MemberId - @mem.Fullname  (@mem.Membership.Name)</option>
+
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group mem mem3 mem4 mem5" style="display:@(Model.NewMembershipCode == "FAM3" || Model.NewMembershipCode == "FAM4" || Model.NewMembershipCode == "FAM5"?"block":"none" )">
+            <div class=" col-md-2">Select Third Member</div>
+            <div class="col-md-4">
+                <select class="form-control" name="MemberIds[1]">
+                    <option value="" selected>Select Member</option>
+
+                    @foreach (var mem in Model.SingleMembers)
+                    {
+
+                        <option @(mem.MemberId==Model.MemberIds[1]?"selected":"") value="@mem.MemberId">@mem.MemberId - @mem.Fullname  (@mem.Membership.Name)</option>
+                    }
+                </select>
+            </div>
+
+        </div>
+        <div class="form-group mem mem4 mem5" style="display:@(Model.NewMembershipCode == "FAM4" || Model.NewMembershipCode == "FAM5"?"block":"none" )">
+            <div class=" col-md-2">Select Fourth Member</div>
+            <div class="col-md-4">
+                <select class="form-control" name="MemberIds[2]">
+                    <option value="" selected>Select Member</option>
+
+                    @foreach (var mem in Model.SingleMembers)
+                    {
+
+                        <option @(mem.MemberId == Model.MemberIds[2] ? "selected" : "") value="@mem.MemberId">@mem.MemberId - @mem.Fullname  (@mem.Membership.Name)</option>
+
+                    }
+                </select>
+            </div>
+
+        </div>
+        <div class="form-group mem  mem5" style="display:@(Model.NewMembershipCode == "FAM5"?"block":"none" )">
+            <div class=" col-md-2">Select Fifth Member</div>
+            <div class="col-md-4">
+                <select class="form-control" name="MemberIds[3]">
+                    <option value="" selected>Select Member</option>
+
+                    @foreach (var mem in Model.SingleMembers)
+                    {
+
+                        <option @(mem.MemberId == Model.MemberIds[3] ? "selected" : "") value="@mem.MemberId">@mem.MemberId - @mem.Fullname  (@mem.Membership.Name)</option>
+
+                    }
+                </select>
+            </div>
+
+        </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-4">
+                    <input type="submit" value="Save" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+}
+
+
+<div>
+    @Html.ActionLink("Back to Member page", "Member", "User", new { id = Model.Member.MemberId},null)
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        $(document).ready(function () {
+            $('body').on('change', '.newMembership', function () {
+
+                $('.mem').hide();
+                var mbt = $(this).val();
+
+                if (mbt == 'COUP')
+                {
+                    $('.mem2').show();
+
+                } else if (mbt == 'FAM3')
+                {
+                    $('.mem3').show();
+
+                } else if (mbt == 'FAM4')
+                {
+                    $('.mem4').show();
+
+                } else if (mbt == 'FAM5')
+
+                {
+                    $('.mem5').show();
+
+                }
+              //  alert(mbt);
+
+            })
+
+        });
+
+    </script>
+}
+

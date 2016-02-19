@@ -1,0 +1,429 @@
+﻿@model Gym_Membership.Models.Transaction
+@using utils = Gym_Membership.Helpers.Utils;
+@{
+    Layout = null;    
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Customer Receipt</title>
+    <style>
+                /*
+             CSS-Tricks Example
+             by Chris Coyier
+             http://css-tricks.com
+        */
+
+                * {
+                    margin: 0;
+                    padding: 0;
+                }
+
+                body {
+                    font: 14px/1.4 Georgia, serif;
+                }
+
+                #page-wrap {
+                    width: 800px;
+                    margin: 0 auto;
+                }
+
+                textarea {
+                    border: 0;
+                    font: 14px Georgia, Serif;
+                    overflow: hidden;
+                    resize: none;
+                }
+
+                table {
+                    border-collapse: collapse;
+                }
+
+                    table td, table th {
+                        border: 1px solid black;
+                        padding: 5px;
+                    }
+
+                #header {
+                    height: 15px;
+                    width: 100%;
+                    margin: 20px 0;
+                    background: #222;
+                    text-align: center;
+                    color: white;
+                    font: bold 15px Helvetica, Sans-Serif;
+                    /*text-decoration: uppercase;
+                    letter-spacing: 20px;*/
+                    padding: 8px 0px;
+                }
+
+                #address {
+                    width: 250px;
+                    height: 150px;
+                    float: left;
+                }
+
+                #customer {
+                    overflow: hidden;
+                }
+
+                #logo {
+                    text-align: right;
+                    float: right;
+                    position: relative;
+                    margin-top: 25px;
+                    border: 1px solid #fff;
+                    max-width: 540px;
+                    max-height: 100px;
+                    overflow: hidden;
+                }
+
+                #customer-title {
+                    font-size: 20px;
+                    font-weight: bold;
+                    float: left;
+                }
+
+                #meta {
+                    margin-top: 1px;
+                    width: 300px;
+                    float: right;
+                }
+
+                    #meta td {
+                        text-align: right;
+                    }
+
+                        #meta td.meta-head {
+                            text-align: left;
+                            background: #eee;
+                        }
+
+                        #meta td textarea {
+                            width: 100%;
+                            height: 20px;
+                            text-align: right;
+                        }
+
+                #items {
+                    clear: both;
+                    width: 100%;
+                    margin: 30px 0 0 0;
+                    border: 1px solid black;
+                }
+
+                    #items th {
+                        background: #eee;
+                    }
+
+                    #items textarea {
+                        width: 80px;
+                        height: 50px;
+                    }
+
+                    #items tr.item-row td {
+                        border: 0;
+                        vertical-align: top;
+                    }
+
+                    #items td.description {
+                        width: 300px;
+                        padding-left: 30px;
+                    }
+
+                    #items td.item-name {
+                        width: 175px;
+                    }
+
+                        #items td.description textarea, #items td.item-name textarea {
+                            width: 100%;
+                        }
+
+                    #items td.total-line {
+                        border-right: 0;
+                        text-align: right;
+                    }
+
+                    #items td.total-value {
+                        border-left: 0;
+                        padding: 10px;
+                        width: 100px;
+                    }
+
+                        #items td.total-value textarea {
+                            height: 20px;
+                            background: none;
+                        }
+
+                    #items td.balance {
+                        background: #eee;
+                    }
+
+                    #items td.blank {
+                        border: 0;
+                    }
+
+                #terms {
+                    text-align: center;
+                    margin: 20px 0 0 0;
+                }
+
+                    #terms h5 {
+                        text-transform: uppercase;
+                        font: 13px Helvetica, Sans-Serif;
+                        letter-spacing: 1px;
+                        border-bottom: 1px solid black;
+                        padding: 0 0 8px 0;
+                        margin: 0 0 8px 0;
+                    }
+
+                    #terms textarea {
+                        width: 100%;
+                        text-align: center;
+                    }
+
+                textarea:hover, textarea:focus, #items td.total-value textarea:hover, #items td.total-value textarea:focus, .delete:hover {
+                    background-color: #EEFF88;
+                }
+
+                .delete-wpr {
+                    position: relative;
+                }
+
+                .delete {
+                    display: block;
+                    color: #000;
+                    text-decoration: none;
+                    position: absolute;
+                    background: #EEEEEE;
+                    font-weight: bold;
+                    padding: 0px 3px;
+                    border: 1px solid;
+                    top: -6px;
+                    left: -22px;
+                    font-family: Verdana;
+                    font-size: 12px;
+                }
+
+                .rt {
+                 float:right;
+
+                }
+    </style>
+
+</head>
+<body>
+
+
+
+
+
+    <div id="page-wrap">
+        <div id="header">RECEIPT</div>
+
+        <div id="identity">
+
+            <div id="address">
+                <b>Space Fitness</b>
+                <br />Cercle de Rose Hill
+                <br />Boulevard Cowin
+                <br />Beau Bassin, Mauritius
+                
+                <br />
+                <br />Phone: 5 443 3300
+            </div>
+
+            <div id="logo">
+
+                <img src="data:image/jpeg;base64,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" alt="LogoFitness.jpg" />
+       
+                @*<img id="image" src="@Url.Content("~/Images/logo/LogoFitness.jpg")" alt="logo" />*@
+            </div>
+
+        </div>
+
+        <div style="clear:both"></div>
+
+        <div id="customer">
+
+            <div id="customer-title">
+                @Model.Member.TitleFullname
+                <br />  @Model.Member.StreetAddress
+                <br />  @Model.Member.Town
+            </div>
+
+            <table id="meta">
+                <tr>
+                    <td class="meta-head">receipt #</td>
+                    <td><div>@Model.LastReceipt.ReceiptId</div></td>
+                </tr>
+                <tr>
+
+                    <td class="meta-head">Date</td>
+                    <!-- December 15,2009-->
+                    <td><div id="date">@Model.LastReceipt.ReceivedOn.ToString("MMMM dd, yyyy")</div></td>
+                </tr>
+                <tr>
+                    <td class="meta-head">Amount Due</td>
+
+
+                    <td>
+
+                        @{ var amtPaid = Model.PaidAmount + Model.RegistrationAmount;}
+                        
+                    <div class="due">Rs @amtPaid.ToString("N2")</div>
+                    
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+
+        <table id="items">
+
+            <tr>
+                <th>Item</th>
+                <th colspan="3">Description</th>
+            </tr>
+
+
+            <tr class="item-row">
+                <td class="description">Membership #</td>
+                <td colspan="3">@Model.Member.MemberId</td>
+            </tr>
+
+            <tr class="item-row">
+                <td class="description">Membership Type</td>
+                <td colspan="3">@Model.Member.Membership.Name</td>
+            </tr>
+
+            <tr class="item-row">
+                <td class="description">Period starting from</td>
+                <td colspan="3">@Model.StartDate.ToString("dd MMM yyyy")</td>
+            </tr>
+
+            <tr class="item-row">
+                <td class="description">Period ending on</td>
+                <td colspan="3">@Model.EndDate.ToString("dd MMM yyyy")</td>
+            </tr>
+
+            <tr class="item-row">
+                <td class="description">Received By</td>
+                <td colspan="3">@Model.LastReceipt.ReceivedBy.Username</td>
+            </tr>
+            <tr class="item-row">
+                <td class="description">Payment Date</td>
+                <td colspan="3">@Model.LastReceipt.ReceivedOn.ToString("dd MMM yyyy")</td>
+            </tr>
+            <tr class="item-row">
+                <td class="description">Payment Method</td>
+                <td colspan="3">@Model.LastReceipt.PaymentMethod</td>
+            </tr>
+            @if (!Model.Member.IsPass)
+            {
+
+            <tr class="item-row">
+                <td class="description">Next Payment due on</td>
+                @{ 
+                    var np = Model.Member.PaymentUntilDate.AddDays(1).ToString("dd MMM yyyy");
+                    if (Model.UnpaidAmount > 0)
+                    {
+                        np = utils.GetLastDayOfMonth(Model.LastReceipt.ReceivedOn.AddMonths(1)).ToString("dd MMM yyyy");
+                    }
+                }
+                <td colspan="3">@np</td>
+            </tr>
+
+            }
+
+
+            @if (Model.RegistrationAmount > 0)
+            {
+                <tr>
+                    <td colspan="2" class="blank"> </td>
+                    <td class="total-line">Registration Amount</td>
+                    <td class="total-value"><div id="">Rs <span class="rt">@Model.RegistrationAmount.ToString("N2")</span></div></td>
+                </tr>
+            }
+            
+            <tr>
+                <td colspan="2" class="blank"> </td>
+                <td class="total-line">Fees</td>
+                <td class="total-value">
+                
+                    @{var fees = Model.PaidAmount + Model.DiscountAmount + Model.UnpaidAmount + Model.WrittenOffAmount;}
+                    
+
+
+                <div id="">Rs <span class="rt">@fees.ToString("N2")</span></div>
+                </td>
+            </tr>
+
+
+            @if(Model.RegistrationAmount > 0)
+            {
+
+
+            <tr>
+                <td colspan="2" class="blank"> </td>
+                <td class="total-line">incl. registration</td>
+                <td class="total-value">
+                
+                    @{var subtot = fees + Model.RegistrationAmount;}
+                    
+
+
+                    <div id="subtotal">Rs <span class="rt">@subtot.ToString("N2")</span></div>
+                
+                </td>
+            </tr>
+            }
+            @if ( (Model.DiscountAmount + Model.WrittenOffAmount) > 0)
+            {
+                <tr>
+                    <td colspan="2" class="blank"> </td>
+                    <td class="total-line">less Discounted</td>
+                    <td class="total-value">
+                        @{var dsc = Model.DiscountAmount + Model.WrittenOffAmount;}
+                    <div id="total">Rs <span class="rt">@dsc.ToString("N2")</span></div>
+                    </td>
+                </tr>
+            }
+            @if ((Model.UnpaidAmount) > 0)
+            {
+                <tr>
+                    <td colspan="2" class="blank"> </td>
+                    <td class="total-line">less Postponed</td>
+                    <td class="total-value">
+                        <div id="total">Rs <span class="rt">@Model.UnpaidAmount.ToString("N2")</span></div>
+                    </td>
+                </tr>
+                            }
+
+            <tr>
+                <td colspan="2" class="blank"> </td>
+                <td class="total-line">Amount Paid</td>
+                
+                <td class="total-value balance">
+                    @*@{ var amtPaid = Model.PaidAmount + Model.RegistrationAmount;}*@
+                    
+                <div class="due">Rs <span class="rt">@amtPaid.ToString("N2")</span></div>
+                </td>
+            </tr>
+
+        </table>
+
+        <div id="terms">
+            @*<h5>Terms</h5>
+            <div>NET 30 Days. Finance Charge of 1.5% will be made on unpaid balances after 30 days.</div>*@
+        </div>
+
+    </div>
+
+
+</body>
+</html>

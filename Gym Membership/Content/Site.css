@@ -1,0 +1,988 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+    /*background: url('http://farm3.staticflickr.com/2832/12303719364_c25cecdc28_b.jpg')  no-repeat center center fixed;*/ 
+    /*background: url('../Images//bg/seamless-peacock-blues-tileable-patterns-1.jpg')  repeat fixed;*/ 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+.body-bg {
+
+background:#fff;
+
+     /* Theoretically for IE 8 & 9 (more valid) */
+  /* ...but not required as filter works too */
+  /* should come BEFORE filter */
+  -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=95)"; 
+
+  /* This works in IE 8 & 9 too */
+  /* ... but also 5, 6, 7 */
+  filter: alpha(opacity=95); 
+  
+  /* Modern Browsers */
+  opacity: 0.95;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default 
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+*/
+
+/* http://getbootstrap.com/examples/sticky-footer-navbar/ */
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 30px;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  /*width: 70%;*/
+  /* Set the fixed height of the footer here */
+  height: 30px;
+  background-color: #f5f5f5;
+
+}
+
+.gym-footer {
+color:#999;
+margin:auto;
+font-size:.9em;
+
+}
+
+
+.number {
+    float:right;
+    clear:both;
+}
+
+
+.dl-horizontal-left dt {
+    white-space: normal;
+}
+.dl-horizontal-left dt {
+    clear: left;
+    float: left;
+    overflow: hidden;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 120px;
+}
+
+
+
+.label-warning {
+    background-color: #FFDA0D;
+}
+
+/* Custom page CSS
+-------------------------------------------------- */
+/* Not required for template or sticky footer method. */
+
+body > .container {
+  /*padding: 60px 15px 0;*/
+}
+.container .text-muted {
+  margin: 20px 0;
+}
+
+.footer > .container {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+code {
+  font-size: 80%;
+}
+
+.useronsite {
+background:#fefefe;
+
+}
+
+.page-title {
+font-family: 'Open Sans' , sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    text-align: left;
+    color: #999;
+    margin-top: 3%;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+}
+
+#memberstable {
+font-size:.95em;
+color:#333;
+
+}
+
+::-webkit-input-placeholder { /* WebKit browsers */
+    color:    #CCC;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+   color:    #CCC;
+   opacity:  1;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+   color:    #CCC;
+   opacity:  1;
+}
+:-ms-input-placeholder { /* Internet Explorer 10+ */
+   color:    #CCC;
+}
+
+.navbar-bootsnipp {
+    background-color: #fff;
+    border-color: #5fb0e4;
+    border-radius: 0;
+    margin-bottom: 0;
+    z-index: 100;
+}
+.navbar-bootsnipp:nth-of-type(2) {
+    border-top-width: 1px;
+    z-index: 50;
+}
+.navbar-bootsnipp.affix, .navbar-bootsnipp.affix-top {
+    top: 0;
+    width: 100%;
+}
+.navbar-bootsnipp .navbar-toggle .icon-bar {
+    background-color: #5fb0e4;
+}
+.navbar-bootsnipp .navbar-brand {
+    color: #5fb0e4;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+.navbar-bootsnipp .navbar-nav > li > a {
+    border: 0 solid #5fb0e4;
+    color: #787878;
+    padding: 15px 14px;
+}
+.navbar-bootsnipp .navbar-nav > li > form > .input-group > .input-group-btn > .btn, .navbar-bootsnipp .navbar-nav > li > form > .input-group > input {
+    border-radius: 0;
+}
+.navbar-bootsnipp .navbar-nav > li.active:not(.disabled) > a, .navbar-bootsnipp .navbar-nav > li.open:not(.disabled) > a, .navbar-bootsnipp .navbar-nav > li:not(.disabled) > a:focus, .navbar-bootsnipp .navbar-nav > li:not(.disabled) > a:hover {
+    border-bottom-width: 5px;
+    color: #5fb0e4;
+    padding-left: 10px;
+    /*background:#ebebeb;*/
+}
+.navbar-bootsnipp .navbar-nav > li.disabled > a {
+    color: #c8c8c8;
+}
+.navbar-bootsnipp .navbar-nav > li > .dropdown-menu {
+    border-radius: 0;
+    margin-right: -1px;
+    min-width: 220px;
+    padding: 0;
+}
+.navbar-bootsnipp .navbar-nav > li:not(.dropdown-right) > .dropdown-menu {
+    left: 0;
+    margin-left: -1px;
+    right: auto;
+}
+.navbar-bootsnipp .navbar-nav > li > .dropdown-menu > li > a {
+    border-left: 0 solid #5fb0e4;
+    color: #787878;
+    font-size: 16px;
+    font-weight: 400;
+    padding: 10px 20px;
+    white-space: nowrap;
+}
+.navbar-bootsnipp .navbar-nav > li > .dropdown-menu > li.active > a, .navbar-bootsnipp .navbar-nav > li > .dropdown-menu > li > a:focus, .navbar-bootsnipp .navbar-nav > li > .dropdown-menu > li > a:hover {
+    background-color: #f5f5f5;
+    border-left-width: 5px;
+    padding-left: 15px;
+}
+.navbar .bootsnipp-profile > a {
+    padding-bottom: 9px;
+    padding-top: 9px;
+}
+.navbar .bootsnipp-profile > a > img {
+    border-radius: 50%;
+    width: 32px;
+}
+.navbar .bootsnipp-profile > .dropdown-menu {
+    width: 320px;
+}
+.navbar .bootsnipp-profile > .dropdown-menu > li > .row {
+    padding: 5px 15px;
+}
+.navbar .bootsnipp-profile > .dropdown-menu > li > .row img {
+    width: 100%;
+}
+.navbar-bootsnipp .bootsnipp-search {
+    display: none;
+}
+.navbar-bootsnipp .bootsnipp-search .form-control {
+    background-color: #ebebeb;
+    border-radius: 0;
+    border-width: 0;
+    font-size: 24px;
+    height: auto;
+}
+.navbar-bootsnipp .bootsnipp-search .form-control:focus {
+    border-color: transparent;
+    box-shadow: none;
+    outline: 0 none;
+}
+.navbar-bootsnipp .bootsnipp-search .input-group-btn > .btn {
+    border-radius: 0;
+    padding: 10px 16px;
+}
+.navbar-bootsnipp .bootsnipp-search .input-group-btn > .btn-default {
+    background-color: #f5f5f5;
+}
+.nav-padding {
+    padding-top: 61px;
+}
+    
+
+.badge-success {
+    background-color: #59B058;
+    border-radius: 10px;
+    color: #ffffff;
+    display: inline-block;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1;
+    min-width: 10px;
+    padding: 3px 7px;
+    text-align: center;
+    vertical-align: baseline;
+    white-space: nowrap;
+}
+
+.navbar-brand {
+    float: left;
+    font-size: 18px;
+    line-height: 20px;
+    padding: 5px;
+}
+
+/* _Results.cshmtl */
+.list-group-item:hover {
+ background: #cdcdcd;
+ }
+
+/* member.cshtml page */
+    .bigfont {
+    font-size:2em;
+    padding:10px 0 0px 0;
+    margin-top:10px;
+    }
+
+        .medfont {
+    font-size:1.2em;
+    }
+
+        .smallfont {
+    font-size:.8em;
+    }
+
+    .mylabel {
+    width:80px;
+    font-weight:bold;
+    float:left;
+    }
+
+    .message {
+    cursor:pointer;
+    }
+    #meaning {
+    color:#999;
+    }
+
+    /* payment summary.cshtml */
+        table#paymentSummary td {
+        padding: 8px 5px;
+    }
+
+    .borderbottom {
+        border-bottom: 1px solid #DFDFDF;
+    }
+
+
+    
+    .borderright {
+        border-right: 1px solid #DFDFDF;
+    
+    }
+
+     .borderleft{
+        border-left: 1px solid #DFDFDF;
+    
+    }
+
+
+
+    .FixedHeightContainer {
+        height: 400px;
+        /*width: 100%;*/
+        padding: 3px;
+        /*background: #f00;*/
+    }
+
+    .tableContent
+{
+  height:380px;
+   overflow:auto;
+    background:#fff;
+}
+
+    .mr { margin-right:20px;}
+
+    /* transaction.cshtml */
+      .number {
+        float: right;
+        padding-right: 10px;
+    }
+
+    table.due td, table.due th {
+        padding: 3px 20px;
+    }
+
+    .bordertop {
+        border-top: 1px solid #CCC;
+    }
+
+    .borderbottom {
+        border-bottom: 1px solid #CCC;
+    }
+
+    .nodeco {
+        border: none;
+        background: none !important;
+        box-shadow: none;
+        width: 100px;
+        text-align: right;
+    }
+
+    .pr {
+        padding-right:30px!important;
+    
+    }
+
+        .memberdetails {
+        background: #FFF;
+        /*float: right;*/
+        line-height: 10px;
+        padding: 1px;
+      -webkit-border-radius: 10px;
+-moz-border-radius: 10px;
+border-radius: 10px;
+        border:1px solid #999;
+        font-size:.9em;
+    }
+
+        .red {color: #ff0000;}
+
+/* shadows */
+/*==================================================
+ * Effect 1
+ * ===============================================*/
+.effect1{
+    -webkit-box-shadow: 0 10px 6px -6px #777;
+       -moz-box-shadow: 0 10px 6px -6px #777;
+            box-shadow: 0 10px 6px -6px #777;
+}
+
+/*==================================================
+ * Effect 2
+ * ===============================================*/
+.effect2
+{
+  position: relative;
+}
+.effect2:before, .effect2:after
+{
+  z-index: -1;
+  position: absolute;
+  content: "";
+  bottom: 15px;
+  left: 10px;
+  width: 50%;
+  top: 80%;
+  max-width:300px;
+  background: #777;
+  -webkit-box-shadow: 0 15px 10px #777;
+  -moz-box-shadow: 0 15px 10px #777;
+  box-shadow: 0 15px 10px #777;
+  -webkit-transform: rotate(-3deg);
+  -moz-transform: rotate(-3deg);
+  -o-transform: rotate(-3deg);
+  -ms-transform: rotate(-3deg);
+  transform: rotate(-3deg);
+}
+.effect2:after
+{
+  -webkit-transform: rotate(3deg);
+  -moz-transform: rotate(3deg);
+  -o-transform: rotate(3deg);
+  -ms-transform: rotate(3deg);
+  transform: rotate(3deg);
+  right: 10px;
+  left: auto;
+}
+
+/*==================================================
+ * Effect 3
+ * ===============================================*/
+.effect3
+{
+  position: relative;
+}
+.effect3:before
+{
+  z-index: -1;
+  position: absolute;
+  content: "";
+  bottom: 15px;
+  left: 10px;
+  width: 50%;
+  top: 80%;
+  max-width:300px;
+  background: #777;
+  -webkit-box-shadow: 0 15px 10px #777;
+  -moz-box-shadow: 0 15px 10px #777;
+  box-shadow: 0 15px 10px #777;
+  -webkit-transform: rotate(-3deg);
+  -moz-transform: rotate(-3deg);
+  -o-transform: rotate(-3deg);
+  -ms-transform: rotate(-3deg);
+  transform: rotate(-3deg);
+}
+
+/*==================================================
+ * Effect 4
+ * ===============================================*/
+.effect4
+{
+  position: relative;
+}
+.effect4:after
+{
+  z-index: -1;
+  position: absolute;
+  content: "";
+  bottom: 15px;
+  right: 10px;
+  left: auto;
+  width: 50%;
+  top: 80%;
+  max-width:300px;
+  background: #777;
+  -webkit-box-shadow: 0 15px 10px #777;
+  -moz-box-shadow: 0 15px 10px #777;
+  box-shadow: 0 15px 10px #777;
+  -webkit-transform: rotate(3deg);
+  -moz-transform: rotate(3deg);
+  -o-transform: rotate(3deg);
+  -ms-transform: rotate(3deg);
+  transform: rotate(3deg);
+}
+
+/*==================================================
+ * Effect 5
+ * ===============================================*/
+.effect5
+{
+  position: relative;
+}
+.effect5:before, .effect5:after
+{
+  z-index: -1;
+  position: absolute;
+  content: "";
+  bottom: 25px;
+  left: 10px;
+  width: 50%;
+  top: 80%;
+  max-width:300px;
+  background: #777;
+  -webkit-box-shadow: 0 35px 20px #777;
+  -moz-box-shadow: 0 35px 20px #777;
+  box-shadow: 0 35px 20px #777;
+  -webkit-transform: rotate(-8deg);
+  -moz-transform: rotate(-8deg);
+  -o-transform: rotate(-8deg);
+  -ms-transform: rotate(-8deg);
+  transform: rotate(-8deg);
+}
+.effect5:after
+{
+  -webkit-transform: rotate(8deg);
+  -moz-transform: rotate(8deg);
+  -o-transform: rotate(8deg);
+  -ms-transform: rotate(8deg);
+  transform: rotate(8deg);
+  right: 10px;
+  left: auto;
+}
+
+/*==================================================
+ * Effect 6
+ * ===============================================*/
+.effect6
+{
+    position:relative;
+    -webkit-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+       -moz-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+            box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+}
+.effect6:before, .effect6:after
+{
+    content:"";
+    position:absolute;
+    z-index:-1;
+    -webkit-box-shadow:0 0 20px rgba(0,0,0,0.8);
+    -moz-box-shadow:0 0 20px rgba(0,0,0,0.8);
+    box-shadow:0 0 20px rgba(0,0,0,0.8);
+    top:50%;
+    bottom:0;
+    left:10px;
+    right:10px;
+    -moz-border-radius:100px / 10px;
+    border-radius:100px / 10px;
+}
+.effect6:after
+{
+    right:10px;
+    left:auto;
+    -webkit-transform:skew(8deg) rotate(3deg);
+       -moz-transform:skew(8deg) rotate(3deg);
+        -ms-transform:skew(8deg) rotate(3deg);
+         -o-transform:skew(8deg) rotate(3deg);
+            transform:skew(8deg) rotate(3deg);
+}
+
+/*==================================================
+ * Effect 7
+ * ===============================================*/
+.effect7
+{
+    position:relative;
+    -webkit-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+       -moz-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+            box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+}
+.effect7:before, .effect7:after
+{
+    content:"";
+    position:absolute;
+    z-index:-1;
+    -webkit-box-shadow:0 0 20px rgba(0,0,0,0.8);
+    -moz-box-shadow:0 0 20px rgba(0,0,0,0.8);
+    box-shadow:0 0 20px rgba(0,0,0,0.8);
+    top:0;
+    bottom:0;
+    left:10px;
+    right:10px;
+    -moz-border-radius:100px / 10px;
+    border-radius:100px / 10px;
+}
+.effect7:after
+{
+    right:10px;
+    left:auto;
+    -webkit-transform:skew(8deg) rotate(3deg);
+       -moz-transform:skew(8deg) rotate(3deg);
+        -ms-transform:skew(8deg) rotate(3deg);
+         -o-transform:skew(8deg) rotate(3deg);
+            transform:skew(8deg) rotate(3deg);
+}
+
+/*==================================================
+ * Effect 8
+ * ===============================================*/
+.effect8
+{
+    position:relative;
+    -webkit-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+       -moz-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+            box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+}
+.effect8:before, .effect8:after
+{
+    content:"";
+    position:absolute;
+    z-index:-1;
+    -webkit-box-shadow:0 0 20px rgba(0,0,0,0.8);
+    -moz-box-shadow:0 0 20px rgba(0,0,0,0.8);
+    box-shadow:0 0 20px rgba(0,0,0,0.8);
+    top:10px;
+    bottom:10px;
+    left:0;
+    right:0;
+    -moz-border-radius:100px / 10px;
+    border-radius:100px / 10px;
+}
+.effect8:after
+{
+    right:10px;
+    left:auto;
+    -webkit-transform:skew(8deg) rotate(3deg);
+       -moz-transform:skew(8deg) rotate(3deg);
+        -ms-transform:skew(8deg) rotate(3deg);
+         -o-transform:skew(8deg) rotate(3deg);
+            transform:skew(8deg) rotate(3deg);
+}
+
+
+/* new member page */
+
+        .lbl {
+            font-weight: bold;
+            color: #888;
+            text-transform: uppercase;
+            font-size: .8em;
+            margin-top: 20px;
+            border-top: 1px solid #ddd;
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+            height: 20px;
+        }
+
+        .inp {
+            border-bottom: 1px solid #ddd;
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+            height: 40px;
+        }
+
+        .fld {
+            width: 100%;
+            border: none;
+        
+        }
+
+    /*section.resp {
+  display: block;
+  margin: 30px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  font-size: 0;
+}
+ 
+section.resp > div > label {
+  display: block;
+  padding: 20px 20px 10px;
+  vertical-align: top;
+  font-size: 13px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #777;
+  cursor: pointer;
+}
+section.resp > div.switch > label {
+  padding: 16px 20px 13px;
+}
+ 
+  .col-1, .col-2, .col-3, .col-4, .col-5, .col-10, .col-30,.col-35, .col-15 , .col-40 { 
+  border-bottom: 1px solid #aaa;
+}
+ 
+section.resp > div > .col-4 {
+  height: 86px;
+}
+ 
+label > input {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  height: 27px;
+  line-height: 27px;
+  margin: 5px -5px 0;
+  padding: 7px 5px 3px;
+  border: none;
+  outline: none;
+  color: #222;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-weight: bold;
+  font-size: 14px;
+  opacity: .6;
+  transition: all linear .3s;
+}
+ 
+.col-submit {
+  text-align: center;
+  padding: 20px;
+}
+ 
+label > select {
+  display: block;
+  width: 100%;
+  padding: 0;
+  color: #222;
+  margin: 16px 0 6px;
+  font-weight: 500;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-size: 14px;
+  opacity: .4;
+  transition: all linear .3s;
+}
+ 
+label > input:focus, label > select:focus {
+  opacity: 1;
+
+}*/
+/* http://stackoverflow.com/questions/13183421/how-to-change-placeholder-color-on-focus */
+input::-webkit-input-placeholder {
+    color: #999;
+}
+input:focus::-webkit-input-placeholder {
+    color: red;
+}
+
+/* Firefox < 19 */
+input:-moz-placeholder {
+    color: #999;
+}
+input:focus:-moz-placeholder {
+    color: red;
+}
+
+/* Firefox > 19 */
+input::-moz-placeholder {
+    color: #999;
+}
+input:focus::-moz-placeholder {
+    color: red;
+}
+
+/* Internet Explorer 10 */
+input:-ms-input-placeholder {
+    color: #999;
+}
+input:focus:-ms-input-placeholder {
+    color: red;
+}
+
+.selectheight{
+
+height:90px;
+}
+  .col-submit { display: block;  width: 30%; margin: 20px auto;}
+  .col-submit button { }
+
+/*@media(min-width: 850px){
+  section > div { display: inline-block; }
+  .col-submit { display: block; }
+ 
+ .col-1, .col-2, .col-3, .col-4, .col-5, .col-10, .col-30, .col-35,.col-15 , .col-40 { box-shadow: 1px 1px #aaa; border: none; }
+  
+  .col-2 { width: 50% }
+  .col-3 { width: 33.3333333333% }
+  .col-4 { width: 25% }
+  .col-1 { width: 100% }
+  .col-5 { width: 20% }
+  .col-10 {width:10% }
+  .col-15 {width:15% }
+  .col-30 {width:30% }
+  .col-35 {width:35% }
+
+  .col-40 {width:40% }
+
+ 
+  .col-submit button { width: 30%; margin: 0 auto; }
+}*/
+
+/*http://stackoverflow.com/questions/13955163/imitating-a-blink-tag-with-css3-animations */
+.blink {
+  animation: blink 1s steps(5, start) infinite;
+  -webkit-animation: blink 1s steps(5, start) infinite;
+}
+@keyframes blink {
+  to {
+    visibility: hidden;
+  }
+}
+@-webkit-keyframes blink {
+  to {
+    visibility: hidden;
+  }
+}
+
+/* override dl-horizontal version 2 */
+.dl-horizontal2 dt {
+    float: left;
+    width: 120px;
+    overflow: hidden;
+    clear: left;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+.dl-horizontal2 dt::after{
+    content:"................................";
+
+}
+
+  .dl-horizontal2 dd::before {
+        content:"........................................................";
+
+  }
+
+
+
+  .dl-horizontal2 dd {
+    margin-left: 120px;
+    text-align:left;
+  }
+
+  /*.dl-horizontal2 dd:before,
+  .dl-horizontal2 dd:after {
+    display: table;
+    content: " ";
+  }
+      */
+  .dl-horizontal2 dd:after {
+    clear: both;
+  }
+  /*
+  .dl-horizontal2 dd:before,
+  .dl-horizontal2 dd:after {
+    display: table;
+    content: " ";
+  }*/
+  .dl-horizontal2 dd:after {
+    clear: both;
+  }
+
+  ul.leaders {
+max-width: 40em;
+padding: 0;
+overflow-x: hidden;
+list-style: none;
+line-height:1.5em;
+    
+}
+
+  ul.leaders li {
+      padding:5px 0;
+  }
+
+ul.leaders li:before {
+float: left;
+width: 0;
+white-space: nowrap;
+content:
+". . . . . . . . . . . . . . . . . . . . "
+". . . . . . . . . . . . . . . . . . . . "
+". . . . . . . . . . . . . . . . . . . . "
+". . . . . . . . . . . . . . . . . . . . "
+}
+
+ul.leaders span:first-child {
+padding-right: 0.33em;
+background: white;
+    font-weight:bold;
+}
+
+ul.leaders span + span {
+float: right;
+padding-left: 0.33em;
+background: white;
+    font-size:1.3em;
+}
+
+.bold {
+   font-weight:bold;
+}
+
+/* admin section */
+.bg-grey {
+        background:#425162;
+        color:white;
+        margin-top:50px;
+
+        padding:30px;
+    } 
+
+    .color-grey {
+
+        color:#8D97A0;
+    }
+
+    .color-grey:hover {
+
+        color:#FFF;
+    }
+
+
+    a.white:link {
+    color: white;
+}
+
+/* visited link */
+a.white:visited {
+    color: white;
+}
+
+/* mouse over link */
+a.white:hover {
+    color: #8D97A0;
+    text-decoration:none;
+}
+
+/* selected link */
+a.white:active {
+    color: blue;
+}
+
+    .subtext {
+        font-style:oblique;
+        color:#8D97A0;
+        text-align:center;
+        font-size:1.1em;
+        padding:0 20px;
+    }
+
+    .large {
+        font-size:1.4em;
+    }
+
+    .bg-grey > .row
+    {
+        margin-bottom:40px;
+    }
+
+    h2.admin {
+          color: #5FB0E9;
+        padding-top:20px;
+        border-bottom:1px dotted #4B5A6A
+    }

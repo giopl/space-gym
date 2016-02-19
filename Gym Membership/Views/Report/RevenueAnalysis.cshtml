@@ -1,0 +1,784 @@
+﻿@model Gym_Membership.Models.RevenueAnalysisViewModel
+
+@{
+    ViewBag.Title = "Revenue Analysis";
+    var total = Model.RevenueTable.Sum(x => x.FeeAndRegistration);
+    var tot_paid = Model.RevenueTable.Sum(x => x.Paid);
+    var tot_reg = Model.RevenueTable.Sum(x => x.RegistrationAmount);
+
+   // System.Globalization.CultureInfo us = System.Globalization.CultureInfo.GetCultureInfo("en-MU");
+    //string s = string.Format(us, "{0:C}", value);
+}
+<h2 class="admin">Revenue Analysis</h2>
+
+<ol class="breadcrumb">
+    <li><a href="@Url.Action("Index")">Home</a></li>
+    <li class="active">Revenue Analysis</li>
+</ol>
+
+<div class="row">
+    <section>
+        <form>
+            <div class="col-md-2">
+                Date Range (from - to) <br /><small>
+                    Format: mm/dd/yyyy
+                </small>
+            </div>
+            <div class="col-md-3">
+                <input type="text" name="range" id="daterangepicker-revenue" value="@Model.DateRange" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <input type="submit" value="Go" class="btn btn-sm btn-primary" />
+
+            </div>
+        </form>
+    </section>
+</div>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <div id="container-month-revenue"></div>
+    </div>
+
+    <div class="col-md-6">
+        <div id="container-payment-method"></div>
+    </div>
+
+</div>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <div id="container-revenue-agegroup"></div>
+    </div>
+    <div class="col-md-6">
+        <div id="container-revenue-membership"></div>
+    </div>
+</div>
+<hr />
+<div class="row">
+    <div class="col-md-9">
+        <div class="text-center"><h3>Monthly Breakdown</h3></div>
+
+        <table class="table table-condensed">
+            <thead>
+                <tr>
+                    <th>Month</th>
+                    <th>Due</th>
+                    <th></th>
+                    <th>Discounted</th>
+                    <th></th>
+                    <th>Revenue</th>
+                    <th></th>
+                    <th>Registration Fee</th>
+                    <th></th>
+                    <th>Total Received</th>
+                    <th>%</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var item in Model.RevenueTable)
+                {
+                    <tr>
+                        <td>@item.YearMonthPaymentDesc</td>
+                        <td class="text-center">@item.Bill.ToString("N2")</td>
+                        <td class="text-center">-</td>
+                        <td class="text-center">(@item.WrittenOffAndDiscounted.ToString("N2"))</td>
+                        <td class="text-center">=</td>
+                        <td class="text-center">@item.Paid.ToString("N2")</td>
+                        <td class="text-center">+</td>                        
+                        <td class="text-center">@item.RegistrationAmount.ToString("N2")</td>
+                        <td class="text-center">=</td>
+                        <td class="text-center">@item.FeeAndRegistration.ToString("N2")</td>
+                        <td class="text-center"><span class="label label-@(item.NetReturnFlag)">@item.NetReturn.ToString("N2")</span></td>
+                    </tr>
+
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th class="text-center" style="font-size:1.3em">
+                        @tot_paid.ToString("N2")
+                    </th>
+                    <th></th>
+                    <th class="text-center" style="font-size:1.3em">
+                        @tot_reg.ToString("N2")
+                    </th>
+                    <th></th>
+                    <th class="text-center" style="font-size:1.3em">
+                        @total.ToString("N2")
+                    </th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <div class="col-md-3">
+        <div class="text-center"><h3>Received</h3></div>
+        <table class="table table-condensed table-striped">
+            <thead>
+                <tr>
+                    <th>Month</th>
+                    <th>Amount Received</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.ReceptionTable)
+                {
+                    <tr>
+                        <td>@item.YearMonthPaymentDesc</td>
+                        <td class="text-center">@item.Paid.ToString("N2")</td>
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+
+
+    </div>
+</div>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-12">
+
+        <div id=""></div>
+
+
+    </div>
+</div>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-12">
+        <div id="">
+
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+
+            $('#daterangepicker-revenue').daterangepicker({
+                "linkedCalendars": false,
+                ranges: {
+                    // 'Today': [moment(), moment()],
+                    // 'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    //'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    //'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    //'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                    'Last 2 Months': [moment().subtract(2, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                    'Last 3 Months': [moment().subtract(3, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                    'Last 6 Months': [moment().subtract(6, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                    'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+                    'All': ['01/01/2000', '12/31/2020']
+
+
+
+                }
+
+
+            }, function (start, end, label) {
+                console.log("New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')");
+            });
+
+            $('#container-month-revenue').highcharts({
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: 'Revenue Per Month'
+                },
+                subtitle: {
+                    text: ''
+                },
+                xAxis: {
+
+                    categories: [@Html.Raw(Model.RevenuePerMonthCategory)],
+                    crosshair: true
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Amount'
+                    }
+                },
+                tooltip: {
+                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                        '<td style="padding:0"><b>Rs {point.y:.1f}      </b></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                plotOptions: {
+                    column: {
+                        stacking: 'normal',
+                        dataLabels: {
+                            enabled: false,
+                            color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
+                            style: {
+                                textShadow: '0 0 3px black'
+                            }
+                        }
+                    }
+                },
+                series: [{
+                    name: 'Actual',
+                    data: [@Model.RevenuePerMonthActual]
+                }
+
+
+                ]
+            });
+
+            // payment method
+            $(function () {
+                $('#container-payment-method').highcharts({
+                    chart: {
+                        type: 'pie',
+                        options3d: {
+                            enabled: true,
+                            alpha: 45
+                        }
+
+                    },
+                    title: {
+                        text: 'Payment Method'
+                    },
+                    tooltip: {
+                        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                    },
+                    plotOptions: {
+                        pie: {
+                            innerSize:100,
+                            depth:45,
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            dataLabels: {
+                                enabled: true,
+                                format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                                style: {
+                                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                                }
+                            }
+                        }
+                    },
+                    series: [{
+                        name: 'Payment Method',
+                        colorByPoint: true,
+                        data: [
+                        @foreach(var datum in Model.PaymentMethod)
+                        {
+                        @:{
+                        @:name:'@datum.name',
+                        @:y:@datum.yy,
+                        @:color: '@datum.color'
+
+                        @:}
+                if(datum != Model.PaymentMethod.Last())
+                {
+                    @:,
+                    }
+            }
+            ]
+
+
+        }]
+        });
+        });
+
+            // payment by age group
+            $(function () {
+                $('#container-revenue-agegroup').highcharts({
+                    chart: {
+                        type: 'pie',
+                        options3d: {
+                            enabled: true,
+                            alpha: 45
+                        }
+
+                    },
+                    title: {
+                        text: 'Revenue Per Age Group'
+                    },
+                    tooltip: {
+                        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                    },
+                    plotOptions: {
+                        pie: {
+                            innerSize:100,
+                            depth:45,
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            dataLabels: {
+                                enabled: true,
+                                format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                                style: {
+                                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                                }
+                            }
+                        }
+                    },
+                    series: [{
+                        name: 'Revenue Age Group',
+                        colorByPoint: true,
+                        data: [
+                        @foreach(var datum in Model.RevenueAgeGroup)
+                        {
+                        @:{
+                        @:name:'@datum.name',
+                        @:y:@datum.yy,
+                        @:color: '@datum.color'
+
+                        @:}
+                if(datum != Model.RevenueAgeGroup.Last())
+                {
+                    @:,
+                    }
+            }
+            ]
+
+
+        }]
+        });
+        });
+
+
+            // revenue by membership
+            $(function () {
+                $('#container-revenue-membership').highcharts({
+                    chart: {
+                        type: 'pie',
+                        options3d: {
+                            enabled: true,
+                            alpha: 45
+                        }
+
+                    },
+                    title: {
+                        text: 'Revenue Per Membership'
+                    },
+                    tooltip: {
+                        pointFormat: '{series.name}: <b>{point.percentage:.1f}% Rs{point.y} </b>'
+                    },
+                    plotOptions: {
+                        pie: {
+                            innerSize:100,
+                            depth:45,
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            dataLabels: {
+                                enabled: true,
+                                format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                                style: {
+                                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                                }
+                            }
+                        }
+                    },
+                    series: [{
+                        name: 'Revenue Membership',
+                        colorByPoint: true,
+                        data: [
+                        @foreach(var datum in Model.RevenueMembership)
+                        {
+                        @:{
+                        @:name:'@datum.name',
+                        @:y:@datum.yy,
+                        @:color: '@datum.color'
+
+                        @:}
+                if(datum != Model.RevenueMembership.Last())
+                {
+                    @:,
+                    }
+            }
+            ]
+
+
+        }]
+        });
+        });
+
+            @*$(function () {
+                $('#container-revenue-membership').highcharts({
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: 'Stacked column chart'
+                    },
+                    xAxis: {
+                        categories: [@Html.Raw(Model.RevenueMembershipCategory)]
+                    },
+                    yAxis: {
+                        min: 0,
+                        title: {
+                            text: 'Total fruit consumption'
+                        },
+                        stackLabels: {
+                            enabled: true,
+                            style: {
+                                fontWeight: 'bold',
+                                color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+                            }
+                        }
+                    },
+                    legend: {
+                        align: 'right',
+                        x: -30,
+                        verticalAlign: 'top',
+                        y: 25,
+                        floating: true,
+                        backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
+                        borderColor: '#CCC',
+                        borderWidth: 1,
+                        shadow: false
+                    },
+                    tooltip: {
+                        formatter: function () {
+                            return '<b>' + this.x + '</b><br/>' +
+                                this.series.name + ': ' + this.y + '<br/>' +
+                                'Total: ' + this.point.stackTotal;
+                        }
+                    },
+                    plotOptions: {
+                        column: {
+                            stacking: 'normal',
+                            dataLabels: {
+                                enabled: false,
+                                color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
+                                style: {
+                                    textShadow: '0 0 3px black'
+                                }
+                            }
+                        }
+                    },
+                    series: [{
+                        name: 'Actual',
+                        data: [@Model.RevenueMembershipActual]
+                    }, {
+                        name: 'Budgeted',
+                        data: [@Model.RevenueMembershipBudgeted]
+                    }]
+                });
+            });*@
+
+
+            @*$(function () {
+                $('#container-visitsperyearmonth').highcharts({
+
+                    chart: {
+                        type: 'area'
+                    },
+
+                    title: {
+                        text: 'Monthly Number of visits',
+                        x: -20 //center
+                    },
+                    subtitle: {
+                        text: '',
+                        x: -20
+                    },
+                    xAxis: {
+                        //categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun','Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                      //  categories: @Html.Raw(ViewBag.VisitsYmcCateg)
+                        categories: [@Html.Raw(Model.YearMonthCodeCateg)]
+                        },
+                    yAxis: {
+                        title: {
+                            text: 'Visits '
+                        },
+                        plotLines: [{
+                            value: 0,
+                            width: 1,
+                            color: '#808080'
+                        }]
+                    },
+                    tooltip: {
+                        valueSuffix: ' Visits'
+                    },
+                    legend: {
+                        layout: 'vertical',
+                        align: 'right',
+                        verticalAlign: 'middle',
+                        borderWidth: 0
+                    },
+                    series: [{
+                        name: 'Visits per Month',
+                        //data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
+                        //data: @ViewBag.VisitsYmcData
+                        data: [@Model.VisitsPerYearMonth]
+                        },
+                        {
+                            name: 'Female Visit',
+                            //data: @ViewBag.VisitsYmcFemaleData,
+                            data: [@Model.FemaleVisitsPerYearMonth],
+                            color:'#F4A91E'
+
+                        }
+
+                    ]
+                });
+            });
+
+
+
+            //ch age group
+            $(function () {
+                $('#container-visitperagegroup').highcharts({
+                    chart: {
+                        type: 'pie',
+                        options3d: {
+                            enabled: true,
+                            alpha: 45
+                        }
+
+                    },
+                    title: {
+                        text: 'Visit per Age Group'
+                    },
+                    tooltip: {
+                        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                    },
+                    plotOptions: {
+                        pie: {
+                            innerSize:100,
+                            depth:45,
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            dataLabels: {
+                                enabled: true,
+                                format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                                style: {
+                                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                                }
+                            }
+                        }
+                    },
+                    series: [{
+                        name: 'Age Groups',
+                        colorByPoint: true,
+                        data: [
+                        @foreach(var datum in Model.VisitPerAgeGroup)
+                        {
+                            @:{
+                            @:name:'@datum.name',
+                            @:y:@datum.y,
+                            @:color: '@datum.color'
+
+                            @:}
+                            if(datum != Model.VisitPerAgeGroup.Last())
+                            {
+                                @:,
+                            }
+
+                        }
+
+                            ]
+
+
+                    }]
+                });
+            });
+
+            // visit per membership type
+            $(function () {
+                $('#container-visitpermembership').highcharts({
+                    chart: {
+                        type: 'pie',
+                        options3d: {
+                            enabled: true,
+                            alpha: 45
+                        }
+
+                    },
+                    title: {
+                        text: 'Visit per Membership'
+                    },
+                    tooltip: {
+                        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                    },
+                    plotOptions: {
+                        pie: {
+                            innerSize:100,
+                            depth:45,
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            dataLabels: {
+                                enabled: true,
+                                format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                                style: {
+                                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                                }
+                            }
+                        }
+                    },
+                    series: [{
+                        name: 'Membership',
+                        colorByPoint: true,
+                        data: [
+                        @foreach(var datum in Model.VisitPerMembership)
+                        {
+                        @:{
+                        @:name:'@datum.name',
+                        @:y:@datum.y,
+                        @:color: '@datum.color'
+
+                        @:}
+                        if(datum != Model.VisitPerAgeGroup.Last())
+                        {
+                            @:,
+                        }
+                }
+                ]
+
+
+                }]
+            });
+        });
+
+
+            //chart per day of week
+            $('#container-dayofweek').highcharts({
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: 'Visit by Day of Week'
+                },
+                subtitle: {
+                    text: ''
+                },
+                xAxis: {
+                    //categories: @Html.Raw(ViewBag.DayOfWeekCateg),
+                    categories: [@Html.Raw(Model.DayOfWeekCateg)],
+                    crosshair: true
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Count'
+                    }
+                },
+                tooltip: {
+                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                        '<td style="padding:0"><b>{point.y:.1f} visits</b></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                plotOptions: {
+                    column: {
+                        pointPadding: 0.2,
+                        borderWidth: 0
+                    }
+                },
+                series: [{
+                    name: 'Count',
+                  //  data: @ViewBag.DayOfWeekData
+                    data: [@Model.DayOfWeekData]
+                    }]
+            });
+
+
+
+            //chart per day of week
+            $('#container-dayofmonth').highcharts({
+                chart: {
+                    type: 'line'
+                },
+                title: {
+                    text: 'Visit by Day of Month'
+                },
+                subtitle: {
+                    text: ''
+                },
+                xAxis: {
+                    categories: [@Html.Raw(Model.DayOfMonthCateg)],
+                    crosshair: true
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Count'
+                    }
+                },
+                tooltip: {
+                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                        '<td style="padding:0"><b>{point.y:.1f} visits</b></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                plotOptions: {
+                    column: {
+                        pointPadding: 0.2,
+                        borderWidth: 0
+                    }
+                },
+                series: [{
+                    name: 'Count',
+                    data: [@Model.DayOfMonthData]
+                    }]
+            });
+
+            //time of day
+            $('#container-timeofday').highcharts({
+                chart: {
+                    type: 'area'
+                },
+                title: {
+                    text: 'Visit by Time of Day'
+                },
+                subtitle: {
+                    text: ''
+                },
+                xAxis: {
+                    categories: [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22],
+                    crosshair: true
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Count'
+                    }
+                },
+                tooltip: {
+                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                        '<td style="padding:0"><b>{point.y:.1f} visits</b></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                plotOptions: {
+                    column: {
+                        pointPadding: 0.2,
+                        borderWidth: 0
+                    }
+                },
+                series: [{
+                    name: 'Count',
+                    data: [@Model.HourOfDayData]
+                    }]
+            });*@
+
+
+
+        }); //jquery
+
+    </script>
+}

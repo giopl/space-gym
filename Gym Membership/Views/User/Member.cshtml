@@ -1,0 +1,665 @@
+﻿@model Gym_Membership.Models.GymMember
+@using session = Gym_Membership.Helpers.UserSession;
+
+@if (Model.IsPass)
+    {
+
+        var age = Model.Age > 100 ? Model.AgeInputted : Model.Age;
+
+    <h2><span class="fa fa-ticket"></span>&nbsp;@(Model.IsDayPass ? "One Day Pass" : "Ten Visits Voucher")</h2>
+    <h3>Voucher Number <span class="label label-primary">@Model.MemberId</span></h3>
+
+    <div class="container">
+        <div class="row">
+            <hr />
+            <div class="col-md-4">
+
+                <h3>User</h3>
+                <ul class="leaders">
+                    <li><span>Name</span><span>@Html.DisplayFor(model => model.Title)&nbsp;@Html.DisplayFor(model => model.Fullname) </span></li>
+                    <li><span>@Html.DisplayNameFor(model => model.Gender)</span><span>@Html.DisplayFor(model => model.Gender)</span></li>
+                    <li><span>@Html.DisplayNameFor(model => model.Age)</span><span>@age</span></li>
+                    <li><span>@Html.DisplayNameFor(model => model.DateOfBirth)</span><span>@Html.DisplayFor(model => model.DateOfBirth)</span></li>
+
+                </ul>
+
+
+            </div>
+
+            <div class="col-md-4">
+                <h3>Visit</h3>
+                <ul class="leaders">
+                    <li><span>@Html.DisplayNameFor(model => model.LastVisit)</span><span>@Html.DisplayFor(model => model.LastVisit)</span></li>
+                    <li><span>@Html.DisplayNameFor(model => model.Club)</span><span>@Html.DisplayFor(model => model.Club)</span></li>
+
+                    @if (Model.IsDayPass && Model.VisitsLeft == 0)
+                    {
+                        <li><span>Status</span><span><span class="label label-danger" style="background:red;">Pass Expired</span></span></li>
+                    }
+                    else
+                    {
+                        <li><span>Visits Left</span><span class="label label-success" style="background:#64BC64">@Model.VisitsLeft</span></li>
+
+                    }
+
+                    <li><span>@Html.DisplayNameFor(model => model.UpdatedOn)</span><span>@Html.DisplayFor(model => model.UpdatedOn)</span></li>
+                    <li><span>@Html.DisplayNameFor(model => model.CreatedBy)</span><span>@Html.DisplayFor(model => model.CreatedBy.Username)</span></li>
+
+
+
+                </ul>
+
+            </div>
+
+            <div class="col-md-4">
+                <h3>Address & Contact</h3>
+                <ul class="leaders">
+                    <li><span>@Html.DisplayNameFor(model => model.StreetAddress)</span><span>@Html.DisplayFor(model => model.StreetAddress)</span></li>
+                    <li><span>@Html.DisplayNameFor(model => model.Town)</span><span>@Html.DisplayFor(model => model.Town)</span></li>
+                    <li><span>@Html.DisplayNameFor(model => model.EmailAddress)</span><span>@Html.DisplayFor(model => model.EmailAddress)</span></li>
+                    <li><span>@Html.DisplayNameFor(model => model.HomePhone)</span><span>@Html.DisplayFor(model => model.HomePhone)</span></li>
+
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            @if (session.Current.IsAdmin)
+            {
+                <div class="col-md-offset-4 col-md-4">
+
+                <a class="btn btn-sm btn-danger" style="width:100%;font-size:1.2em" href="@Url.Action("RemoveMember", "Admin", new { id = @Model.MemberId })"><span class="fa fa-trash"></span>&nbsp;Delete Pass</a>
+                </div>
+
+            }
+        </div>
+
+            </div>
+}
+else
+{
+
+            <div class="row">
+                <div class="col-lg-6">
+
+                    <div class="bigfont">
+                        @Model.TitleFullname  @*for <span class="label label-primary">@Model.TitleFullname</span>*@
+                        @*<a href="@Url.Action("Edit", new { id = Model.MemberId})"><span class="fa fa-edit"></span></a>*@
+                    </div>
+                    @if (!Model.IsActive)
+                    {
+                        <h4><span class="label label-danger">Member Inactive:</span> <b class="text-danger">@Model.ReasonForLeaving</b></h4>
+                    }
+                </div>
+
+
+                <div class="col-lg-6">
+
+
+
+
+                    <div class="text-right" style="font-size:1.1em;margin-top:20px;">
+
+                        @if (Model.IsTemporary)
+                        {
+                            <span class="fa-stack message" title="Member is Temporary">
+                                <span class="fa fa-circle fa-stack-2x" style="color:#FFDC19"></span>
+                                <span class="fa fa-hourglass-end fa-stack-1x fa-inverse"></span>
+                            </span>
+
+                        }
+
+                        @if (!Model.IsActive)
+                        {
+                            <span class="fa-stack message" title="Member is set to inactive">
+                                <span class="fa fa-user fa-stack-1x"></span>
+                                <span class="fa fa-ban fa-stack-2x text-danger"></span>
+                            </span>
+
+                        }
+
+                        @if (Model.VisitedWhileOverdue)
+                        {
+                            <span class="fa-stack message" title="Member checked in while overdue">
+                                <span class="fa fa-circle fa-stack-2x" style="color:#E82320"></span>
+                                <span class="fa fa-exclamation fa-stack-1x fa-inverse"></span>
+                            </span>
+
+                        }
+
+
+
+
+
+                        <span class="fa-stack message" title="@(Model.HasArrears && !Model.IsLongOverdue ? "Has Arrears" : (Model.IsLongOverdue ? "Long Overdue" : "Fees In Order"))">
+
+                            <span class="@(Model.IsLongOverdue ? "blink" : "")">
+                                <span class="fa fa-circle fa-stack-2x" style="color:@(Model.HasArrears ? "#E82320" : "#64BC64")"></span>
+                                <span class="fa fa-dollar fa-stack-1x fa-inverse"></span>
+                            </span>
+                        </span>
+
+                        @if (Model.IsPresent)
+                        {
+                            <span class="fa-stack message" title="Member is currently in club">
+                                <span class="fa fa-circle fa-stack-2x" style="color:#64BC64"></span>
+                                <span class="fa fa-map-marker fa-stack-1x fa-inverse"></span>
+                            </span>
+
+                        }
+
+                        @if (Model.DaysSinceLastVisit < 15)
+                        {
+                            <span class="fa-stack message" title="Member has checked in within last two weeks">
+                                <span class="fa fa-square fa-stack-2x" style="color:#64BC64"></span>
+                                <span class="fa fa-battery-4 fa-stack-1x fa-inverse"></span>
+                            </span>
+                        }
+
+                        @if (Model.DaysSinceLastVisit >= 15 && Model.DaysSinceLastVisit <= 45)
+                        {
+                            <span class="fa-stack message" title="Member checked in within last month">
+                                <span class="fa fa-square fa-stack-2x" style="color:#ffd800"></span>
+                                <span class="fa fa-battery-2 fa-stack-1x fa-inverse"></span>
+                            </span>
+                        }
+
+
+
+                        @if (Model.DaysSinceLastVisit > 45)
+                        {
+                            <span class="fa-stack message" title="Member not checked in for last one and a half months">
+                                <span class="fa fa-square fa-stack-2x" style="color:#E82320"></span>
+                                <span class="fa fa-battery-1 fa-stack-1x fa-inverse"></span>
+                            </span>
+                        }
+
+                        @if (Model.HasComingBirthday)
+                        {
+                            <span class="fa-stack message" title="@Model.ComingBirthdayDescription">
+                                <span class="fa fa-square fa-stack-2x" style="color:@(Model.IsBirthday ? "#64BC64" : "#ffd800")"></span>
+                                <span class="fa fa-birthday-cake fa-stack-1x fa-inverse"></span>
+                            </span>
+
+                        }
+
+
+                    </div>
+                    <div id="meaning" class="text-right"></div>
+                </div>
+
+            </div>
+
+            <a href="javascript:void(0)" class="showmembersection"><span class="fa fa-plus-circle"></span> Add Comment</a>
+            <section style="display:none">
+                @using (Html.BeginForm("AddComment", "User", FormMethod.Post, new { @class = "form-horizongal" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-horizontal">
+                        <h4>Member Comment</h4>
+                        <hr />
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                        <input type="hidden" value="@Model.MemberId" name="MemberId" />
+
+                        <div class="form-group">
+                            <div class="control-label col-md-2">Description</div>
+                            <div class="col-md-4">
+                                <textarea name="CommentDescription" class="form-control"></textarea>
+                            </div>
+                        </div>
+
+                        @*<div class="form-group">
+                        <div class="control-label col-md-2">Follow up Date</div>
+
+                        <div class="col-md-4">
+                            <input type="date" name="FollowupDate" class="form-control" />
+                        </div>
+                    </div>*@
+
+                        <div class="form-group">
+                            <div class="control-label col-md-2">Type</div>
+
+                            <div class="col-md-4">
+                                <select name="CommentType" class="form-control">
+                                    <option value="general">General</option>
+                                    <option value="training">Training</option>
+                                    <option value="fee">Fees</option>
+                                    <option value="complaint">Complaint</option>
+                                    <option value="suggestion">Suggestion</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-10">
+                                <input type="submit" value="Create" class="btn btn-default" />
+                            </div>
+                        </div>
+                    </div>
+                }
+            </section>
+
+            <hr />
+
+            <div class="row">
+                <div class="col-md-1">
+                    <div class="pic text-center">
+
+
+
+                        @if (Model.HasProfilePicture)
+                        {
+                            <img class="img-responsive text-center" style="width:100px;" src="@Url.Content(string.Format("~/Images/MemberImages/{0}{1}", Model.MemberId, Model.ProfilePicExt))" />
+                        }
+                        else
+                        {
+                            <img class="img-responsive text-center" style="width:100px;" src="@Url.Content(string.Format("~/Images/icons/{0}.png", Model.Gender))" />
+                        }
+                    </div>
+                    <div class="text-center">
+                        <span class="label label-success">Joined 
+                            
+
+                        </span>
+                        <br /><span class="smallfont">@Model.RegistrationDate.ToString("dd MMM yyyy")</span>
+
+                        <a href="#" data-toggle="modal" data-target="#uploadPictureModal">
+                            <span class="fa fa-photo"></span>
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-3 pull-left">
+
+                    <div class="bigfont">@Model.MemberId</div>
+
+                    @Html.Raw(string.IsNullOrWhiteSpace(Model.EmailAddress) ? "" : string.Format("<br/><span class='fa fa-envelope-o'></span>&nbsp;: {0}", Model.EmailAddress))
+                    @Html.Raw(string.IsNullOrWhiteSpace(Model.MobilePhone) ? "" : string.Format("<br/><div class='mylabel'>Mob</div>: {0}", Model.MobilePhone))
+                    @Html.Raw(string.IsNullOrWhiteSpace(Model.HomePhone) ? "" : string.Format("<br/><div class='mylabel'>Home</div>: {0}", Model.HomePhone))
+                    @Html.Raw(string.IsNullOrWhiteSpace(Model.OfficePhone) ? "" : string.Format("<br/><div class='mylabel'>Off</div>: {0}", Model.OfficePhone))
+
+                </div>
+                <div class="col-md-1">
+                    <span class="fa fa-home fa-3x fa-pull-left fa-border"></span>
+                </div>
+                <div class="col-md-3">
+                    <span class="medfont">Address:</span>
+                    <address>
+                        @Model.StreetAddress
+                        <br /><b>@Model.Town</b>
+                    </address>
+                </div>
+                <div class="col-md-1">
+                    <span class="fa fa-info-circle fa-3x fa-pull-left fa-border"></span>
+                </div>
+
+                <div class="col-md-3">
+                    <dl class="">
+                        <dt>
+                            DOB/Age
+                        </dt>
+                        <dd>
+                            @Model.DateOfBirth.ToString("dd MMM yyyy") /  @Model.Age y.o
+
+                        </dd>
+                        <dt>
+                            Occupation
+                        </dt>
+                        <dd>
+                            @Model.Occupation @(string.IsNullOrWhiteSpace(Model.Company) ? "" : string.Format("at {0}", Model.Company))
+                        </dd>
+                    </dl>
+
+                </div>
+
+
+            </div>
+            <div class="row" style="margin-top:50px">
+                <div class="col-md-1">
+                    <span class="fa fa-bar-chart fa-3x fa-pull-left fa-border"></span>
+                </div>
+
+                <div class="col-md-3">
+
+                    <dl>
+                        <dt>
+                            Visits
+                        </dt>
+                        <dd>
+                            @Model.NumberVisits
+                        </dd>
+                        <dt>
+                            Last Visit
+                        </dt>
+                        <dd>
+                            @Model.LastVisit.ToString("dd MMM yyyy HH:mm")
+                        </dd>
+                        <dt>
+                            Days since last visit
+                        </dt>
+                        <dd>
+                            @Model.DaysSinceLastVisit
+                        </dd>
+                    </dl>
+                </div>
+
+                <div class="col-md-1">
+                    <span class="fa fa-institution fa-3x fa-pull-left fa-border"></span>
+                </div>
+                <div class="col-md-3">
+
+                    <dl>
+                        <dt>
+                            Club
+                        </dt>
+                        <dd>
+                            @Model.Club
+                        </dd>
+                        <dt>
+                            Membership
+                        </dt>
+                        <dd>
+                            @Model.Membership.Name
+                            <br />@Model.Membership.MembershipRules
+                        </dd>
+                        <dt>
+                            Fees
+                        </dt>
+                        <dd>
+                            Rs @Model.Membership.Fee.ToString("N2") @(Model.Membership.MonthTerms == 12 ? " Yearly" : " Monthly")
+                        </dd>
+                    </dl>
+                </div>
+
+
+                <div class="col-md-1">
+                    <a href="@Url.Action("Transaction", new { id = Model.MemberId })"><span class="fa fa-dollar fa-3x fa-pull-left fa-border"></span></a>
+                </div>
+                <div class="col-md-3">
+
+                    <dl>
+                        <dt>
+                            Due
+                        </dt>
+                        <dd>
+                            @Html.Raw(Model.DaysOverDue < 0 ? "None" : string.Format("<span class='label label-danger'>{0} days</span>", Model.DaysOverDue))
+                        </dd>
+                        <dt>
+                            @(Model.HasArrears ? "Last Payment Date:" : "Next Payment Due:")
+
+                        </dt>
+                        <dd>
+                            @if (Model.HasArrears)
+                            {
+                                <span class="label label-danger">@Model.PaymentUntilDate.AddDays(0).ToString("dd MMM yyyy")</span>
+                            }
+                            else
+                            {
+
+                                <span class="label label-success">
+                                    @Model.PaymentUntilDate.AddDays(1).ToString("dd MMM yyyy")
+                                </span>
+                            }
+                        </dd>
+
+                    </dl>
+                </div>
+
+
+
+
+
+            </div>
+
+
+
+
+
+            if (Model.HasComments)
+            {
+                <h3 class="showmembersection"><a href="javascript:void(0)"><span class="fa fa-plus-circle"></span>&nbsp;Comments (@Model.Comments.Count)</a></h3>
+                <section style="display:none">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Comment</th>
+                                <th>Added by</th>
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            @foreach (var r in Model.Comments)
+                            {
+                                <tr>
+                                    <td>@r.CommentDate</td>
+                                    <td>@r.CommentType</td>
+                                    <td>@r.CommentDescription</td>
+                                    <td>@r.Inputter.Username</td>
+                                </tr>
+
+                            }
+
+
+                        </tbody>
+                    </table>
+                </section>
+            }
+            <br />
+            <div class="row">
+                <div class="col-md-2">
+
+                </div>
+                @if (Model.DaysSinceLastVisit > 0 && Model.IsActive)
+                {
+                <div class="col-md-2">
+                    @using (Html.BeginForm("CheckIn", "User", FormMethod.Post, new { @class = "" }))
+                    {
+                        <input type="hidden" name="id" value="@Model.MemberId">
+                        <input type="hidden" name="p" value="Member">
+                        <button type="submit" class="btn btn-sm btn-success" style="width:100%;font-size:1.2em"><span class="fa fa-check-circle"></span>&nbsp;Check In</button>                    
+
+                    }
+                </div>
+                }
+
+                <div class="col-md-2">
+                    <a class="btn btn-sm btn-primary" style="width:100%;font-size:1.2em" href="@Url.Action("Edit", new { id = Model.MemberId })"><span class="fa fa-edit"></span>&nbsp;Edit Details</a>
+
+                    @*<a class="btn btn-sm btn-danger" href="@Url.Action("RemoveMember", "Admin", new { id = @Model.MemberId })"><span class="fa fa-trash"></span>&nbsp;Delete Member</a>*@
+                </div>
+                <div class="col-md-2">
+                    <a class="btn btn-sm btn-warning" style="width:100%;font-size:1.2em" href="@Url.Action("Transaction", new { id = Model.MemberId })"><span class="fa fa-dollar"></span>&nbsp;Payment</a>
+                </div>
+
+                <div class="col-md-2">
+                    @if (session.Current.IsAdmin)
+                    {
+
+                        <a class="btn btn-sm btn-danger" style="width:100%;font-size:1.2em" href="@Url.Action("RemoveMember", "Admin", new { id = @Model.MemberId })"><span class="fa fa-trash"></span>&nbsp;Delete Member</a>
+
+                    }
+                </div>
+            </div>
+}
+            <hr />
+            @if (Model.HasReceipts)
+            {
+                <h3 class="showmembersection"><a href="javascript:void(0)"><span class="fa fa-plus-circle"></span>&nbsp;Receipts (@Model.Receipts.Count)</a></h3>
+                <section style="display:none">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Receipt No.</th>
+                                <th>Transaction No.</th>
+                                <th>Received by</th>
+                                <th>Amount</th>
+                                <th>Method</th>
+                                <th></th>
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            @foreach (var r in Model.Receipts)
+                    {
+                                <tr>
+                                    <td>@r.ReceivedOn.ToString("dd MMM yyyy HH:mm")</td>
+                                    <td>@r.ReceiptId</td>
+                                    <td>@r.TransactionId</td>
+                                    <td>@r.ReceivedBy.Username</td>
+                                    <td>@r.AmountReceived</td>
+                                    <td>@r.PaymentMethod</td>
+                                    <td>
+                                        @if (r.TransactionCancelled)
+                                        {
+                                            <span class="label label-danger">Transaction Cancelled</span>
+                                        }
+                                        else
+                                        {
+                                            <a href="@Url.Action("PaymentSummary", new { id = r.TransactionId, fromReceipt = true})">Details</a>
+                                        }
+                                    </td>
+                                </tr>
+
+                            }
+
+
+                        </tbody>
+                    </table>
+                </section>
+            }
+
+
+            @if (Model.HasRelatedMembers)
+            {
+                <h3 class="showmembersection"><a href="javascript:void(0)"><span class="fa fa-plus-circle"></span>&nbsp;Related Members (@Model.RelatedMembers.Members.Count)</a></h3>
+                <section style="display:none">
+                    <hr />
+                    <div class="row">
+                        @foreach (var mem in Model.RelatedMembers.Members)
+                        {
+                            <div class="col-md-4 col-lg-4 col-xs-2">
+                                <table class="table table-condensed">
+                                    <tr>
+                                        <th>Member Id</th>
+                                        <td><a href="@Url.Action("Member", new { id = @mem.MemberId})"><b> @mem.MemberId</b></a></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Name</th>
+                                        <td>@mem.Fullname</td>
+                                    </tr>
+                                    <tr>
+                                        <th>DOB</th>
+                                        <td>@mem.DateOfBirth.ToString("dd MMM yyyy") (@mem.Age)</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Status</th>
+                                        @if (mem.HasArrears)
+                                        {
+                                            <td><span class="label label-danger">@mem.DaysOverDue days overdue</span> </td>
+
+                                        }
+                                        else
+                                        {
+
+                                            <td><span class="label label-success">In Order</span></td>
+                                        }
+
+
+                                    </tr>
+                                    <tr>
+                                        @if (mem.HasArrears)
+                                        {
+                                            <th>Last Payment</th>
+                                            <td><span class="label label-danger">@mem.PaymentUntilDate.ToString("dd MMM yyyy")</span> </td>
+
+                                        }
+                                        else
+                                        {
+                                            <th>Next Payment</th>
+                                            <td><span class="label label-success">@mem.PaymentUntilDate.AddDays(1).ToString("dd MMM yyyy")</span> </td>
+
+
+                                        }
+
+                                    </tr>
+                                </table>
+                            </div>
+
+                        }
+
+                    </div>
+
+
+
+                </section>
+            }
+
+
+
+
+
+
+
+
+
+            @*@if (session.Current.IsAdmin)
+                {
+
+                    <div class="row" style="margin-top:50px">
+                        <div class="col-md-offset-10 col-md-2">
+
+                            <a class="btn btn-sm btn-danger" href="@Url.Action("RemoveMember", "Admin", new { id = @Model.MemberId })"><span class="fa fa-trash"></span>&nbsp;Delete Member</a>
+                        </div>
+                    </div>
+                }*@
+
+            @section scripts{
+                @Scripts.Render("~/bundles/chart")
+
+                <script>
+                    $(document).ready(function () {
+                        $('body').on('click', '.showmembersection', function () {
+
+                            $(this).next('section').toggle();
+
+                        });
+                    });
+                     
+                </script>
+            }
+
+@section modals {
+    <div class="modal fade" id="uploadPictureModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabelUpload Picture"><span class="label label-success">Add Profile Picutre</span></h4>
+            </div>
+            <div class="modal-body" id="modal-body-upload-pic">
+
+                @using (Html.BeginForm("AddProfilePicture", "User", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    @Html.HiddenFor(model => model.MemberId)
+                    <input type="file" name="resFile" id="resFile" style="width: 100%;" />
+
+                            <input type="submit" value="Upload" class="btn btn-default" />
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    }

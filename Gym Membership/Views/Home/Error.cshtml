@@ -1,0 +1,333 @@
+﻿@model Gym_Membership.Models.ErrorLog
+@{
+    Layout = null;
+    ViewBag.Title = "Error Occured";
+    var DisplayError = @Model == null ? false : @Model.DisplayError;
+//    var supportEmail = Model.SupportEmail;
+    var supportEmail = "giovanni_pl@hotmail.com";
+    var appname = Gym_Membership.Helpers.ConfigurationHelper.GetApplicatioName();
+
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Error</title>
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/no_layout.css")">
+    <style>
+        
+.messagepage 
+{
+	font-family: 'Segoe UI Light', "Segoe UI", Arial;
+	color: #333;        
+	width:900px;
+	margin:auto;
+}
+
+.messagepage a:link,
+.messagepage a:visited
+{    
+	text-decoration: none;    
+}
+
+.messagepage a:hover
+{
+	background: #E42121;
+	color: #FFF;    
+}
+.uppertext 
+{
+text-transform:uppercase;
+}
+
+.header 
+{
+margin-left:auto; 
+margin-right:auto; 
+font-weight: 100 ;
+font-size:2.5em; 
+color: #808080;
+margin:20px 0;
+}
+
+
+.blue-text
+{
+font-weight: 100 ;
+color: #0072c6;
+}
+
+.blue-bodytext
+{
+	width:100%; 	
+	font-weight: 100 ;
+	font-size:1em; 
+    color: #0072c6;
+}
+
+
+
+li, .bodytext
+{
+	width:100%; 	
+	font-weight: 100 ;
+	font-size:1em; 
+	color: #808080;
+}
+
+
+
+	.version
+	{
+	color: #808080;
+	margin: 20px 0 0 0 ;
+	}
+
+.section
+{
+	width:100%; 
+	margin-top:15px;
+	height: 20px; 
+	border-bottom: 1px solid #DDD; 
+	font-weight: 100 ;
+	font-size:1em; 
+	color: #808080;
+	text-transform:uppercase;
+}
+
+
+
+/*  Login page - */
+		#content {
+			/* margin-left: 5%; */
+			margin: 20px auto;
+			width: 1000px;
+			height: 700px;
+			/* background: url(../Images/Login/sea-blue-login.jpg) no-repeat center center; */
+			/* background: url(../Images/Login/green-forest-login.jpg) no-repeat center center;  */
+		   /*http://www.sensationalcolor.com/colorforyourhome/inspired-color-schemes-nature-as-inspiration/ */
+		   /* background: url(../Images/Login/blue-stones.jpg) repeat; */
+            /* background: url(../Images/Login/hdr6.png) no-repeat center center; */
+		}
+
+		#metro {
+			margin-top: 50px;
+			width: 100%;
+			margin: auto;
+		}
+
+
+		/*
+#metro-login
+{	
+	margin-top:50px;
+	width: 700px;
+	height: 400px;
+	
+}
+	*/
+
+		.metroBlock-login {
+			width: 700px;
+			margin-left: auto;
+			margin-right: auto;
+			position: relative;
+			margin-top: 100px;
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			display: block;
+            background: white;
+            
+
+            /* opacity 
+	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+	filter: alpha(opacity=50);
+    -moz-opacity:0.5;
+    -khtml-opacity: 0.5;
+    opacity: 0.5;
+	*/
+
+
+		}
+
+			.metroBlock-login * {
+				font-family: "Segoe UI Light",Tahoma,Arial,Verdana,sans-serif;
+				font-weight: 400;
+			}
+
+			.metroBlock-login li {
+				margin: 0;
+				padding: 0; /* display: block; */
+			}
+
+		.login-title {
+			margin-left: 40px;
+			margin-bottom: 5px;
+		}
+
+		.text-info {
+			margin: 4px auto;
+			text-align: center;
+		}
+
+		/* login page */
+		.ma0, .ma1, .ma2, .ma3, .ma4 {
+			position: absolute;
+		}
+		/*.ma0 { width: 700px; height: 500px; top:   0px; left: 0px; }*/
+
+		/* centered layout */
+
+		.ma1 {
+			width: 300px;
+			height: 400px;
+			top: 150px;
+			left: 350px;
+			border: 1px solid #EEE;
+		}
+
+		.ma2 {
+			width: 300px;
+			height: 100px;
+			top: 150px;
+			left: 350px;
+		}
+
+		.ma3 {
+			width: 300px;
+			height: 200px;
+			top: 250px;
+			left: 350px;
+		}
+
+		.ma4 {
+			width: 300px;
+			height: 100px;
+			top: 450px;
+			left: 350px;
+		}
+
+		.horizontal-line {
+			width: 90%;
+			text-align: center;
+			margin: 0 auto;
+			border-bottom: 1px solid #BBB;
+		}
+
+
+		/* http://www.lwis.net/journal/2008/02/08/pure-css-sticky-footer/ */
+		#footer {
+			clear: both;
+			position: relative;
+			z-index: 10;
+			height: 2em;
+			margin-top: -20em;
+			font-size: .65em;
+			text-align: center;
+            font-family: "Segoe UI",Arial, sans-serif;
+		}
+
+
+		.bg-white {
+			background: url(../Images/Login/bg-white_trans.png) repeat;
+		}
+
+
+		fieldset {
+			border: 0;
+			padding: 0;
+			margin: 0;
+		}
+
+		/*--------------------*/
+
+		#inputs input {
+			background: #f1f1f1 url(../Images/Login/login-sprite.png) no-repeat;
+			padding: 5px 10px 5px 30px;
+			margin: 0 0 10px 40px;
+			width: 175px; /* 353 + 2 + 45 = 400 */
+			border: 1px solid #ccc;
+		}
+
+		#username {
+			margin-top: 100px;
+			background-position: 5px -10px !important;
+		}
+
+		#password {
+			background-position: 5px -58px !important;
+		}
+
+		#inputs input:focus {
+			background-color: #fff;
+			border-color: #e8c291;
+			outline: none;
+			-moz-box-shadow: 0 0 0 1px #e8c291 inset;
+			-webkit-box-shadow: 0 0 0 1px #e8c291 inset;
+			box-shadow: 0 0 0 1px #e8c291 inset;
+		}
+
+		#actions {
+			float: right;
+			margin-right: 40px;
+		}
+
+		.error-msg {
+			color: red;
+			font-size: .75em;
+			margin-left: 40px;
+		}
+
+
+		.lastlogin {
+			font-size: .75em;
+			text-align: center;
+		}
+    </style>
+</head>
+<body>
+    <div class="messagepage">
+
+        <br /><br />
+
+        @if (DisplayError)
+        {
+
+            <div class="header uppertext">Sorry, An application error occured.</div>
+            <div class="bodytext uppertext">Please Contact your Admin.</div>
+            <div class="">@appname</div>
+            <br />
+            <div class="uppertext blue-bodytext">technical details</div>
+            <div> Inner Exception: @Model.InnerException </div><br />
+            <div> Message: @Model.AppException.Message</div><br />
+
+            <div> Full Description: @Model.FullDescription</div><br />
+
+            <div>Check the logs for more details</div>
+
+        }
+        else
+        {
+
+            <div class="header uppertext">An application error has occured.</div>
+            <br />
+
+            <div class="section"></div>
+
+            <div class="bodytext">We Apologize for any inconveniences. </div>
+
+            <div class="bodytext uppertext">Please Contact your Admin.</div>
+
+            <div style="width:100%; margin-bottom:30px; height: 20px; border-bottom: 1px solid #DDD; font-weight: 100 ;font-size:1em; color: #808080;text-transform:uppercase"></div>
+            <div class="section">&nbsp;</div>
+
+            <br /> @:To send us a support email&nbsp;<a href="@String.Concat("mailto:",supportEmail)">click here</a>.
+
+        }
+    </div>
+
+</body>
+</html>

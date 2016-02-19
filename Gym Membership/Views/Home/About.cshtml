@@ -1,0 +1,134 @@
+﻿@{
+    ViewBag.Title = "TODO - Development and fixes";
+}
+<h2>@ViewBag.Title.</h2>
+<h3>@ViewBag.Message</h3>
+
+<style>
+    .done {
+    text-decoration:line-through;
+    
+    }
+</style>
+<h3 id="completed"></h3>
+<p>Use this area to provide additional information.</p>
+<ul id="todolist">
+     <li class="">Login Page
+        <ol>
+             <li class="">validation </li>
+             <li class="">forgot your password functionality, 
+                <ol>
+                    <li>ask user for username or email</li>
+                    <li>check is username or email is registered (if not warn user and stop)</li>
+                    <li>generate a alpha numeric password of 8 characters</li>
+                    <li>update database with this password and set is_temp_password to true </li>
+                    <li>email temp_password to user</li>
+                    <li>if temp_password is set to true go to update your password page</li>
+                    <li>update user password in database and set is_temp_password to false</li>
+                    <li>redirect user to home page</li>
+                </ol>
+                
+            </li>
+            <li>last login timestamp & num_logins are not updated on login</li>
+        </ol>
+    </li>
+    <li class="done">
+        Home Page
+        <ol>
+            <li class="done">Implement cancel visit if user is present (de-count and set previous last date)</li>
+            <li class="done">display birthday +/-2</li>
+            <li class="done">show calendar to navigate backwards (only)</li>
+            <li class="done">when checkin in goes back to current page if on previous date</li>
+            <li class="done">keep a history of last ten dates viewed for quick loading per user NOT REQUIRED</li>
+        </ol>
+    </li>
+     <li class="">Checkin Function
+        <ol>
+             <li class="done">if user inactive should send an alert with a link to member's profile </li>
+             <li class="">if student and after allowed time, should send an alert with a option to continue checkin or cancel it </li>
+        </ol>
+    </li>
+     <li class="">Add new Member
+        <ol>
+            <li class="">choose package comes first</li>
+             <li class="">for multi member package - multi options to add members separately (2-4) with possibility to copy common fields like address (checkbox use same address)</li>
+             <li class="">Implement functionality + validation </li>
+            <li class="">go to payment page</li>
+        </ol>
+    </li>
+
+     <li class="">
+        Payment page
+        <ol>
+             <li class="">form to receive payment </li>
+            <li class="">payment option (immediate cash/cheque/credit card) </li>
+            <li class="">payment option (standing order) </li>
+            <li class="">payment term of current month and future months -- year month to (next payment date) </li>
+            <li class="">payment term for overdue -- display overdue months </li>
+            <li class="">payment term for package with more than one member </li>
+             <li class="">packages to be treated for each individual divide total amount </li>
+    <li class="">user page (received payment section)
+        <br />amount received
+        <br />from / to period (to +1 day being the next payment date)       
+    </li>
+        </ol>
+    </li>
+     <li class="">
+        Members page
+        <ol>
+            <li class="done">list all members with search, sorting</li>
+            <li class="">export to excel </li>
+            <li class="">display predefined lists (overdue etc)</li>
+            <li class="done">display birthday -2/+2</li>
+        </ol>
+    </li>
+     <li class="">
+        Member Page
+        <ol>
+             <li class="done">display details</li>
+            <li class="done">show charting</li>
+             <li class="">allow quick editing - e.g terminate / suspend user - add reason</li>
+
+        </ol>
+    </li>
+    <li class="">
+        Admin Page
+        <ol>
+            <li class="">Manage users list / remove / suspend / add / modify</li>
+            <li class="">manage password / reset</li>
+            <li class="">statistics / reports on cash flow</li>
+            <li class="">view user activities</li>
+            <li class="done">list memberships</li>
+            <li class="done">Add membership</li>
+            <li class="done">Edit membership</li>
+        </ol>
+    </li>
+    <li class="">
+        General Tasks
+        <ol>
+    <li class="done">implement logout functionality</li>
+    <li class="">ajax call timeout redirect to home page</li>
+    <li class="">log activities by user</li>
+
+        </ol>
+    </li>
+
+</ul>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+
+
+            var x = $('#todolist li').length;
+            var y = $('#todolist li.done').length;
+            var completed = (y * 1.0 / x * 1.0) * 100;
+            $('#completed').html('<span class="label label-danger">done '+completed.toFixed(2)+'%</span>')
+
+            //alert(x +'=>'+ y);
+
+        });
+
+    </script>
+
+    }

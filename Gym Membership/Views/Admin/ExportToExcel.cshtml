@@ -1,0 +1,32 @@
+﻿@{
+    Layout = null;
+    var target = ViewBag.Target;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Export To Excel</title>
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+
+</head>
+<body>
+    <div class="container"> 
+        <div class="row" style="margin-top:100px;">
+        <div class="col-md-2">
+        <img src="@Url.Content("~/Images/logo/Logofitness.png")" />
+
+        </div>
+            <div class="col-md-8">
+    <h2><span class="fa fa-file-excel-o"></span>&nbsp;File successfully created check in folder: <br /><b>@target</b></h2>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>
