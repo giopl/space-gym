@@ -1,6 +1,7 @@
 ﻿using Gym_Membership.Controllers;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
@@ -20,6 +21,12 @@ namespace Gym_Membership
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            if(ConfigurationManager.AppSettings["LicenseKey"]!= Helpers.FingerPrint.Value())
+            {
+                throw new Exception("Security Exception");
+            }
+
         }
 
 
