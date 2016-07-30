@@ -193,6 +193,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\TestController.cs" />
@@ -202,21 +203,6 @@
     </Compile>
     <Compile Include="Helpers\CacheHelper.cs" />
     <Content Include="Content\login-biz.css" />
-    <Content Include="dbscripts\alter_tbl_transaction.txt" />
-    <Content Include="dbscripts\gdbprdscript.sql" />
-    <Content Include="dbscripts\gmdb_data.zip" />
-    <Content Include="dbscripts\14 DEC 15 TA RATES %2801APR16-31OCT16%29- internal.xlsx" />
-    <Content Include="dbscripts\MEETING 14-JAN.xlsx" />
-    <Content Include="dbscripts\script_sc.sql" />
-    <Content Include="dbscripts\yearly-overdue-issue.xlsx" />
-    <Content Include="dbscripts\F - Wireframes.zip" />
-    <Content Include="dbscripts\wireframes.pptx" />
-    <Content Include="dbscripts\GMDB.zip" />
-    <Content Include="dbscripts\GymDBPRD.zip" />
-    <Content Include="dbscripts\gdbprddata.7z" />
-    <Content Include="dbscripts\spaceproddb.zip" />
-    <Content Include="dbscripts\Book2.xlsx" />
-    <Content Include="dbscripts\firebug-2.0.14-fx.xpi" />
     <None Include="Helpers\ChartHelper.cs.OLD" />
     <Compile Include="Helpers\ConfigurationHelper.cs" />
     <Compile Include="Helpers\CreateExcelFile.cs" />
@@ -224,6 +210,7 @@
     <Compile Include="Helpers\EmailHelper.cs" />
     <Compile Include="Helpers\Enumerations.cs" />
     <Compile Include="Helpers\FingerPrint.cs" />
+    <Compile Include="Helpers\LicenseKeyException.cs" />
     <Compile Include="Helpers\UserSession.cs" />
     <Compile Include="Helpers\Utils.cs" />
     <Compile Include="Models\AccessLog.cs" />
@@ -269,8 +256,6 @@
     <Compile Include="Services\Concrete\UserService.cs" />
     <Compile Include="Startup.cs" />
     <Content Include="Content\daterange\daterangepicker.css" />
-    <Content Include="dbscripts\gmdb_schma.sql" />
-    <Content Include="dbscripts\todo2.txt" />
     <Content Include="Images\bg\grass.jpg" />
     <Content Include="Images\bg\back.png" />
     <Content Include="Images\bg\eyes.jpg" />
@@ -413,6 +398,11 @@
     <Content Include="Views\Report\VisitDetails.cshtml" />
     <Content Include="Views\Report\RevenueAnalysis.cshtml" />
     <Content Include="Views\Admin\ExportToExcel.cshtml" />
+    <Content Include="Views\Home\InvalidLicense.cshtml" />
+    <Content Include="Views\Error\Error500.cshtml" />
+    <Content Include="Views\Error\General.cshtml" />
+    <Content Include="Views\Error\HttpError404.cshtml" />
+    <Content Include="Views\Error\HttpError500.cshtml" />
     <None Include="Views\Manage\AddPhoneNumber.cshtml.OLD" />
     <None Include="Views\Manage\ChangePassword.cshtml.OLD" />
     <None Include="Views\Manage\Index.cshtml.OLD" />
@@ -447,6 +437,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="dbscripts\" />
     <Folder Include="Views\Base\" />
     <Folder Include="Views\Login\" />
   </ItemGroup>

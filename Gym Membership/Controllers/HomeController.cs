@@ -5,6 +5,7 @@ using Gym_Membership.Services.Concrete;
 using log4net;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -17,9 +18,15 @@ namespace Gym_Membership.Controllers
         ILog log = log4net.LogManager.GetLogger(typeof(HomeController));
         public ActionResult Index()
         {
-            log.Debug("Hello World from TS2!");
+            //  log.Debug("Hello World from TS2!");
             //this is a change
             //return View();
+            if (ConfigurationManager.AppSettings["LicenseKey"] != Helpers.FingerPrint.Value())
+            {
+                return RedirectToAction("InvalidLicense");
+            }
+
+
             return RedirectToAction("Login");
 
         }
@@ -30,6 +37,7 @@ namespace Gym_Membership.Controllers
         {
             try
             {
+                
                 LoginState state = new LoginState { LoginStateValue = loginState };
                 return View(state);
             }
@@ -232,5 +240,26 @@ namespace Gym_Membership.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Method to destrou UserSession
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult InvalidLicense()
+        {
+            log.Info("InvalidLicense");
+            try
+            {
+                //clears user session
+                UserSession.Current.ClearSession();
+
+                return View();
+            }
+            catch (Exception e)
+            {
+                log.ErrorFormat("Logout failed with error: {0}", e.ToString());
+                throw;
+            }
+        }
     }
 }

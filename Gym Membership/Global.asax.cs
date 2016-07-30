@@ -1,4 +1,5 @@
 ﻿using Gym_Membership.Controllers;
+using Gym_Membership.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -22,67 +23,65 @@ namespace Gym_Membership
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
-            if(ConfigurationManager.AppSettings["LicenseKey"]!= Helpers.FingerPrint.Value())
-            {
-                throw new Exception("Security Exception");
-            }
+      
 
         }
 
-
         protected void Application_Error(object sender, EventArgs e)
         {
+
             Exception exception = Server.GetLastError();
-            // Log the exception.
-
-            //  ILogger logger = Container.Resolve<ILogger>();
-            // logger.Error(exception);
-
             Response.Clear();
 
             HttpException httpException = exception as HttpException;
 
-            RouteData routeData = new RouteData();
-            routeData.Values.Add("controller", "User");
+            if (httpException != null)
+            {
+                string action;
 
-            if (httpException == null)
-            {
-                routeData.Values.Add("action", "Index");
-            }
-            else //It's an Http Exception, Let's handle it.
-            {
                 switch (httpException.GetHttpCode())
                 {
                     case 404:
-                        // Page not found.
-                        routeData.Values.Add("action", "NotFound");
+                        // page not found
+                        action = "HttpError404";
                         break;
                     case 500:
-                        // Server error.
-                        routeData.Values.Add("action", "NotFound");
+                        // server error
+                        action = "HttpError500";
                         break;
-
-                    // Here you can handle Views to other error codes.
-                    // I choose a General error template  
                     default:
-                        routeData.Values.Add("action", "NotFound");
+                        action = "General";
                         break;
                 }
+
+                // clear error on server
+                Server.ClearError();
+
+                Response.Redirect(String.Format("~/Error/{0}/?message={1}", action, exception.Message));
+
+
+                // Transfer the user to the appropriate custom error page
+                //HttpException lastErrorWrapper = Server.GetLastError() as HttpException;
+
+                //HttpContext ctx = HttpContext.Current;
+                //ctx.Response.Clear();
+
+
+                //RouteData routeData = new RouteData();
+                //routeData.Values.Add("controller", "Error");
+                //routeData.Values.Add("action", "Error500");
+                //routeData.Values.Add("Summary", "Error");
+                //routeData.Values.Add("Description", lastErrorWrapper.Message);
+                //IController controller = new ErrorController();
+
+                //controller.Execute(new RequestContext(new HttpContextWrapper(Context), routeData));
+                //ctx.Server.ClearError();
             }
+        }
 
-            // Pass exception details to the target error View.
-            routeData.Values.Add("error", exception);
-
-            // Clear the error on server.
-            Server.ClearError();
-
-            // Avoid IIS7 getting in the middle
-            Response.TrySkipIisCustomErrors = true;
-
-            // Call target Controller and pass the routeData.
-            IController errorController = new UserController();
-            errorController.Execute(new RequestContext(
-                 new HttpContextWrapper(Context), routeData));
+        private void ErrorController()
+        {
+            throw new NotImplementedException();
         }
     }
 }

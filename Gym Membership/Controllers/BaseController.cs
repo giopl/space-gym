@@ -1,6 +1,7 @@
 ﻿using log4net;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -26,6 +27,14 @@ namespace Gym_Membership.Controllers
         {
             base.OnActionExecuting(ctx);
             //check if session is valid
+
+            if (ConfigurationManager.AppSettings["LicenseKey"] != Helpers.FingerPrint.Value())
+            {
+                ctx.Result = RedirectToAction("Index", "Home");
+            }
+
+
+
             if (!Helpers.UserSession.Current.ValidUser)
             {
                 //check if it is an ajax request
