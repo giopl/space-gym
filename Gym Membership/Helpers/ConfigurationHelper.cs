@@ -16,7 +16,7 @@ namespace Gym_Membership.Helpers
             return ConfigurationManager.AppSettings["Environment"];
         }
 
-
+        
 
 
         public static string GetApplicatioName()
@@ -53,6 +53,12 @@ namespace Gym_Membership.Helpers
         {
             return Convert.ToBoolean(ConfigurationManager.AppSettings["LogQueries"]);
         }
+
+        public static bool GetClikey()
+        {
+            return Convert.ToBoolean(ConfigurationManager.AppSettings["clikey"]);
+        }
+
 
         public static bool Incognito()
         {

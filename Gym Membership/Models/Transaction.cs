@@ -431,10 +431,13 @@ namespace Gym_Membership.Models
 
                 if (MonthsInAdvanceForm > 0)
                 {
-                    if(NextPaymentDate > DateTime.Now)
+
+                    if (NextPaymentDate > DateTime.Now)
                     {
 
-                        return Utils.GetLastDayOfMonth(NextPaymentDate.AddMonths(MonthsInAdvanceForm));
+                        //added to fix bug with if  NPD is the first of the month, then 1st month is current month not next month
+                        var removemonthifcurrent = NextPaymentDate.Day == 1 ? -1 : 0;
+                        return Utils.GetLastDayOfMonth(NextPaymentDate.AddMonths(MonthsInAdvanceForm + removemonthifcurrent));
 
                     }
                     else

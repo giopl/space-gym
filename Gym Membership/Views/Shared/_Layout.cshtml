@@ -59,35 +59,35 @@ else
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
-                        <li class="@(src=="Home"?"active":"")"><a href="@Url.Action("Index","User")" class="animate"><span class="fa fa-2x fa-fw fa-home"></span></a></li>
-                        <li class="showsection"><a href="#" class="animate" title="Check in User"><span class="fa fa-2x fa-fw fa-search"></span></a></li>                       
-                    <li class="@(src=="Members"?"active":"")"><a href="@Url.Action("Members","User")" class="animate" title="List Users"><span class="fa  fa-2x fa-fw fa-list"></span></a></li>    
-                    <li class="@(src=="AddMember"?"active":"")"><a href="@Url.Action("NewMember","User")" class="animate" title="Add Member"><span class="fa fa-fw fa-2x fa-user-plus"></span></a></li>
+                        <li class="@(src=="Home"?"active":"")"><a href="@Url.Action("Index","User")" data-toggle="tooltip" data-placement="left" title="Home" class="animate"><span class="fa fa-2x fa-fw fa-home"></span></a></li>
+                        <li class="showsection"><a href="#" class="animate" data-toggle="tooltip" data-placement="left" title="Check in User"><span class="fa fa-2x fa-fw fa-search"></span></a></li>                       
+                    <li class="@(src=="Members"?"active":"")"><a href="@Url.Action("Members","User")" data-toggle="tooltip" data-placement="left" class="animate" title="List Users"><span class="fa  fa-2x fa-fw fa-list"></span></a></li>    
+                    <li class="@(src=="AddMember"?"active":"")"><a href="@Url.Action("NewMember","User")" class="animate" data-toggle="tooltip" data-placement="left" title="Add Member"><span class="fa fa-fw fa-2x fa-user-plus"></span></a></li>
                     
-                    <li class="@(src=="Pass"?"active":"")"><a href="@Url.Action("Pass", "User")" class="animate" title="Pass"><span class="fa fa-fw fa-2x fa-street-view"></span></a></li>
+                    <li class="@(src=="Pass"?"active":"")"><a href="@Url.Action("Pass", "User")" class="animate" data-toggle="tooltip" data-placement="left" title="Pass"><span class="fa fa-fw fa-2x fa-street-view"></span></a></li>
                    
                     
                     @if (Gym_Membership.Helpers.ConfigurationHelper.GetEnvironment() == "DEVELOPMENT")
                     {
-                        <li class="@(src=="Test"?"active":"")"><a href="@Url.Action("RevenueAnalysis", "Report")" class="animate" title="Receive Payment"><span class="fa fa-fw fa-2x fa-bomb"></span></a></li>
+                        @*<li class="@(src=="Test"?"active":"")"><a href="@Url.Action("RevenueAnalysis", "Report")" class="animate" title="Receive Payment"><span class="fa fa-fw fa-2x fa-bomb"></span></a></li>*@
                     }
                  
                     @if(session.Current.IsAdmin)
                     {
                         
-                     <li class="@(src=="Admin"?"active":"")"><a href="@Url.Action("ExportToExcel", "Admin", new { id = 0 })" target="_blank" class="animate" title="Receive Payment"><span class="fa fa-fw fa-2x fa-file-excel-o"></span></a></li>
-                    <li class="@(src=="Admin"?"active":"")"><a href="@Url.Action("Index","Admin")" class="animate" title="Admin"><span class="fa fa-fw fa-2x fa-cog"></span></a></li>
+                     <li class="@(src=="Admin"?"active":"")"><a href="@Url.Action("ExportToExcel", "Admin", new { id = 0 })" target="_blank" data-toggle="tooltip" data-placement="left" class="animate" title="Export To Excel"><span class="fa fa-fw fa-2x fa-file-excel-o"></span></a></li>
+                    <li class="@(src=="Admin"?"active":"")"><a href="@Url.Action("Index","Admin")" class="animate" data-toggle="tooltip" data-placement="left" title="Admin"><span class="fa fa-fw fa-2x fa-cog"></span></a></li>
                         
                     }
                     
                     <li>
-                        <a href="#" data-toggle="modal" data-target="#historyModal" id="retrieveHistory" title="Navigation History" class="animate">
+                        <a href="#" data-toggle="modal"  data-placement="bottom" data-target="#historyModal" id="retrieveHistory" title="Navigation History" class="animate">
                             <span class="fa fa-2x fa-history"></span>
                         </a>
                     </li>
 
                         <li>
-                            <a href="@Url.Action("Logout","Home")" class="animate">
+                            <a href="@Url.Action("Logout","Home")" data-toggle="tooltip" data-placement="right" title="logout" class="animate">
                                 <span class="fa fa-2x fa-power-off"></span>
                             </a>
                         </li>
@@ -230,6 +230,13 @@ else
     @RenderSection("scripts", required: false)
     @RenderSection("modals", required: false)
         
+    <script>
+        $(document).ready(function () {
+
+
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
 </body>
 
 </html>

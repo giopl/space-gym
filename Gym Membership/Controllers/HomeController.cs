@@ -21,7 +21,7 @@ namespace Gym_Membership.Controllers
             //  log.Debug("Hello World from TS2!");
             //this is a change
             //return View();
-            if (ConfigurationManager.AppSettings["LicenseKey"] != Helpers.FingerPrint.Value())
+            if (ConfigurationHelper.GetClikey() && ConfigurationManager.AppSettings["LicenseKey"] != Helpers.FingerPrint.Value())
             {
                 return RedirectToAction("InvalidLicense");
             }

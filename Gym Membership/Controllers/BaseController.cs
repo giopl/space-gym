@@ -1,4 +1,5 @@
-﻿using log4net;
+﻿using Gym_Membership.Helpers;
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -28,7 +29,7 @@ namespace Gym_Membership.Controllers
             base.OnActionExecuting(ctx);
             //check if session is valid
 
-            if (ConfigurationManager.AppSettings["LicenseKey"] != Helpers.FingerPrint.Value())
+            if (ConfigurationHelper.GetClikey() && ConfigurationManager.AppSettings["LicenseKey"] != Helpers.FingerPrint.Value())
             {
                 ctx.Result = RedirectToAction("Index", "Home");
             }

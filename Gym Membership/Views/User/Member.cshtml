@@ -553,7 +553,7 @@ else
                                     </tr>
                                     <tr>
                                         <th>Name</th>
-                                        <td>@mem.Fullname</td>
+                                        <td>@(string.IsNullOrWhiteSpace(mem.Fullname)?mem.FullnameFromFirstAndLastName:mem.Fullname)</td>
                                     </tr>
                                     <tr>
                                         <th>DOB</th>
