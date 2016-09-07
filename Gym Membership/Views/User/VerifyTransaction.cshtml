@@ -1,0 +1,161 @@
+﻿@model Gym_Membership.Models.Transaction
+
+@{
+    ViewBag.Title = "VerifyTransaction";
+}
+
+<h2>Verify Transaction </h2>
+
+@using (Html.BeginForm("Transaction","User",FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>Id: @Model.Member.MemberId  @Model.Member.Firstname @Model.Member.Lastname @Model.Member.Membership.Name</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        
+        @Html.HiddenFor(m => m.Member.Membership.MembershipCode)
+        @Html.HiddenFor(m => m.Member.MemberId)
+
+        @Html.HiddenFor(m => m.Member.Membership.MonthTerms)
+        @Html.HiddenFor(m => m.Member.IsRegistrationPaid)
+        @Html.HiddenFor(m => m.Member.PaymentUntilDate)
+        @Html.HiddenFor(m => m.Member.Membership.Fee)
+        @Html.HiddenFor(m => m.Member.Membership.RegistrationFee)
+        @Html.HiddenFor(m => m.Member.Membership.NumberMembers)
+
+        @Html.HiddenFor(m => m.Member.Membership.MonthlyDueAmount)
+        @Html.HiddenFor(m => m.LastTransactionId)
+        @Html.HiddenFor(m => m.MonthlyDueAmountForm)
+
+
+
+        @Html.HiddenFor(model => model.IsStandingOrder)
+        @Html.HiddenFor(model => model.IsPass)
+        @Html.HiddenFor(model => model.LastTransactionId)
+        @Html.HiddenFor(model => model.TransactionId)
+        @Html.HiddenFor(model => model.MonthlyDueAmountForm)
+        @Html.HiddenFor(model => model.MonthsInAdvanceForm)
+        @Html.HiddenFor(model => model.Comment)
+
+        @Html.HiddenFor(model => model.FirstInstallmentAmount)
+        @Html.HiddenFor(model => model.SecondInstallmentAmount)
+        @Html.HiddenFor(model => model.PaymentMethodForm)
+        @Html.HiddenFor(model => model.NumInstallments)
+        @Html.HiddenFor(model => model.NumInstallmentsLeft)
+        @Html.HiddenFor(model => model.TransactionDate)
+        @Html.HiddenFor(model => model.PartPaymentForm)
+        @Html.HiddenFor(model => model.InitialDownpayment)
+
+        @Html.HiddenFor(model => model.PaymentMethodForm)
+        
+        @Html.HiddenFor(model => model.PaidAmount)
+        @Html.HiddenFor(model => model.DiscountAmount)
+        @Html.HiddenFor(model => model.RegistrationAmount)
+        @Html.HiddenFor(model => model.WrittenOffAmount)
+        @Html.HiddenFor(model => model.UnpaidAmount)
+
+
+        @for (int i = 0; i < Model.CalculatedPaymentsDue.Count(); i++)
+        {
+        @Html.HiddenFor(model => model.PaymentDueForm[i].FeeAmount)
+        @Html.HiddenFor(model => model.PaymentDueForm[i].IsPostPoned)
+        @Html.HiddenFor(model => model.PaymentDueForm[i].IsWrittenOff)
+        @Html.HiddenFor(model => model.PaymentDueForm[i].RemainingDays)
+        @Html.HiddenFor(model => model.PaymentDueForm[i].YearMonth)
+        }
+
+
+
+        @{ 
+            var pStartDate = Model.IsYearly? Model.StartDate : Model.CalculatedStartingPeriodDate;
+            var pEndDate = Model.IsYearly ? (Model.HasLongDues ? Model.EndDate : Model.StartDate.AddYears(1).AddDays(-1)) : Model.CalculatedEndingPeriodDate;
+
+            var yearlyDiscount = Model.DiscountAmount;
+            var yearlyRegistration = Model.RegistrationDue;
+            if (Model.DiscountAmount > Model.CalculatedFeeIncludingOverdue)
+            {
+                //disc 11000, yearly fee = 10000 then disc = 10000
+                yearlyDiscount = Model.CalculatedFeeIncludingOverdue;
+                yearlyRegistration = Model.RegistrationDue - (Model.DiscountAmount - Model.CalculatedFeeIncludingOverdue);
+            }
+
+            var pAmountPaid = Model.IsYearly ? Model.InitialDownpayment - yearlyRegistration : Model.CalculatedTotalPaid;
+            var pAmountDisc = Model.IsYearly ? yearlyDiscount : Model.CalculatedTotalDiscount;
+            var pAmountReg = Model.IsYearly ? yearlyRegistration : Model.RegistrationAmount;
+            var pAmountUnpaid = Model.IsYearly ? (Model.RegistrationDue + Model.CalculatedFeeIncludingOverdue) - (Model.InitialDownpayment + Model.DiscountAmount) : 0;
+            var pAmountWrittenOff = Model.IsYearly ? 0 : Model.CalculatedWriteOffs;
+
+
+        }
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Start Date</label>            
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="OverridenStartDate" value="@pStartDate.ToString("dd-MMM-yyyy")" /> 
+                
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">End Date</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="OverridenEndDate" value="@pEndDate.ToString("dd-MMM-yyyy")" />
+                
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="control-label col-md-2">Discount</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="DiscountAmountOverriden" value="@pAmountDisc" />                
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Paid</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="PaidAmountOverriden" value="@pAmountPaid" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Registration</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="RegistrationAmountOverriden" value="@pAmountReg" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Write Off</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="WrittenOffAmountOverriden" value="@pAmountWrittenOff" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Remaining</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="UnpaidAmountOverriden" value="@pAmountUnpaid" />
+            </div>
+        </div>
+
+
+
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>

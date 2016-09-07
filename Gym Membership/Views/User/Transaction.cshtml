@@ -19,7 +19,7 @@
 
 
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("VerifyTransaction","User",FormMethod.Post))
 {
     @Html.AntiForgeryToken()
 

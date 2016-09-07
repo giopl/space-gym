@@ -13,9 +13,20 @@ namespace Gym_Membership.Models
         private List<Payment> _PaymentsDue;
 
 
+
+        //added as temporary fix for wrong calculations of date and amount
+
+        public DateTime OverridenEndDate { get; set; }
+        public DateTime OverridenStartDate { get; set; }
+        public double PaidAmountOverriden { get; set; }
+        public double DiscountAmountOverriden { get; set; }
+        public double RegistrationAmountOverriden { get; set; }
+        public double WrittenOffAmountOverriden { get; set; }
+        public double UnpaidAmountOverriden { get; set; }
+        
         /* transaction fields */
-          
-         
+
+
 
         public bool IsStandingOrder { get; set; }
         public Transaction()
@@ -200,7 +211,6 @@ namespace Gym_Membership.Models
 
         private DateTime PaymentUntilDate { get { return Member.PaymentUntilDate; } }
         public  DateTime NextPaymentDate { get { return Member.PaymentUntilDate.AddDays(1); } }
-
 
 
         private DateTime CurrentPaymentEndDate

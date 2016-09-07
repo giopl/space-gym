@@ -772,6 +772,20 @@ namespace Gym_Membership.Controllers
             }
         }
 
+        [HttpPost]
+        public ActionResult VerifyTransaction(Transaction tran)
+        {
+            try
+            {
+                return View(tran);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
 
 
         [HttpPost]

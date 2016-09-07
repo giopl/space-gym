@@ -280,6 +280,7 @@
     <Content Include="Views\User\_standingOrderTransaction.cshtml" />
     <Content Include="Views\Admin\StandingOrders.cshtml" />
     <Content Include="Views\User\_history.cshtml" />
+    <Content Include="Views\User\VerifyTransaction.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootsnip.css" />

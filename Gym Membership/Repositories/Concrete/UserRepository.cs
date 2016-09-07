@@ -1623,19 +1623,27 @@ namespace Gym_Membership.Repositories.Concrete
                         yearlyDiscount = transaction.CalculatedFeeIncludingOverdue;
                         yearlyRegistration = transaction.RegistrationDue - (transaction.DiscountAmount - transaction.CalculatedFeeIncludingOverdue);
                     }
-                    
-                    
-                    pStartDate = isYearly ? transaction.StartDate : transaction.CalculatedStartingPeriodDate;
-                    pEndDate = isYearly ? ( transaction.HasLongDues? transaction.EndDate : transaction.StartDate.AddYears(1).AddDays(-1) ) : transaction.CalculatedEndingPeriodDate;
-                   // pAmountPaid = isYearly ? transaction.InitialDownpayment - transaction.RegistrationFeeForm : transaction.CalculatedTotalPaid;
-                    pAmountPaid = isYearly ? transaction.InitialDownpayment - yearlyRegistration : transaction.CalculatedTotalPaid;
-                    //pAmountDisc = isYearly ? transaction.RegistrationAmountDue - transaction.RegistrationFeeForm : transaction.CalculatedTotalDiscount;
-                    pAmountDisc = isYearly ? yearlyDiscount : transaction.CalculatedTotalDiscount;
-                    //pAmountReg = transaction.RegistrationFeeForm;
-                    pAmountReg = isYearly ? yearlyRegistration : transaction.RegistrationAmount;
-                    //pAmountUnpaid = isYearly ? transaction.Membership.Fee - (transaction.InitialDownpayment - transaction.RegistrationFeeForm) : 0;
-                    pAmountUnpaid = isYearly ? (transaction.RegistrationDue + transaction.CalculatedFeeIncludingOverdue) - (transaction.InitialDownpayment + transaction.DiscountAmount ) : 0;
-                    pAmountWrittenOff = isYearly ? 0 : transaction.CalculatedWriteOffs;
+
+
+                    // pStartDate = isYearly ? transaction.StartDate : transaction.CalculatedStartingPeriodDate;
+                    // pEndDate = isYearly ? ( transaction.HasLongDues? transaction.EndDate : transaction.StartDate.AddYears(1).AddDays(-1) ) : transaction.CalculatedEndingPeriodDate;
+                    //// pAmountPaid = isYearly ? transaction.InitialDownpayment - transaction.RegistrationFeeForm : transaction.CalculatedTotalPaid;
+                    // pAmountPaid = isYearly ? transaction.InitialDownpayment - yearlyRegistration : transaction.CalculatedTotalPaid;
+                    // //pAmountDisc = isYearly ? transaction.RegistrationAmountDue - transaction.RegistrationFeeForm : transaction.CalculatedTotalDiscount;
+                    // pAmountDisc = isYearly ? yearlyDiscount : transaction.CalculatedTotalDiscount;
+                    // //pAmountReg = transaction.RegistrationFeeForm;
+                    // pAmountReg = isYearly ? yearlyRegistration : transaction.RegistrationAmount;
+                    // //pAmountUnpaid = isYearly ? transaction.Membership.Fee - (transaction.InitialDownpayment - transaction.RegistrationFeeForm) : 0;
+                    // pAmountUnpaid = isYearly ? (transaction.RegistrationDue + transaction.CalculatedFeeIncludingOverdue) - (transaction.InitialDownpayment + transaction.DiscountAmount ) : 0;
+                    // pAmountWrittenOff = isYearly ? 0 : transaction.CalculatedWriteOffs;
+
+                    pStartDate = isYearly ? transaction.StartDate : transaction.OverridenStartDate;
+                    pEndDate = isYearly ? (transaction.HasLongDues ? transaction.EndDate : transaction.StartDate.AddYears(1).AddDays(-1)) : transaction.OverridenEndDate;
+                    pAmountPaid = isYearly ? transaction.InitialDownpayment - yearlyRegistration : transaction.PaidAmountOverriden;
+                    pAmountDisc = isYearly ? yearlyDiscount : transaction.DiscountAmountOverriden;
+                    pAmountReg = isYearly ? yearlyRegistration : transaction.RegistrationAmountOverriden;
+                    pAmountUnpaid = isYearly ? (transaction.RegistrationDue + transaction.CalculatedFeeIncludingOverdue) - (transaction.InitialDownpayment + transaction.DiscountAmount) : 0;
+                    pAmountWrittenOff = isYearly ? 0 : transaction.WrittenOffAmountOverriden;
 
                     pNumFacilities = transaction.NumInstallments;
                      pNumLeft = transaction.NumInstallments;
@@ -1932,13 +1940,21 @@ namespace Gym_Membership.Repositories.Concrete
 
                     foreach (var due in transaction.CalculatedPaymentDueForm)
                     {
-                        paramSB.AppendFormat("({0},{1},{2},{3},{4},{5},{6}),",
+
+                        if(due.YearMonth <= (transaction.OverridenEndDate.Year*100) + transaction.OverridenEndDate.Month)
+                        {
+                            paramSB.AppendFormat("({0},{1},{2},{3},{4},{5},{6}),",
                             transaction.TransactionId, due.YearMonth, due.FeeAmount, due.PaidAmount, due.CalculatedWrittenOffAmount, due.DiscountedAmount, due.RemainingBalanceAmount);
+                        }
+                        
                     }
                     foreach (var adv in transaction.CalculatedPaymentAdvances)
                     {
-                        paramSB.AppendFormat("({0},{1},{2},{3},{4},{5},{6}),",
+                        if (adv.YearMonth <= (transaction.OverridenEndDate.Year * 100) + transaction.OverridenEndDate.Month)
+                        {
+                            paramSB.AppendFormat("({0},{1},{2},{3},{4},{5},{6}),",
                             transaction.TransactionId, adv.YearMonth, adv.FeeAmount, adv.PaidAmount, adv.CalculatedWrittenOffAmount, adv.DiscountedAmount, adv.RemainingBalanceAmount);
+                        }
                     }
 
 
@@ -2053,7 +2069,8 @@ namespace Gym_Membership.Repositories.Concrete
             {
                 log.Info("[UpdatePaymentDate]");
 
-                var paymentDate = transaction.CalculatedEndingPeriodDate;
+                //var paymentDate = transaction.CalculatedEndingPeriodDate;
+                var paymentDate = transaction.OverridenEndDate;
                 DateTime? installmentDate = null;
                 if (transaction.IsYearly)
                 {
