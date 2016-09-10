@@ -1637,9 +1637,9 @@ namespace Gym_Membership.Repositories.Concrete
                     // pAmountUnpaid = isYearly ? (transaction.RegistrationDue + transaction.CalculatedFeeIncludingOverdue) - (transaction.InitialDownpayment + transaction.DiscountAmount ) : 0;
                     // pAmountWrittenOff = isYearly ? 0 : transaction.CalculatedWriteOffs;
 
-                    pStartDate = isYearly ? transaction.StartDate : transaction.OverridenStartDate;
-                    pEndDate = isYearly ? (transaction.HasLongDues ? transaction.EndDate : transaction.StartDate.AddYears(1).AddDays(-1)) : transaction.OverridenEndDate;
-                    pAmountPaid = isYearly ? transaction.InitialDownpayment - yearlyRegistration : transaction.PaidAmountOverriden;
+                    pStartDate = transaction.OverridenStartDate;
+                    pEndDate = isYearly ? (transaction.HasLongDues ? transaction.OverridenEndDate : transaction.OverridenStartDate.AddYears(1).AddDays(-1)) : transaction.OverridenEndDate;
+                    pAmountPaid = isYearly  && transaction.PaidAmountOverriden ==  (transaction.InitialDownpayment - yearlyRegistration) ? transaction.InitialDownpayment - yearlyRegistration : transaction.PaidAmountOverriden;
                     pAmountDisc = isYearly ? yearlyDiscount : transaction.DiscountAmountOverriden;
                     pAmountReg = isYearly ? yearlyRegistration : transaction.RegistrationAmountOverriden;
                     pAmountUnpaid = isYearly ? (transaction.RegistrationDue + transaction.CalculatedFeeIncludingOverdue) - (transaction.InitialDownpayment + transaction.DiscountAmount) : 0;

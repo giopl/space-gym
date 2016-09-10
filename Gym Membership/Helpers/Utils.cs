@@ -41,6 +41,8 @@ namespace Gym_Membership.Helpers
         }
 
 
+
+
         /// <summary>
         /// tries to parse string to int, if fails return 0
         /// </summary>

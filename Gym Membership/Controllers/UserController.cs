@@ -854,6 +854,26 @@ namespace Gym_Membership.Controllers
         }
 
 
+        public ActionResult TestTransaction(int id)
+        {
+            try
+            {
+                IUserService userservice = new UserService();
+                IAdminService adminService = new AdminService();
+                var member = userservice.GetMemberById(id);
+                var memberships = adminService.GetMemberships(null);
+                var membership = memberships.Where(x => x.MembershipCode == member.Membership.MembershipCode).FirstOrDefault();
+                TransactionNew trans = new TransactionNew(member.PaymentUntilDate,membership.MonthlyDueAmountPerPerson);
+
+                return View(trans);
+                
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+        }
 
         public ActionResult test()
         {

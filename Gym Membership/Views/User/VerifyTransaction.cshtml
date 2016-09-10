@@ -30,7 +30,6 @@
         @Html.HiddenFor(m => m.Member.Membership.NumberMembers)
 
         @Html.HiddenFor(m => m.Member.Membership.MonthlyDueAmount)
-        @Html.HiddenFor(m => m.LastTransactionId)
         @Html.HiddenFor(m => m.MonthlyDueAmountForm)
 
 
@@ -59,16 +58,34 @@
         @Html.HiddenFor(model => model.RegistrationAmount)
         @Html.HiddenFor(model => model.WrittenOffAmount)
         @Html.HiddenFor(model => model.UnpaidAmount)
+        
+        @* yearly *@
+        @Html.HiddenFor(model => model.StartDate)
+        @Html.HiddenFor(model => model.EndDate)
+
+        @*@Html.HiddenFor(model => model.OrigMembershipFee)
+        @Html.HiddenFor(model => model.RegistrationFeeForm)*@
 
 
-        @for (int i = 0; i < Model.CalculatedPaymentsDue.Count(); i++)
-        {
-        @Html.HiddenFor(model => model.PaymentDueForm[i].FeeAmount)
-        @Html.HiddenFor(model => model.PaymentDueForm[i].IsPostPoned)
-        @Html.HiddenFor(model => model.PaymentDueForm[i].IsWrittenOff)
-        @Html.HiddenFor(model => model.PaymentDueForm[i].RemainingDays)
-        @Html.HiddenFor(model => model.PaymentDueForm[i].YearMonth)
-        }
+
+            @if (Model.PaymentDueForm.Count > 0)
+            {
+                foreach (var x in Model.PaymentDueForm)
+                {
+                    var i= 0;
+                    @Html.HiddenFor(model => model.PaymentDueForm[i].FeeAmount)
+                    @Html.HiddenFor(model => model.PaymentDueForm[i].IsPostPoned)
+                    @Html.HiddenFor(model => model.PaymentDueForm[i].IsWrittenOff)
+                    @Html.HiddenFor(model => model.PaymentDueForm[i].RemainingDays)
+                    @Html.HiddenFor(model => model.PaymentDueForm[i].YearMonth)
+                    i++;
+
+                }
+
+
+
+
+            }
 
 
 
