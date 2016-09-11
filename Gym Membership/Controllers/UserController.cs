@@ -875,6 +875,13 @@ namespace Gym_Membership.Controllers
             }
         }
 
+        public ActionResult RecalculateTrans (TransactionNew trans)
+        {
+
+        
+            return View(trans);
+        }
+
         public ActionResult test()
         {
             return View();

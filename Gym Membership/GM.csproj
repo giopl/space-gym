@@ -283,6 +283,7 @@
     <Content Include="Views\User\_history.cshtml" />
     <Content Include="Views\User\VerifyTransaction.cshtml" />
     <Content Include="Views\User\TestTransaction.cshtml" />
+    <Content Include="Views\User\RecalculateTrans.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootsnip.css" />
