@@ -70,9 +70,10 @@
 
             @if (Model.PaymentDueForm.Count > 0)
             {
+                var i = 0;
                 foreach (var x in Model.PaymentDueForm)
                 {
-                    var i= 0;
+
                     @Html.HiddenFor(model => model.PaymentDueForm[i].FeeAmount)
                     @Html.HiddenFor(model => model.PaymentDueForm[i].IsPostPoned)
                     @Html.HiddenFor(model => model.PaymentDueForm[i].IsWrittenOff)
@@ -103,7 +104,7 @@
             }
 
             var pAmountPaid = Model.IsYearly ? Model.InitialDownpayment - yearlyRegistration : Model.CalculatedTotalPaid;
-            var pAmountDisc = Model.IsYearly ? yearlyDiscount : Model.CalculatedTotalDiscount;
+            var pAmountDisc = Model.IsYearly ? yearlyDiscount : Model.DiscountAmount;
             var pAmountReg = Model.IsYearly ? yearlyRegistration : Model.RegistrationAmount;
             var pAmountUnpaid = Model.IsYearly ? (Model.RegistrationDue + Model.CalculatedFeeIncludingOverdue) - (Model.InitialDownpayment + Model.DiscountAmount) : 0;
             var pAmountWrittenOff = Model.IsYearly ? 0 : Model.CalculatedWriteOffs;

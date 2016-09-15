@@ -774,6 +774,7 @@ namespace Gym_Membership.Controllers
 
         [HttpPost]
         public ActionResult VerifyTransaction(Transaction tran)
+
         {
             try
             {
