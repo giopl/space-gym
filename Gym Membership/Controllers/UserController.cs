@@ -778,6 +778,12 @@ namespace Gym_Membership.Controllers
         {
             try
             {
+
+                IUserService userService = new UserService();
+                var member = userService.GetMemberById(tran.Member.MemberId);
+                ViewBag.Member = member;
+
+
                 return View(tran);
             }
             catch (Exception)

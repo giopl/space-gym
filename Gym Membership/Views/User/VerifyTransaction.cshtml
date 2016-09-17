@@ -2,16 +2,18 @@
 
 @{
     ViewBag.Title = "VerifyTransaction";
-}
 
-<h2>Verify Transaction </h2>
+    var member = ViewBag.Member as Gym_Membership.Models.GymMember;
+}
+<br />
+<h2><span class="fa fa-check-square-o"></span> Verify Transaction </h2>
 
 @using (Html.BeginForm("Transaction","User",FormMethod.Post))
 {
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h4>Id: @Model.Member.MemberId  @Model.Member.Firstname @Model.Member.Lastname @Model.Member.Membership.Name</h4>
+        <h4 class="text-muted">Id: <b>@member.MemberId</b>  Name:<b>@member.Firstname @member.Lastname</b>  Membership: <b>@member.Membership.Name</b></h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         
@@ -175,5 +177,7 @@
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+
+    <a href="@Url.Action("Transaction","User", new { id = member.MemberId })">Back to Transaction</a>
+    @*@Html.ActionLink("Back to List", "Index")*@
 </div>

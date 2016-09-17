@@ -59,12 +59,12 @@ else
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
-                        <li class="@(src=="Home"?"active":"")"><a href="@Url.Action("Index","User")" data-toggle="tooltip" data-placement="left" title="Home" class="animate"><span class="fa fa-2x fa-fw fa-home"></span></a></li>
-                        <li class="showsection"><a href="#" class="animate" data-toggle="tooltip" data-placement="left" title="Check in User"><span class="fa fa-2x fa-fw fa-search"></span></a></li>                       
-                    <li class="@(src=="Members"?"active":"")"><a href="@Url.Action("Members","User")" data-toggle="tooltip" data-placement="left" class="animate" title="List Users"><span class="fa  fa-2x fa-fw fa-list"></span></a></li>    
-                    <li class="@(src=="AddMember"?"active":"")"><a href="@Url.Action("NewMember","User")" class="animate" data-toggle="tooltip" data-placement="left" title="Add Member"><span class="fa fa-fw fa-2x fa-user-plus"></span></a></li>
+                        <li class="@(src=="Home"?"active":"")"><a href="@Url.Action("Index","User")"  title="Home" class="animate"><span class="fa fa-2x fa-fw fa-home"></span></a></li>
+                        <li class="showsection"><a href="#" title="Search or Check in User"><span class="fa fa-2x fa-fw fa-search"></span></a></li>                       
+                    <li class="@(src=="Members"?"active":"")"><a href="@Url.Action("Members","User")"  class="animate" title="List Users"><span class="fa  fa-2x fa-fw fa-list"></span></a></li>    
+                    <li class="@(src=="AddMember"?"active":"")"><a href="@Url.Action("NewMember","User")"  title="Add Member"><span class="fa fa-fw fa-2x fa-user-plus"></span></a></li>
                     
-                    <li class="@(src=="Pass"?"active":"")"><a href="@Url.Action("Pass", "User")" class="animate" data-toggle="tooltip" data-placement="left" title="Pass"><span class="fa fa-fw fa-2x fa-street-view"></span></a></li>
+                    <li class="@(src=="Pass"?"active":"")"><a href="@Url.Action("Pass", "User")" class="animate"  title="Pass"><span class="fa fa-fw fa-2x fa-street-view"></span></a></li>
                    
                     
                     @if (Gym_Membership.Helpers.ConfigurationHelper.GetEnvironment() == "DEVELOPMENT")

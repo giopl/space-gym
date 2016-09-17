@@ -13,9 +13,7 @@
     var ed = utils.GetFirstDayOfMonth(DateTime.Now).AddYears(1).AddDays(-1);
     var totdueandreg = Model.HasLongDues ? Model.RegistrationDue + Model.CalculatedFeeIncludingOverdue : Model.RegistrationDue + Model.Fee;
 }
-<div>days: @Model.tempDays</div>
-<div>has short dues @Model.HasShortDues</div>
-<div>has long dues @Model.HasLongDues</div>
+
 <input type="hidden" class="registrationFeeForm" name="RegistrationFeeForm" value="@Model.RegistrationDue" />
 <input type="hidden" id="longOverdueFee" value="@Model.CalculatedAmountDueForYearlyLongOverdue" />
 <input type="hidden" id="UnpaidAmount" name="UnpaidAmount" value="" />
