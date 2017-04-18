@@ -1,4 +1,5 @@
 ﻿using Gym_Membership.Helpers;
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,6 +12,8 @@ namespace Gym_Membership.Models
 {
     public class GymMember
     {
+
+        ILog log = log4net.LogManager.GetLogger(typeof(GymMember));
 
         public List<string> ValidationErrors { get; set; }
 
@@ -102,12 +105,38 @@ namespace Gym_Membership.Models
 
         public int BirthdayInDays
         {
+
+
+
             get
             {
-                var currentYearBirthday = new DateTime(DateTime.Now.Year, DateOfBirth.Month, DateOfBirth.Day);
-                TimeSpan ts = DateTime.Now - currentYearBirthday;
-                int tsdays = Convert.ToInt32(ts.TotalDays);
-                return tsdays;
+                try
+                {
+
+
+                    DateTime currentYearBirthday;
+                    if(DateTime.IsLeapYear(DateTime.Now.Year) && DateOfBirth.Month == 2 && DateOfBirth.Day == 29)
+                    {
+                        currentYearBirthday = new DateTime(DateTime.Now.Year, DateOfBirth.Month, DateOfBirth.Day-1);
+                    } else
+                    {
+                        currentYearBirthday = new DateTime(DateTime.Now.Year, DateOfBirth.Month, DateOfBirth.Day);
+                    }
+                    
+
+
+                    TimeSpan ts = DateTime.Now - currentYearBirthday;
+                    int tsdays = Convert.ToInt32(ts.TotalDays);
+                    return tsdays;
+
+                }
+                catch (Exception e)
+                {
+
+                    log.ErrorFormat("error {0} in Birthday in days caused by {1} ", e.ToString(), DateOfBirth.ToString());
+                    return 100;
+                }
+
 
             }
         }

@@ -3,6 +3,8 @@
 @{
     ViewBag.Title = "New Member";
     var memberships = ViewBag.Memberships as IList<Gym_Membership.Models.Membership>;
+
+    var defaultClub = System.Configuration.ConfigurationManager.AppSettings["DefaultClub"];
 }
 
 
@@ -243,9 +245,9 @@
             <div class="col-md-6 inp">
                 <select name="Club" class="fld">
                     <option value="">Select</option>
-                    <option @(Model.Club == "BB" ? "selected" : "") value="BB">Space Gym Beau Bassin</option>
-                    <option @(Model.Club == "CP" ? "selected" : "") value="CP">Space Gym Curepipe</option>
-                    <option @(Model.Club == "RH" ? "selected" : "") value="RH">Executive Rose Hill</option>
+                    <option @(defaultClub == "BB" ? "selected" : "") value="BB">Space Gym Beau Bassin</option>
+                    <option @(defaultClub == "CP" ? "selected" : "") value="CP">Space Gym Curepipe</option>
+                    <option @(defaultClub == "RH" ? "selected" : "") value="RH">Executive Rose Hill</option>
                 </select>
             </div>
 

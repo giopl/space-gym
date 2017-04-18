@@ -322,9 +322,7 @@
     <Content Include="fonts\fontawesome-webfont.ttf" />
     <Content Include="fonts\fontawesome-webfont.eot" />
     <Content Include="fonts\FontAwesome.otf" />
-    <None Include="Properties\PublishProfiles\Gym App %28Debug%29.pubxml" />
-    <None Include="Properties\PublishProfiles\Gym App %28local deploy%29.pubxml" />
-    <None Include="Properties\PublishProfiles\Gym App %28Release%29.pubxml" />
+    <None Include="Properties\PublishProfiles\Debug %28Local%29.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\custom\admin.js" />
     <Content Include="Scripts\custom\shared.js" />

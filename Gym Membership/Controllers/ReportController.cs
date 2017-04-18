@@ -712,9 +712,26 @@ namespace Gym_Membership.Controllers
                 {
                     var ranges = range.Split('-');
 
+                    var fromdatestring = ranges[0].Trim();
+                    var todatestring = ranges[1].Trim();
 
-                    DateTime.TryParse(ranges[0], out from);
-                    DateTime.TryParse(ranges[1], out to);
+                    //var yy = (todatestring.Substring(6, 4));
+                    //var mm = (todatestring.Substring(0, 2));
+                    //    var dd = (todatestring.Substring(3, 2));
+
+                    //  09/20/2103
+                    from = new DateTime(Convert.ToInt32(fromdatestring.Substring(6, 4))
+                        , Convert.ToInt32(fromdatestring.Substring(0, 2)),
+                        Convert.ToInt32(fromdatestring.Substring(3, 2)));
+
+                    to = new DateTime(Convert.ToInt32(todatestring.Substring(6, 4))
+                        , Convert.ToInt32(todatestring.Substring(0, 2)),
+                        Convert.ToInt32(todatestring.Substring(3, 2)));
+
+
+
+                    //DateTime.TryParse(ranges[0], out from);
+                    //DateTime.TryParse(ranges[1], out to);
 
 
                 }
